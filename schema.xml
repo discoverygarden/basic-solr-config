@@ -272,7 +272,6 @@
    <field name="mods_title_mlt" type="string" indexed="true"/>
    <field name="mods_abstract_ms" type="string" indexed="true"/>
    <field name="mods_genre_dct_ms" type="string" indexed="true"/>
-   <field name="mods_pitt_ms" type="string" indexed="true"/>
    <field name="mods_name_creator_ms" type="string" indexed="true"/>
    <field name="mods_rname_creator_ms" type="string" indexed="true"/>
    <field name="mods_note_ms" type="string" indexed="true"/>
@@ -291,8 +290,10 @@
         both match, the first appearing in the schema will be used.  -->
    <dynamicField name="*_i"  type="sint"    indexed="true"  stored="true"/>
    <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>
+   <dynamicField name="*_ms"  type="string"  indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_l"  type="slong"   indexed="true"  stored="true"/>
    <dynamicField name="*_t"  type="text"    indexed="true"  stored="true"/>
+   <dynamicField name="*_mt"  type="text"    indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
    <dynamicField name="*_f"  type="sfloat"  indexed="true"  stored="true"/>
    <dynamicField name="*_d"  type="sdouble" indexed="true"  stored="true"/>
