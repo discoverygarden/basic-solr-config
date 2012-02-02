@@ -253,33 +253,10 @@
         via copyField further on in this schema  -->
    <field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
 
-   <!-- non-tokenized version of manufacturer to make it easier to sort or group
-        results by manufacturer.  copied from "manu" via copyField -->
-   <field name="manu_exact" type="string" indexed="true" stored="false"/>
-
    <!-- Here, default is used to create a "timestamp" field indicating
         When each document was indexed.
      -->
    <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>
-
-   <field name="fgs_state_s" type="string" indexed="true" stored="true"/>
-   <field name="fgs_label_s" type="string" indexed="true" stored="true"/>
-   <field name="fgs_createdDate_s" type="date" indexed="true" stored="true"/>
-   <field name="fgs_lastModifiedDate_s" type="date" indexed="true" stored="true"/>
-   <field name="rels_hasModel_uri_ms" type="string" indexed="true" stored="true"/>
-   <field name="rels_isMemberOfCollection_uri_ms" type="string" indexed="true"/>
-   <field name="mods_title_ms" type="string" indexed="true"/>
-   <field name="mods_title_mlt" type="string" indexed="true"/>
-   <field name="mods_abstract_ms" type="string" indexed="true"/>
-   <field name="mods_genre_dct_ms" type="string" indexed="true"/>
-   <field name="mods_name_creator_ms" type="string" indexed="true"/>
-   <field name="mods_rname_creator_ms" type="string" indexed="true"/>
-   <field name="mods_note_ms" type="string" indexed="true"/>
-   <field name="mods_subject_ms" type="string" indexed="true"/>
-   <!--field name="mods_subject_ms" type="text" indexed="true"/-->
-   <field name="mod_host_title_ms" type="string" indexed="true"/>
-   <field name="mods_place_of_publication_ms" type="string" indexed="true"/>
-   <field name="mods_full_xml_store" type="text" indexed="true"/>
 
    <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
         will be used if the name matches any of the patterns.
