@@ -63,18 +63,9 @@
       <!-- The following allows only active FedoraObjects to be indexed. -->
       <xsl:if test="foxml:digitalObject/foxml:objectProperties/foxml:property[@NAME='info:fedora/fedora-system:def/model#state' and @VALUE='Active']">
         <xsl:if test="not(foxml:digitalObject/foxml:datastream[@ID='METHODMAP' or @ID='DS-COMPOSITE-MODEL'])">
-          <xsl:choose>
-            <xsl:when test="starts-with($PID,'atm')">
-              <xsl:call-template name="fjm-atm">
-                <xsl:with-param name="pid" select="$PID"/>
-              </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:apply-templates select="/foxml:digitalObject" mode="activeFedoraObject">
-                <xsl:with-param name="PID" select="$PID"/>
-              </xsl:apply-templates>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:apply-templates select="/foxml:digitalObject" mode="activeFedoraObject">
+            <xsl:with-param name="PID" select="$PID"/>
+          </xsl:apply-templates>
         </xsl:if>
       </xsl:if>
     </add>
