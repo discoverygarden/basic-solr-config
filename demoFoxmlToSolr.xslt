@@ -152,14 +152,7 @@
         <!--********************************** End BLAST ******************************************-->
 
         <!-- Names and Roles -->
-      <xsl:apply-templates select="foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]/foxml:xmlContent//mods:mods" mode="default"/>
-
-      <!-- store an escaped copy of MODS... -->
-      <xsl:if test="foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]/foxml:xmlContent//mods:mods">
-        <field name="mods_fullxml_store">
-          <xsl:apply-templates select="foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]/foxml:xmlContent//mods:mods" mode="escape"/>
-        </field>
-      </xsl:if>
+      <xsl:apply-templates select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent"/>
 
       <xsl:apply-templates select="foxml:datastream[@ID='EAC-CPF']/foxml:datastreamVersion[last()]/foxml:xmlContent//eaccpf:eac-cpf">
         <xsl:with-param name="pid" select="$PID"/>
