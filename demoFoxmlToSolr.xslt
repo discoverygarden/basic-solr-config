@@ -26,14 +26,13 @@
 
   <xsl:param name="REPOSITORYNAME" select="repositoryName"/>
   <xsl:param name="FEDORASOAP" select="repositoryName"/>
-  <xsl:param name="FEDORAUSER" select="repositoryName"/>
-  <xsl:param name="FEDORAPASS" select="repositoryName"/>
+  <xsl:param name="FEDORAUSER" select="repositoryUserName"/>
+  <xsl:param name="FEDORAPASS" select="repositoryPassword"/>
   <xsl:param name="TRUSTSTOREPATH" select="repositoryName"/>
   <xsl:param name="TRUSTSTOREPASS" select="repositoryName"/>
+  <xsl:variable name="PID" select="/foxml:digitalObject/@PID"/>
 
-  <!-- Test of adding explicit parameters to indexing -->
-  <xsl:param name="EXPLICITPARAM1" select="defaultvalue1"/>
-  <xsl:param name="EXPLICITPARAM2" select="defaultvalue2"/>
+
 <!--
 	 This xslt stylesheet generates the IndexDocument consisting of IndexFields
      from a FOXML record. The IndexFields are:
@@ -42,19 +41,6 @@
        - from oai_dc:dc        = title, creator, ...
      The IndexDocument element gets a PID attribute, which is mandatory,
      while the PID IndexField is optional.
-     Options for tailoring:
-       - IndexField types, see Lucene javadoc for Field.Store, Field.Index, Field.TermVector
-       - IndexField boosts, see Lucene documentation for explanation
-       - IndexDocument boosts, see Lucene documentation for explanation
-       - generation of IndexFields from other XML metadata streams than DC
-         - e.g. as for uvalibdesc included above and called below, the XML is inline
-         - for not inline XML, the datastream may be fetched with the document() function,
-           see the example below (however, none of the demo objects can test this)
-       - generation of IndexFields from other datastream types than XML
-         - from datastream by ID, text fetched, if mimetype can be handled
-         - from datastream by sequence of mimetypes,
-           text fetched from the first mimetype that can be handled,
-           default sequence given in properties.
 -->
 
   <xsl:include href="islandora_transforms/modsToSolr.xslt"/>
@@ -62,23 +48,13 @@
   <xsl:include href="islandora_transforms/vracoreToSolr.xslt"/>
 
   <xsl:template match="/">
-    <xsl:variable name="PID" select="/foxml:digitalObject/@PID"/>
     <add>
       <!-- The following allows only active FedoraObjects to be indexed. -->
       <xsl:if test="foxml:digitalObject/foxml:objectProperties/foxml:property[@NAME='info:fedora/fedora-system:def/model#state' and @VALUE='Active']">
         <xsl:if test="not(foxml:digitalObject/foxml:datastream[@ID='METHODMAP' or @ID='DS-COMPOSITE-MODEL'])">
-          <!--xsl:choose>
-            <xsl:when test="starts-with($PID,'atm')">
-              <xsl:call-template name="fjm-atm">
-                <xsl:with-param name="pid" select="$PID"/>
-              </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise-->
               <xsl:apply-templates select="/foxml:digitalObject" mode="activeFedoraObject">
                 <xsl:with-param name="PID" select="$PID"/>
               </xsl:apply-templates>
-            <!--/xsl:otherwise>
-          </xsl:choose-->
         </xsl:if>
       </xsl:if>
     </add>
@@ -118,8 +94,9 @@
           <xsl:value-of select="text()"/>
         </field>
       </xsl:for-each>
+      
+      
       <xsl:for-each select="foxml:datastream[@ID='TAGS']/foxml:datastreamVersion[last()]/foxml:xmlContent//tag">
-            <!--<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent//tag">-->
         <field>
           <xsl:attribute name="name">tag</xsl:attribute>
           <xsl:value-of select="text()"/>
@@ -227,9 +204,48 @@
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
+  
+  <xsl:template name="tei">
 
-  <!-- vra fields -->
-  <!--xsl:template match="vra:vra/vra:vrawork/vra:inscriptionSet/vra:inscription/vra:text[@type='signature']">
-  </xsl:template-->
+	<xsl:variable name="PROT">http</xsl:variable>
+	<xsl:variable name="FEDORAUSERNAME">fedoraAdmin</xsl:variable>
+	<xsl:variable name="FEDORAPASSWORD">nothingtoseeheremovealong</xsl:variable>
+	<xsl:variable name="HOST">mr.host.bsc</xsl:variable>
+	<xsl:variable name="PORT">8080</xsl:variable>
+	<xsl:variable name="TEI"
+	select="document(concat($PROT, '://', $FEDORAUSERNAME, ':', $FEDORAPASSWORD, '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', 'TEI', '/content'))" />
+	
+	<!-- surname -->
+	<xsl:for-each select="$TEI//tei:surname[text()]">
+	<field>
+	<xsl:attribute name="name">
+	            <xsl:value-of select="concat('tei_', 'surname_s')" />
+	            </xsl:attribute>
+	<xsl:value-of select="normalize-space(text())" />
+	</field>
+	</xsl:for-each>
+	
+	<!-- place name -->
+	<xsl:for-each select="$TEI//tei:placeName/*[text()]">
+	<field>
+	<xsl:attribute name="name">
+	            <xsl:value-of select="concat('tei_', 'placeName_s')" />
+	          </xsl:attribute>
+	<xsl:value-of select="normalize-space(text())" />
+	</field>
+	</xsl:for-each>
+	
+	
+	<!-- organization name -->
+	<xsl:for-each select="$TEI//tei:orgName[text()]">
+	<field>
+	<xsl:attribute name="name">
+	          <xsl:value-of select="concat('tei_', 'orgName_s')" />
+	        </xsl:attribute>
+	<xsl:value-of select="normalize-space(text())" />
+	</field>
+	</xsl:for-each>
 
+   </xsl:template>
+  
 </xsl:stylesheet>
