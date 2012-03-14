@@ -7,7 +7,7 @@
   xmlns:vra="http://www.vraweb.org/vracore4.htm">
   <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
 
-  <xsl:template match="vra:vra" name="index_vra" mode="default">
+  <xsl:template match="vra:vra" name="index_vra">
     <xsl:param name="prefix">vra_</xsl:param>
     <xsl:param name="suffix">_ms</xsl:param>
 

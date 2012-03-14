@@ -21,7 +21,9 @@
   xmlns:xalan="http://xml.apache.org/xalan"
   xmlns:mods="http://www.loc.gov/mods/v3"
   xmlns:eaccpf="urn:isbn:1-931666-33-4"
-  xmlns:xlink="http://www.w3.org/1999/xlink">
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:tei="http://www.tei-c.org/ns/1.0">
+  
   <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
 
   <xsl:param name="REPOSITORYNAME" select="repositoryName"/>
@@ -43,9 +45,9 @@
      while the PID IndexField is optional.
 -->
 
-  <xsl:include href="islandora_transforms/modsToSolr.xslt"/>
-  <xsl:include href="islandora_transforms/eaccpfToSolr.xslt"/>
-  <xsl:include href="islandora_transforms/vracoreToSolr.xslt"/>
+  <xsl:include href="./islandora_transforms/modsToSolr.xslt"/>
+  <xsl:include href="./islandora_transforms/eaccpfToSolr.xslt"/>
+  <xsl:include href="./islandora_transforms/vracoreToSolr.xslt"/>
 
   <xsl:template match="/">
     <add>
@@ -69,7 +71,8 @@
       </field>
 
       <xsl:apply-templates select="foxml:objectProperties/foxml:property"/>
-
+        <!-- call the tei template -->
+<!-- <xsl:call-template name="tei" />-->
       <!-- These are two separate dc schemas, only one will every fire at a time -->
       <!-- index DC -->
       <xsl:apply-templates mode="simple_set" select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/*">
@@ -128,9 +131,12 @@
       </xsl:apply-templates>
         <!--********************************** End BLAST ******************************************-->
 
-        <!-- Names and Roles -->
+        <!-- THIS IS SPARTA!!!  -->
+        <!-- This crazy line trys to call a matching template on every datastream id so that you only have to edite included files-->
       <xsl:apply-templates select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent"/>
 
+<!-- this is an example of using template modes to have multiple ways of indexing the same stream -->
+<!-- 
       <xsl:apply-templates select="foxml:datastream[@ID='EAC-CPF']/foxml:datastreamVersion[last()]/foxml:xmlContent//eaccpf:eac-cpf">
         <xsl:with-param name="pid" select="$PID"/>
       </xsl:apply-templates>
@@ -139,7 +145,10 @@
         <xsl:with-param name="pid" select="$PID"/>
         <xsl:with-param name="suffix">_s</xsl:with-param>
       </xsl:apply-templates>
-
+      
+-->
+      
+      
       <xsl:for-each select="foxml:datastream[@ID][foxml:datastreamVersion[last()]]">
           <xsl:choose>
             <!-- Don't bother showing some... -->
@@ -149,7 +158,7 @@
             <xsl:when test="@ID='MODS'"></xsl:when>
             <xsl:when test="@ID='RIS'"></xsl:when>
             <xsl:when test="@ID='SWF'"></xsl:when>
-            <xsl:otherwise>
+            <xsl:otherwise> <!-- records that there is a datastream ??-->>
               <field name="fedora_datastreams_ms">
                 <xsl:value-of select="@ID"/>
               </field>

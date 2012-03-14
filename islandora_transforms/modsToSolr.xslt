@@ -5,7 +5,7 @@
   xmlns:mods="http://www.loc.gov/mods/v3"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
-  <xsl:template match="mods:mods" name="index_mods" mode="default">
+  <xsl:template match="mods:mods" name="index_mods">
     <xsl:param name="prefix">mods_</xsl:param>
     <xsl:param name="suffix">_ms</xsl:param>
 
