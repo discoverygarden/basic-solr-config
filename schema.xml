@@ -279,6 +279,11 @@
    <dynamicField name="*_l"  type="slong"   indexed="true"  stored="true"/>
    <dynamicField name="*_t"  type="text"    indexed="true"  stored="true"/>
    <dynamicField name="*_mt"  type="text"    indexed="true"  stored="true" multiValued="true"/>
+   <!-- Solr must parse through a stored, indexed field to construct highlighted snippets around search terms.  
+   The three options, termVectors, termPositions and termOffsets help Solr determine the locations in stored 
+   fields of the search parameters, so it doesn't have to scan through a complete stored field each time snippets are requested.  
+   This is of particular concern with large full-text (OCR) fields. -->
+   <dynamicField name="*_hlt" type="text"    indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
    <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
    <dynamicField name="*_f"  type="sfloat"  indexed="true"  stored="true"/>
    <dynamicField name="*_d"  type="sdouble" indexed="true"  stored="true"/>
