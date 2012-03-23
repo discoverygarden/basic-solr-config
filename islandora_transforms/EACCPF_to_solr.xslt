@@ -6,7 +6,7 @@
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
   <xsl:template match="eaccpf:eac-cpf">
-	<xsl:param name="pid"/>
+	<xsl:param name="pid" select="$PID"/>
 	<xsl:param name="dsid" select="'EAC-CPF'"/>
 	<xsl:param name="prefix" select="'eaccpf_'"/>
 	<xsl:param name="suffix" select="'_et'"/> <!-- 'edged' (edge n-gram) text, for auto-completion -->

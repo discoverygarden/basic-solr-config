@@ -22,7 +22,7 @@
   
   <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
   
-  <!-- should explore what gets passed into this -->
+  <!-- should verify what gets passed into this -->
   <xsl:param name="REPOSITORYNAME" select="repositoryName"/>
   <xsl:param name="FEDORASOAP" select="repositoryName"/>
   <xsl:param name="FEDORAUSER" select="repositoryUserName"/>
@@ -30,7 +30,7 @@
   <xsl:param name="TRUSTSTOREPATH" select="repositoryName"/>
   <xsl:param name="TRUSTSTOREPASS" select="repositoryName"/>
   
-  <!-- this was used by tei -->
+  <!-- These values are accessable in included xslts-->
   <xsl:variable name="PROT">http</xsl:variable>
   <xsl:variable name="FEDORAUSERNAME">fedoraAdmin</xsl:variable>
   <xsl:variable name="FEDORAPASSWORD">nothingtoseeheremovealong</xsl:variable>
@@ -96,8 +96,9 @@
       <xsl:apply-templates select="foxml:objectProperties/foxml:property"/>
       <xsl:apply-templates select="/foxml:digitalObject"/>
       
-        <!-- THIS IS SPARTA!!!  -->
-        <!-- This crazy line trys to call a matching template on every datastream id so that you only have to edit included files-->
+     <!-- THIS IS SPARTA!!!  -->
+     <!-- This crazy line trys to call a matching template on every datastream id so that you only have to edit included files-->
+     <!-- managed datastreams may need a different callout -->   
      <xsl:apply-templates select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent"/>
 
 <!-- this is an example of using template modes to have multiple ways of indexing the same stream -->

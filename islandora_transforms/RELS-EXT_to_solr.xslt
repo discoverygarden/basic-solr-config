@@ -9,9 +9,7 @@
   <xsl:template match="foxml:datastream[@ID='RELS-EXT']/foxml:datastreamVersion[last()]/foxml:xmlContent" name='index_RELS-EXT'>
     <xsl:param name="prefix">rels_</xsl:param>
     <xsl:param name="suffix">_s</xsl:param>
-<field>
-<xsl:value-of select="$PID"/>
-</field>
+
     <xsl:for-each select=".//rdf:Description/*[@rdf:resource]">
       <field>
         <xsl:attribute name="name">
