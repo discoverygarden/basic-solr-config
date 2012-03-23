@@ -402,7 +402,7 @@
         <xsl:value-of select="text()"/>
       </field>
     </xsl:for-each>
-
+<!--************************************ END MODS subset for Bibliographies ******************************************-->
   </xsl:template>
 
 </xsl:stylesheet>
