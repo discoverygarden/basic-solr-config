@@ -30,7 +30,7 @@
   <xsl:param name="TRUSTSTOREPATH" select="repositoryName"/>
   <xsl:param name="TRUSTSTOREPASS" select="repositoryName"/>
   
-  <!-- These values are accessable in included xslts-->
+  <!-- These values are accessible in included xslts-->
   <xsl:variable name="PROT">http</xsl:variable>
   <xsl:variable name="FEDORAUSERNAME">fedoraAdmin</xsl:variable>
   <xsl:variable name="FEDORAPASSWORD">nothingtoseeheremovealong</xsl:variable>
