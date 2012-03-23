@@ -2,8 +2,9 @@
 <!-- Basic MODS -->
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:mods="http://www.loc.gov/mods/v3"
-  xmlns:xlink="http://www.w3.org/1999/xlink">
+     exclude-result-prefixes="mods">
 
   <xsl:template match="mods:mods" name="index_mods">
     <xsl:param name="prefix">mods_</xsl:param>
@@ -135,13 +136,10 @@
       </field>
       <field>
         <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, 'rname_', text(), $suffix)"/>
+          <xsl:value-of select="concat($prefix, 'reversed_name_', text(), $suffix)"/>
         </xsl:attribute>
         <xsl:for-each select="../../mods:namePart[not(@type='given')]">
           <xsl:value-of select="text()"/>
-          <xsl:if test="@type='given'">
-            <xsl:text> </xsl:text>
-          </xsl:if>
         </xsl:for-each>
         <xsl:for-each select="../../mods:namePart[@type='given']">
           <xsl:if test="position()=1">

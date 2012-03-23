@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: demoFoxmlToLucene.xslt 5734 2006-11-28 11:20:15Z gertsp $ -->
+<!-- We need all lower level namespaces to be declared here for exclude-result-prefixes attributes
+     to be effective -->
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:exts="xalan://dk.defxws.fedoragsearch.server.GenericOperationsImpl"
-  xmlns:islandora-exts="xalan://ca.upei.roblib.DataStreamForXSLT"
-    		exclude-result-prefixes="exts"
   xmlns:zs="http://www.loc.gov/zing/srw/"
   xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+  xmlns:rel="info:fedora/fedora-system:def/relations-external#"
+  xmlns:fedora-model="info:fedora/fedora-system:def/model#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
-  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   xmlns:fedora="info:fedora/fedora-system:def/relations-external#"
-  xmlns:rel="info:fedora/fedora-system:def/relations-external#"
   xmlns:dwc="http://rs.tdwg.org/dwc/xsd/simpledarwincore/"
-  xmlns:fedora-model="info:fedora/fedora-system:def/model#"
   xmlns:uvalibdesc="http://dl.lib.virginia.edu/bin/dtd/descmeta/descmeta.dtd"
   xmlns:uvalibadmin="http://dl.lib.virginia.edu/bin/admin/admin.dtd/"
   xmlns:res="http://www.w3.org/2001/sw/DataAccess/rf1/result"
-  xmlns:xalan="http://xml.apache.org/xalan"
-  xmlns:mods="http://www.loc.gov/mods/v3"
   xmlns:eaccpf="urn:isbn:1-931666-33-4"
   xmlns:xlink="http://www.w3.org/1999/xlink"
-  xmlns:tei="http://www.tei-c.org/ns/1.0">
+  xmlns:tei="http://www.tei-c.org/ns/1.0"
+  xmlns:mods="http://www.loc.gov/mods/v3">
   
   <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
-
+  
+  <!-- should explore what gets passed into this -->
   <xsl:param name="REPOSITORYNAME" select="repositoryName"/>
   <xsl:param name="FEDORASOAP" select="repositoryName"/>
   <xsl:param name="FEDORAUSER" select="repositoryUserName"/>
   <xsl:param name="FEDORAPASS" select="repositoryPassword"/>
   <xsl:param name="TRUSTSTOREPATH" select="repositoryName"/>
   <xsl:param name="TRUSTSTOREPASS" select="repositoryName"/>
+  
+  <!-- this was used by tei -->
+  <xsl:variable name="PROT">http</xsl:variable>
+  <xsl:variable name="FEDORAUSERNAME">fedoraAdmin</xsl:variable>
+  <xsl:variable name="FEDORAPASSWORD">nothingtoseeheremovealong</xsl:variable>
+  <xsl:variable name="HOST">mr.host.bsc</xsl:variable>
+  <xsl:variable name="PORT">8080</xsl:variable>
   <xsl:variable name="PID" select="/foxml:digitalObject/@PID"/>
 
 
@@ -45,95 +49,56 @@
      while the PID IndexField is optional.
 -->
 
-  <xsl:include href="./islandora_transforms/modsToSolr.xslt"/>
-  <xsl:include href="./islandora_transforms/eaccpfToSolr.xslt"/>
-  <xsl:include href="./islandora_transforms/vracoreToSolr.xslt"/>
+<!-- These includes are for transformations on individual datastreams;
+     disable the ones you do not want to perform -->
+  <xsl:include href="./islandora_transforms/inline_XML_to_one_solr_field.xslt"/>
+  <xsl:include href="./islandora_transforms/inline_XML_text_nodes_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/RELS-EXT_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/RELS-INT_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/FOXML_properties_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/datastream_id_to_solr.xslt"/>
+  
+  
+  <xsl:include href="./islandora_transforms/MODS_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/EACCPF_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/VRAcore_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/rights_metadata_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/tags_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/TEI_to_solr.xslt"/>
+  <xsl:include href="./islandora_transforms/OCR_to_solr.xslt"/>
 
+<!-- Decide which objects to modify the index of -->
   <xsl:template match="/">
-    <add>
-      <!-- The following allows only active FedoraObjects to be indexed. -->
-      <xsl:if test="foxml:digitalObject/foxml:objectProperties/foxml:property[@NAME='info:fedora/fedora-system:def/model#state' and @VALUE='Active']">
-        <xsl:if test="not(foxml:digitalObject/foxml:datastream[@ID='METHODMAP' or @ID='DS-COMPOSITE-MODEL'])">
-              <xsl:apply-templates select="/foxml:digitalObject" mode="activeFedoraObject">
-                <xsl:with-param name="PID" select="$PID"/>
-              </xsl:apply-templates>
-        </xsl:if>
-      </xsl:if>
-    </add>
+	  <update>
+	      <!-- The following allows only active and data oriented FedoraObjects to be indexed. -->
+	      <xsl:if test="foxml:digitalObject/foxml:objectProperties/foxml:property[@NAME='info:fedora/fedora-system:def/model#state' and @VALUE='Active']">
+	        <xsl:if test="not(foxml:digitalObject/foxml:datastream[@ID='METHODMAP' or @ID='DS-COMPOSITE-MODEL'])">
+	            <add>
+	              <xsl:apply-templates select="/foxml:digitalObject" mode="activeFedoraObject">
+	                <xsl:with-param name="PID" select="$PID"/>
+	              </xsl:apply-templates>
+	            </add>
+	        </xsl:if>
+	      </xsl:if>
+	  </update>
   </xsl:template>
 
+<!-- Index an object -->
   <xsl:template match="/foxml:digitalObject" mode="activeFedoraObject">
     <xsl:param name="PID"/>
 
     <doc>
+    <!-- put the object pid into a field -->
       <field name="PID" boost="2.5">
         <xsl:value-of select="$PID"/>
       </field>
 
       <xsl:apply-templates select="foxml:objectProperties/foxml:property"/>
-        <!-- call the tei template -->
-<!-- <xsl:call-template name="tei" />-->
-      <!-- These are two separate dc schemas, only one will every fire at a time -->
-      <!-- index DC -->
-      <xsl:apply-templates mode="simple_set" select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/*">
-        <xsl:with-param name="prefix">dc.</xsl:with-param>
-        <xsl:with-param name="suffix"></xsl:with-param>
-      </xsl:apply-templates>
-      <!-- index simpleDC -->
-      <xsl:apply-templates mode="simple_set" select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/dc:elementContainer/*">
-        <xsl:with-param name="prefix">dc.</xsl:with-param>
-        <xsl:with-param name="suffix"></xsl:with-param>
-      </xsl:apply-templates>
-
-      <xsl:for-each select="foxml:datastream[@ID='RIGHTSMETADATA']/foxml:datastreamVersion[last()]/foxml:xmlContent//access/human/person">
-        <field>
-          <xsl:attribute name="name">access.person</xsl:attribute>
-          <xsl:value-of select="text()"/>
-        </field>
-      </xsl:for-each>
-      <xsl:for-each select="foxml:datastream[@ID='RIGHTSMETADATA']/foxml:datastreamVersion[last()]/foxml:xmlContent//access/human/group">
-        <field>
-          <xsl:attribute name="name">access.group</xsl:attribute>
-          <xsl:value-of select="text()"/>
-        </field>
-      </xsl:for-each>
+      <xsl:apply-templates select="/foxml:digitalObject"/>
       
-      
-      <xsl:for-each select="foxml:datastream[@ID='TAGS']/foxml:datastreamVersion[last()]/foxml:xmlContent//tag">
-        <field>
-          <xsl:attribute name="name">tag</xsl:attribute>
-          <xsl:value-of select="text()"/>
-        </field>
-        <field>
-          <xsl:attribute name="name">tagUser</xsl:attribute>
-          <xsl:value-of select="@creator"/>
-        </field>
-      </xsl:for-each>
-
-      <!-- Index the Rels-ext (using match="rdf:RDF") -->
-      <xsl:apply-templates select="foxml:datastream[@ID='RELS-EXT']/foxml:datastreamVersion[last()]/foxml:xmlContent/rdf:RDF">
-        <xsl:with-param name="prefix">rels_</xsl:with-param>
-        <xsl:with-param name="suffix">_ms</xsl:with-param>
-      </xsl:apply-templates>
-
-        <!--********************************************Darwin Core**********************************************************************-->
-      <xsl:apply-templates mode="simple_set" select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/dwc:SimpleDarwinRecordSet/dwc:SimpleDarwinRecord/*[normalize-space(text())]">
-        <xsl:with-param name="prefix">dwc.</xsl:with-param>
-        <xsl:with-param name="suffix"></xsl:with-param>
-      </xsl:apply-templates>
-        <!--***************************************** END Darwin Core ******************************************-->
-
-        <!--************************************ BLAST ******************************************-->
-        <!-- Blast -->
-      <xsl:apply-templates mode="simple_set" select="foxml:datastream[@ID='BLAST']/foxml:datastreamVersion[last()]/foxml:xmlContent//Hit/Hit_hsps/Hsp/*[normalize-space(text())]">
-        <xsl:with-param name="prefix">blast.</xsl:with-param>
-        <xsl:with-param name="suffix"></xsl:with-param>
-      </xsl:apply-templates>
-        <!--********************************** End BLAST ******************************************-->
-
         <!-- THIS IS SPARTA!!!  -->
-        <!-- This crazy line trys to call a matching template on every datastream id so that you only have to edite included files-->
-      <xsl:apply-templates select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent"/>
+        <!-- This crazy line trys to call a matching template on every datastream id so that you only have to edit included files-->
+     <xsl:apply-templates select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent"/>
 
 <!-- this is an example of using template modes to have multiple ways of indexing the same stream -->
 <!-- 
@@ -147,114 +112,11 @@
       </xsl:apply-templates>
       
 -->
-      
-      
-      <xsl:for-each select="foxml:datastream[@ID][foxml:datastreamVersion[last()]]">
-          <xsl:choose>
-            <!-- Don't bother showing some... -->
-            <xsl:when test="@ID='AUDIT'"></xsl:when>
-            <xsl:when test="@ID='DC'"></xsl:when>
-            <xsl:when test="@ID='ENDNOTE'"></xsl:when>
-            <xsl:when test="@ID='MODS'"></xsl:when>
-            <xsl:when test="@ID='RIS'"></xsl:when>
-            <xsl:when test="@ID='SWF'"></xsl:when>
-            <xsl:otherwise> <!-- records that there is a datastream ??-->>
-              <field name="fedora_datastreams_ms">
-                <xsl:value-of select="@ID"/>
-              </field>
-            </xsl:otherwise>
-          </xsl:choose>
-      </xsl:for-each>
+
     </doc>
   </xsl:template>
-
-  <xsl:template match="foxml:property">
-    <xsl:param name="prefix">fgs_</xsl:param>
-    <xsl:param name="suffix">_s</xsl:param>
-    <field>
-      <xsl:attribute name="name">
-        <xsl:value-of select="concat($prefix, substring-after(@NAME,'#'), $suffix)"/>
-      </xsl:attribute>
-      <xsl:value-of select="@VALUE"/>
-    </field>
-  </xsl:template>
-
-  <xsl:template match="rdf:RDF">
-    <xsl:param name="prefix">rels_</xsl:param>
-    <xsl:param name="suffix">_s</xsl:param>
-
-    <xsl:for-each select=".//rdf:Description/*[@rdf:resource]">
-      <field>
-        <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, local-name(), '_uri', $suffix)"/>
-        </xsl:attribute>
-        <xsl:value-of select="@rdf:resource"/>
-      </field>
-    </xsl:for-each>
-    <xsl:for-each select=".//rdf:Description/*[not(@rdf:resource)][normalize-space(text())]">
-      <field>
-        <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, local-name(), '_literal', $suffix)"/>
-        </xsl:attribute>
-        <xsl:value-of select="text()"/>
-      </field>
-    </xsl:for-each>
-  </xsl:template>
-
-  <!-- Create fields for the set of selected elements, named according to the 'local-name' and containing the 'text' -->
-  <xsl:template match="*" mode="simple_set">
-    <xsl:param name="prefix">changeme_</xsl:param>
-    <xsl:param name="suffix">_t</xsl:param>
-
-    <field>
-      <xsl:attribute name="name">
-        <xsl:value-of select="concat($prefix, local-name(), $suffix)"/>
-      </xsl:attribute>
-      <xsl:value-of select="text()"/>
-    </field>
-  </xsl:template>
   
-  <xsl:template name="tei">
-
-	<xsl:variable name="PROT">http</xsl:variable>
-	<xsl:variable name="FEDORAUSERNAME">fedoraAdmin</xsl:variable>
-	<xsl:variable name="FEDORAPASSWORD">nothingtoseeheremovealong</xsl:variable>
-	<xsl:variable name="HOST">mr.host.bsc</xsl:variable>
-	<xsl:variable name="PORT">8080</xsl:variable>
-	<xsl:variable name="TEI"
-	select="document(concat($PROT, '://', $FEDORAUSERNAME, ':', $FEDORAPASSWORD, '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', 'TEI', '/content'))" />
-	
-	<!-- surname -->
-	<xsl:for-each select="$TEI//tei:surname[text()]">
-	<field>
-	<xsl:attribute name="name">
-	            <xsl:value-of select="concat('tei_', 'surname_s')" />
-	            </xsl:attribute>
-	<xsl:value-of select="normalize-space(text())" />
-	</field>
-	</xsl:for-each>
-	
-	<!-- place name -->
-	<xsl:for-each select="$TEI//tei:placeName/*[text()]">
-	<field>
-	<xsl:attribute name="name">
-	            <xsl:value-of select="concat('tei_', 'placeName_s')" />
-	          </xsl:attribute>
-	<xsl:value-of select="normalize-space(text())" />
-	</field>
-	</xsl:for-each>
-	
-	
-	<!-- organization name -->
-	<xsl:for-each select="$TEI//tei:orgName[text()]">
-	<field>
-	<xsl:attribute name="name">
-	          <xsl:value-of select="concat('tei_', 'orgName_s')" />
-	        </xsl:attribute>
-	<xsl:value-of select="normalize-space(text())" />
-	</field>
-	</xsl:for-each>
-
-   </xsl:template>
+  <!-- This prevents text from just being printed to the doc without field elements JUST TRY COMMENTING IT OUT -->
+  <xsl:template match="text()"/>
   
 </xsl:stylesheet>
