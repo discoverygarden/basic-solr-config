@@ -7,7 +7,7 @@
   
   <xsl:template match="/foxml:digitalObject" name="index_object_datastreams">
         <!-- records that there is a datastream -->
-      <xsl:for-each select="foxml:datastream[@ID][foxml:datastreamVersion[last()]]">
+      <xsl:for-each select="foxml:datastream">
         <field name="fedora_datastreams_ms">
             <xsl:value-of select="@ID"/>
         </field>

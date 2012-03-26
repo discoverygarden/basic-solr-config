@@ -50,10 +50,12 @@
 -->
 
 <!-- These includes are for transformations on individual datastreams;
-     disable the ones you do not want to perform -->
+     disable the ones you do not want to perform;
+     the paths may need to be updated if the standard install was not followed
+     TODO: look into a way to make these paths relative-->
   <xsl:include href="./islandora_transforms/inline_XML_to_one_solr_field.xslt"/>
   <xsl:include href="./islandora_transforms/inline_XML_text_nodes_to_solr.xslt"/>
-  <xsl:include href="./islandora_transforms/RELS-EXT_to_solr.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/RELS-EXT_to_solr.xslt"/>
   <xsl:include href="./islandora_transforms/RELS-INT_to_solr.xslt"/>
   <xsl:include href="./islandora_transforms/FOXML_properties_to_solr.xslt"/>
   <xsl:include href="./islandora_transforms/datastream_id_to_solr.xslt"/>
@@ -92,14 +94,31 @@
       <field name="PID" boost="2.5">
         <xsl:value-of select="$PID"/>
       </field>
-
+<!-- 
       <xsl:apply-templates select="foxml:objectProperties/foxml:property"/>
       <xsl:apply-templates select="/foxml:digitalObject"/>
-      
+-->
      <!-- THIS IS SPARTA!!!  -->
-     <!-- This crazy line trys to call a matching template on every datastream id so that you only have to edit included files-->
-     <!-- managed datastreams may need a different callout -->   
-     <xsl:apply-templates select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent"/>
+     <!-- These lines call a matching template on every datastream id so that you only have to edit included files-->
+     <!-- handles inline and managed datastreams -->
+     <!-- The datastream level element is used for matching, as a byproduct 
+        all the versions of the datastream are passed to templates
+        making it imperative to use content parameter for xpaths in templates -->
+     <!-- should do something about mime type filtering -->
+    <xsl:for-each select="foxml:datastream">
+		    <xsl:choose>
+		        <xsl:when test="@CONTROL_GROUP='X'">
+		           <xsl:apply-templates select=".">
+		              <xsl:with-param name="content" select="foxml:datastreamVersion[last()]/foxml:xmlContent"/>
+		           </xsl:apply-templates>
+		        </xsl:when>
+		        <xsl:otherwise>
+		           <xsl:apply-templates>
+			          <xsl:with-param name="content" select="document(concat($PROT, '://', $FEDORAUSERNAME, ':', $FEDORAPASSWORD, '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', @ID, '/content'))"/>
+			       </xsl:apply-templates>
+		        </xsl:otherwise>
+		    </xsl:choose>
+    </xsl:for-each>
 
 <!-- this is an example of using template modes to have multiple ways of indexing the same stream -->
 <!-- 

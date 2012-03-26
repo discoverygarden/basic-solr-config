@@ -6,11 +6,16 @@
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      exclude-result-prefixes="rdf">
   
-  <xsl:template match="foxml:datastream[@ID='RELS-EXT']/foxml:datastreamVersion[last()]/foxml:xmlContent" name='index_RELS-EXT'>
-    <xsl:param name="prefix">rels_</xsl:param>
-    <xsl:param name="suffix">_s</xsl:param>
+  <xsl:template match="foxml:datastream[@ID='RELS-EXT']" name='index_RELS-EXT'>
+    <xsl:param name="content"/>
+    <xsl:param name="prefix">RELS_EXT</xsl:param>
+    <xsl:param name="suffix">_ms</xsl:param>
+    
+        <field name='CONTENT'>
+           <xsl:copy-of select="."/>
+        </field>
 
-    <xsl:for-each select=".//rdf:Description/*[@rdf:resource]">
+    <xsl:for-each select="$content//rdf:Description/*[@rdf:resource]">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), '_uri', $suffix)"/>
@@ -18,7 +23,7 @@
         <xsl:value-of select="@rdf:resource"/>
       </field>
     </xsl:for-each>
-    <xsl:for-each select=".//rdf:Description/*[not(@rdf:resource)][normalize-space(text())]">
+    <xsl:for-each select="$content//rdf:Description/*[not(@rdf:resource)][normalize-space(text())]">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), '_literal', $suffix)"/>

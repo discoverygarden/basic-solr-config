@@ -7,8 +7,8 @@
      exclude-result-prefixes="rdf">
   
   <xsl:template match="foxml:datastream[@ID='RELS-INT']/foxml:datastreamVersion[last()]/foxml:xmlContent" name='index_RELS-INT'>
-    <xsl:param name="prefix">rels_</xsl:param>
-    <xsl:param name="suffix">_s</xsl:param>
+    <xsl:param name="prefix">RELS_INT</xsl:param>
+    <xsl:param name="suffix">_ms</xsl:param>
 
     <xsl:for-each select=".//rdf:Description/*[@rdf:resource]">
       <field>
