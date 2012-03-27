@@ -5,9 +5,10 @@
   xmlns:foxml="info:fedora/fedora-system:def/foxml#"
      exclude-result-prefixes="foxml">
 
-    <xsl:template match="foxml:datastream[@ID='TAGS']/foxml:datastreamVersion[last()]/foxml:xmlContent" name='index_tags'>
+    <xsl:template match="foxml:datastream[@ID='TAGS']/foxml:datastreamVersion[last()]" name='index_tags'>
+        <xsl:param name="content"/>
 
-      <xsl:for-each select="//tag">
+      <xsl:for-each select="$content//tag">
         <field>
           <xsl:attribute name="name">tag</xsl:attribute>
           <xsl:value-of select="text()"/>

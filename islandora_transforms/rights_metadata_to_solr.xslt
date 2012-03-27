@@ -5,19 +5,20 @@
   xmlns:foxml="info:fedora/fedora-system:def/foxml#"
      exclude-result-prefixes="foxml">
     
-    <xsl:template match="foxml:datastream[@ID='RIGHTSMETADATA']/foxml:datastreamVersion[last()]/foxml:xmlContent" name='index_rights_metadata'>
-      <xsl:for-each select="//access/human/person">
-        <field>
-          <xsl:attribute name="name">access.person</xsl:attribute>
-          <xsl:value-of select="text()"/>
-        </field>
-      </xsl:for-each>
-      <xsl:for-each select="//access/human/group">
-        <field>
-          <xsl:attribute name="name">access.group</xsl:attribute>
-          <xsl:value-of select="text()"/>
-        </field>
-      </xsl:for-each>
+    <xsl:template match="foxml:datastream[@ID='RIGHTSMETADATA']/foxml:datastreamVersion[last()]" name='index_rights_metadata'>
+        <xsl:param name="content"/>
+	    <xsl:for-each select="$content//access/human/person">
+            <field>
+                <xsl:attribute name="name">access.person</xsl:attribute>
+                <xsl:value-of select="text()"/>
+            </field>
+	    </xsl:for-each>
+	    <xsl:for-each select="$content//access/human/group">
+	       <field>
+	           <xsl:attribute name="name">access.group</xsl:attribute>
+	           <xsl:value-of select="text()"/>
+	       </field>
+	    </xsl:for-each>
     </xsl:template>
     
 </xsl:stylesheet>
