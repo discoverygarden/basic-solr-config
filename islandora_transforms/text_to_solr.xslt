@@ -15,10 +15,18 @@
     [@ID='OCR'or @ID='ocr'  or @ID='TEXT' or @ID='text' or @ID='full_text' or @ID='FULL_TEXT' or @ID='fullText']
     
     /foxml:datastreamVersion[last()]" name="index_text">
+    
+    
        <!-- <xsl:param name="content"/> -->
-        <field name="OCR_t">
+        <field>
+        
+            <xsl:attribute name="name">
+              <xsl:value-of select="concat(../@ID, '_t')"/>
+            </xsl:attribute>
+            
             <!--<xsl:value-of select="$content"/>-->
             <xsl:value-of select="normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, ../@ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS))"/>
+        
         </field>
         
     </xsl:template>
