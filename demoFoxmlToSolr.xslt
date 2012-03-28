@@ -72,23 +72,28 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/OCR_to_solr.xslt"/>
 
 <!-- Decide which objects to modify the index of -->
-  <xsl:template match="/">
-	  <update>
-	      <!-- The following allows only active and data oriented FedoraObjects to be indexed. -->
-	      <xsl:if test="foxml:digitalObject/foxml:objectProperties/foxml:property[@NAME='info:fedora/fedora-system:def/model#state' and @VALUE='Active']">
+    <xsl:template match="/">
+	    <update>
+	        <!-- The following allows only active and data oriented FedoraObjects to be indexed. -->
 	        <xsl:if test="not(foxml:digitalObject/foxml:datastream[@ID='METHODMAP' or @ID='DS-COMPOSITE-MODEL'])">
-	            <add>
-	              <xsl:apply-templates select="/foxml:digitalObject" mode="activeFedoraObject">
-	                <xsl:with-param name="PID" select="$PID"/>
-	              </xsl:apply-templates>
-	            </add>
+	            <xsl:choose>
+	                <xsl:when test="foxml:digitalObject/foxml:objectProperties/foxml:property[@NAME='info:fedora/fedora-system:def/model#state' and @VALUE='Active']">
+	                    <add>
+	                        <xsl:apply-templates select="/foxml:digitalObject" mode="indexFedoraObject">
+	                            <xsl:with-param name="PID" select="$PID"/>
+	                        </xsl:apply-templates>
+	                    </add>
+	                </xsl:when>
+	                <xsl:otherwise>
+	                    <xsl:apply-templates select="/foxml:digitalObject" mode="unindexFedoraObject"/>
+	                </xsl:otherwise>
+	            </xsl:choose>
 	        </xsl:if>
-	      </xsl:if>
-	  </update>
-  </xsl:template>
+	    </update>
+    </xsl:template>
 
 <!-- Index an object -->
-  <xsl:template match="/foxml:digitalObject" mode="activeFedoraObject">
+  <xsl:template match="/foxml:digitalObject" mode="indexFedoraObject">
     <xsl:param name="PID"/>
 
     <doc>
@@ -143,6 +148,16 @@
 
     </doc>
   </xsl:template>
+
+<!-- Delete the solr doc of an object -->
+<xsl:template match="/foxml:digitalObject" mode="unindexFedoraObject">
+        <xsl:comment> name="PID" This is a hack, because the code requires that to be present </xsl:comment>
+        <delete>
+            <id>
+                <xsl:value-of select="$PID"/>
+            </id>
+        </delete>
+</xsl:template>
   
   <!-- This prevents text from just being printed to the doc without field elements JUST TRY COMMENTING IT OUT -->
   <xsl:template match="text()"/>
