@@ -101,10 +101,11 @@
       <field name="PID" boost="2.5">
         <xsl:value-of select="$PID"/>
       </field>
-<!-- 
+        
+        <!-- These templates are in the islandora_transforms -->
       <xsl:apply-templates select="foxml:objectProperties/foxml:property"/>
-      <xsl:apply-templates select="/foxml:digitalObject"/>
--->
+      <xsl:apply-templates select="/foxml:digitalObject" mode="index_object_datastreams"/>
+      
      <!-- THIS IS SPARTA!!!
         These lines call a matching template on every datastream id so that you only have to edit included files
         handles inline and managed datastreams

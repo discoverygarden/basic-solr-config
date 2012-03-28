@@ -5,7 +5,7 @@
   xmlns:foxml="info:fedora/fedora-system:def/foxml#"
      exclude-result-prefixes="foxml">
   
-  <xsl:template match="/foxml:digitalObject" name="index_object_datastreams">
+  <xsl:template match="/foxml:digitalObject" mode="index_object_datastreams">
         <!-- records that there is a datastream -->
       <xsl:for-each select="foxml:datastream">
         <field name="fedora_datastreams_ms">
