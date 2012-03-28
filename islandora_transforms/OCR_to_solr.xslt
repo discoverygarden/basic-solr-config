@@ -10,7 +10,11 @@
         will probably need to have many templates match and feed into one? 
         this file would then be re-named match all text datastreams
     -->
-    <xsl:template match="foxml:datastream[@ID='OCR']/foxml:datastreamVersion[last()]" name="index_text">
+    <xsl:template match="foxml:datastream
+    
+    [@ID='OCR'or @ID='ocr'  or @ID='TEXT' or @ID='text' or @ID='full_text' or @ID='FULL_TEXT' or @ID='fullText']
+    
+    /foxml:datastreamVersion[last()]" name="index_text">
        <!-- <xsl:param name="content"/> -->
         <field name="OCR_t">
             <!--<xsl:value-of select="$content"/>-->
