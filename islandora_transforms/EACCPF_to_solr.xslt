@@ -5,33 +5,29 @@
   xmlns:eaccpf="urn:isbn:1-931666-33-4"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
-  <xsl:template match="eaccpf:eac-cpf">
+  <xsl:template match="foxml:datastream[@ID='EAC-CPF']/foxml:datastreamVersion[last()]" name="index_EAC-CPF">
         <xsl:param name="content"/>
-	<xsl:param name="pid" select="$PID"/>
-	<xsl:param name="dsid" select="'EAC-CPF'"/>
 	<xsl:param name="prefix" select="'eaccpf_'"/>
 	<xsl:param name="suffix" select="'_et'"/> <!-- 'edged' (edge n-gram) text, for auto-completion -->
 
-	<xsl:variable name="cpfDesc" select="eaccpf:cpfDescription"/>
+	<xsl:variable name="cpfDesc" select="$content//eaccpf:cpfDescription"/>
 	<xsl:variable name="identity" select="$cpfDesc/eaccpf:identity"/>
 	<xsl:variable name="name_prefix" select="concat($prefix, 'name_')"/>
+	
 	<!-- ensure that the primary is first -->
 	<xsl:apply-templates select="$identity/eaccpf:nameEntry[@localType='primary']">
-	  <xsl:with-param name="pid" select="$pid"/>
 	  <xsl:with-param name="prefix" select="$name_prefix"/>
 	  <xsl:with-param name="suffix" select="$suffix"/>
 	</xsl:apply-templates>
 
 	<!-- place alternates (non-primaries) later -->
 	<xsl:apply-templates select="$identity/eaccpf:nameEntry[not(@localType='primary')]">
-	  <xsl:with-param name="pid" select="$pid"/>
 	  <xsl:with-param name="prefix" select="$name_prefix"/>
 	  <xsl:with-param name="suffix" select="$suffix"/>
 	</xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="eaccpf:nameEntry">
-    <xsl:param name="pid"/>
     <xsl:param name="prefix">eaccpf_name_</xsl:param>
     <xsl:param name="suffix">_et</xsl:param>
 
@@ -65,10 +61,10 @@
       </xsl:attribute>
       <xsl:choose>
         <xsl:when test="@id">
-          <xsl:value-of select="concat($pid, '/', @id)"/>
+          <xsl:value-of select="concat($PID, '/', @id)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat($pid,'/name_position:', position())"/>
+          <xsl:value-of select="concat($PID,'/name_position:', position())"/>
         </xsl:otherwise>
       </xsl:choose>
     </field>

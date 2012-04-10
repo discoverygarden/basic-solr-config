@@ -125,7 +125,8 @@
 		        <!-- TODO: should do something about mime type filtering 
 			            text/plain should use the getDatastreamText extension because document will only work for xml docs
 			            xml files should use the document function
-			            other mimetypes should not be being sent -->
+			            other mimetypes should not be being sent 
+			            will this let us not use the content variable?-->
 		           <xsl:apply-templates select="foxml:datastreamVersion[last()]">
 			          <xsl:with-param name="content" select="document(concat($PROT, '://', $FEDORAUSERNAME, ':', $FEDORAPASSWORD, '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', @ID, '/content'))"/>
 			         <!-- <xsl:with-param name="content" select="normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS))"/> -->
