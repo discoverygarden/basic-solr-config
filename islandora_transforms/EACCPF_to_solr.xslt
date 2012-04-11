@@ -27,33 +27,37 @@
 	</xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="eaccpf:nameEntry">
+   <xsl:template match="eaccpf:nameEntry">
     <xsl:param name="prefix">eaccpf_name_</xsl:param>
     <xsl:param name="suffix">_et</xsl:param>
 
     <!-- fore/first name -->
-    <field>
-      <xsl:attribute name="name">
-        <xsl:value-of select="concat($prefix, 'given', $suffix)"/>
-      </xsl:attribute>
-      <xsl:choose>
-        <xsl:when test="part[@localType='middle']">
-          <xsl:value-of select="normalize-space(concat(eaccpf:part[@localType='forename'], ' ', eaccpf:part[@localType='middle']))"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="normalize-space(eaccpf:part[@localType='forename'])"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </field>
-
+    <xsl:for-each select="eaccpf:part[@localType='forename']">
+	    <field>
+	      <xsl:attribute name="name">
+	        <xsl:value-of select="concat($prefix, 'given', $suffix)"/>
+	      </xsl:attribute>
+	      <xsl:choose>
+	        <xsl:when test="eaccpf:part[@localType='middle']">
+	          <xsl:value-of select="normalize-space(concat(../eaccpf:part[@localType='forename'], ' ', ../eaccpf:part[@localType='middle']))"/>
+	        </xsl:when>
+	        <xsl:otherwise>
+	          <xsl:value-of select="normalize-space(../eaccpf:part[@localType='forename'])"/>
+	        </xsl:otherwise>
+	      </xsl:choose>
+	    </field>
+    </xsl:for-each>
+    
     <!-- sur/last name -->
-    <field>
-      <xsl:attribute name="name">
-        <xsl:value-of select="concat($prefix, 'family', $suffix)"/>
-      </xsl:attribute>
-      <xsl:value-of select="normalize-space(eaccpf:part[@localType='surname'])"/>
-    </field>
-
+    <xsl:for-each select="eaccpf:part[@localType='surname']">
+	    <field>
+	      <xsl:attribute name="name">
+	        <xsl:value-of select="concat($prefix, 'family', $suffix)"/>
+	      </xsl:attribute>
+	      <xsl:value-of select="normalize-space(../eaccpf:part[@localType='surname'])"/>
+	    </field>
+    </xsl:for-each>
+    
     <!-- id -->
     <field>
       <xsl:attribute name="name">
@@ -74,11 +78,21 @@
         <xsl:value-of select="concat($prefix, 'complete', $suffix)"/>
       </xsl:attribute>
       <xsl:choose>
-        <xsl:when test="normalize-space(part[@localType='middle'])">
+        <xsl:when test="normalize-space(eaccpf:part[@localType='fullname'])">
+          <xsl:value-of select="normalize-space(eaccpf:part)"/>
+        </xsl:when>
+        <xsl:when test="normalize-space(eaccpf:part[@localType='middle'])">
           <xsl:value-of select="normalize-space(concat(eaccpf:part[@localType='surname'], ', ', eaccpf:part[@localType='forename'], ' ', eaccpf:part[@localType='middle']))"/>
         </xsl:when>
-        <xsl:otherwise>
+        <xsl:when test="normalize-space(eaccpf:part[@localType='surname'])">
           <xsl:value-of select="normalize-space(concat(eaccpf:part[@localType='surname'], ', ', eaccpf:part[@localType='forename']))"/>
+        </xsl:when>
+        <xsl:when test="normalize-space(eaccpf:part[@localType='forename'])">
+          <xsl:value-of select="normalize-space(eaccpf:part[@localType='forename'])"/>
+        </xsl:when>
+        <!-- sometimes there is no localType -->
+        <xsl:otherwise>
+          <xsl:value-of select="normalize-space(eaccpf:part)"/>
         </xsl:otherwise>
       </xsl:choose>
     </field>
