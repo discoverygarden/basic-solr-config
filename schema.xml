@@ -276,7 +276,7 @@
    
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
-   <field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
+   <field name="catch_all_fields_mt" type="text" indexed="true" stored="false" multiValued="true"/>
 
    <!-- Here, default is used to create a "timestamp" field indicating
         When each document was indexed.
@@ -334,6 +334,7 @@
 <copyField source="*_s" dest="*_mlt"/>
 <copyField source="*_s" dest="*_t"/>
 <copyField source="*_ms" dest="*_mt"/>
+<copyField source="*" dest="catch_all_fields_mt"/>
 
  <!-- Similarity is the scoring routine for each document vs. a query.
       A custom similarity may be specified here, but the default is fine

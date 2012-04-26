@@ -351,13 +351,8 @@
        <str name="echoParams">explicit</str>
         <str name="fl">*</str>
               <str name="q.alt">*:*</str>
-                    <str name="qf">PID^0.5
+                    <str name="qf">PID^0.5 catch_all_fields_mt^0.1
                                   </str>
-       <!-- 
-       <int name="rows">10</int>
-       <str name="fl">*</str>
-       <str name="version">2.2</str>
-        -->
      </lst>
   </requestHandler>
 
