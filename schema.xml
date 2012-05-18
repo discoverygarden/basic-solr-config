@@ -329,12 +329,15 @@
 
   <!-- copyField commands copy one field to another at the time a document
         is added to the index.  It's used either to index the same field differently,
-        or to add multiple fields to the same field for easier/faster searching.  -->
+        or to add multiple fields to the same field for easier/faster searching.
+        Copy fields do not follow transitive property.-->
+
 
 <copyField source="*_s" dest="*_mlt"/>
 <copyField source="*_s" dest="*_t"/>
 <copyField source="*_ms" dest="*_mt"/>
-<copyField source="*" dest="catch_all_fields_mt"/>
+<!-- The following line is a bit of a performance hog, I would look to remove it if the indexing takes a long time. -->
+<copyField source="*" dest="catch_all_fields_et"/>
 
  <!-- Similarity is the scoring routine for each document vs. a query.
       A custom similarity may be specified here, but the default is fine
