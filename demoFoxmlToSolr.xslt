@@ -95,7 +95,7 @@
 
     <doc>
     <!-- put the object pid into a field -->
-      <field name="PID" boost="2.5">
+      <field name="PID">
         <xsl:value-of select="$PID"/>
       </field>
         
