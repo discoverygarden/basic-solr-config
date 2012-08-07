@@ -3,17 +3,18 @@
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:eaccpf="urn:isbn:1-931666-33-4"
+  xmlns:foxml="info:fedora/fedora-system:def/foxml#"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
   <xsl:template match="foxml:datastream[@ID='EAC-CPF']/foxml:datastreamVersion[last()]" name="index_EAC-CPF">
-        <xsl:param name="content"/>
+  <xsl:param name="content"/>
 	<xsl:param name="prefix" select="'eaccpf_'"/>
 	<xsl:param name="suffix" select="'_et'"/> <!-- 'edged' (edge n-gram) text, for auto-completion -->
 
 	<xsl:variable name="cpfDesc" select="$content//eaccpf:cpfDescription"/>
 	<xsl:variable name="identity" select="$cpfDesc/eaccpf:identity"/>
 	<xsl:variable name="name_prefix" select="concat($prefix, 'name_')"/>
-	
+
 	<!-- ensure that the primary is first -->
 	<xsl:apply-templates select="$identity/eaccpf:nameEntry[@localType='primary']">
 	  <xsl:with-param name="prefix" select="$name_prefix"/>
@@ -47,7 +48,7 @@
 	      </xsl:choose>
 	    </field>
     </xsl:for-each>
-    
+
     <!-- sur/last name -->
     <xsl:for-each select="eaccpf:part[@localType='surname']">
 	    <field>
@@ -57,7 +58,7 @@
 	      <xsl:value-of select="normalize-space(../eaccpf:part[@localType='surname'])"/>
 	    </field>
     </xsl:for-each>
-    
+
     <!-- id -->
     <field>
       <xsl:attribute name="name">
