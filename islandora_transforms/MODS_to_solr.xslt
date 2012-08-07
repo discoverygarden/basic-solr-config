@@ -61,8 +61,7 @@
     </xsl:for-each>
 
     <!-- Sub-title -->
-    <xsl:for-each select="
-    mods:titleInfo/mods:subTitle[normalize-space(text())][1]">
+    <xsl:for-each select="mods:titleInfo/mods:subTitle[normalize-space(text())][1]">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), $suffix)"/>
@@ -172,6 +171,15 @@
       </field>
     </xsl:for-each>
 
+    <xsl:for-each select="mods:name/mods:description[normalize-space(text())]">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, local-name(), $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="text()"/>
+      </field>
+    </xsl:for-each>
+
     <!-- Notes with no type -->
     <xsl:for-each select="mods:note[not(@type)][normalize-space(text())]">
       <!--don't bother with empty space-->
@@ -194,12 +202,45 @@
       </field>
     </xsl:for-each>
 
-    <!-- Subjects / Keywords -->
-    <xsl:for-each select="mods:subject[not(@displayLabel)][normalize-space(text())]">
+    <!-- Specific subjects -->
+    <xsl:for-each select="mods:subject/mods:topic[@type][normalize-space(text())]">
+      <!--don't bother with empty space-->
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, local-name(), '_', translate(@type, ' ', '_'), $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="text()"/>
+      </field>
+    </xsl:for-each>
+
+    <!-- Coordinates (lat,long) -->
+    <xsl:for-each select="mods:subject/mods:cartographics/mods:coordinates[normalize-space(text())]">
       <!--don't bother with empty space-->
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="text()"/>
+      </field>
+    </xsl:for-each>
+
+    <!-- Coordinates (lat,long) -->
+    <xsl:for-each select="mods:subject/mods:topic[../mods:cartographics/text()][normalize-space(text())]">
+      <!--don't bother with empty space-->
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, 'cartographic_topic', $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="text()"/>
+      </field>
+    </xsl:for-each>
+
+    <!-- Immediate children of Subjects / Keywords with displaylabel -->
+    <xsl:for-each select="mods:subject[@displayLabel]/*[normalize-space(text())]">
+      <!--don't bother with empty space-->
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, 'subject_', local-name(), '_', translate(../@displayLabel, ' ', '_'), $suffix)"/>
         </xsl:attribute>
         <xsl:value-of select="text()"/>
       </field>
@@ -227,34 +268,12 @@
       </field>
     </xsl:for-each>
 
-    <!-- Immediate children of Subjects / Keywords with displaylabel -->
-    <xsl:for-each select="mods:subject[@displayLabel]/*[normalize-space(text())]">
-      <!--don't bother with empty space-->
-      <field>
-        <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, 'subject_', local-name(), '_', translate(../@displayLabel, ' ', '_'), $suffix)"/>
-        </xsl:attribute>
-        <xsl:value-of select="text()"/>
-      </field>
-    </xsl:for-each>
-
-    <!-- Coordinates (lat,long) -->
-    <xsl:for-each select="mods:subject/mods:cartographics/mods:coordinates[normalize-space(text())]">
+    <!-- Subjects / Keywords -->
+    <xsl:for-each select="mods:subject[not(@displayLabel)][normalize-space(text())]">
       <!--don't bother with empty space-->
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), $suffix)"/>
-        </xsl:attribute>
-        <xsl:value-of select="text()"/>
-      </field>
-    </xsl:for-each>
-
-    <!-- Coordinates (lat,long) -->
-    <xsl:for-each select="mods:subject/mods:topic[../mods:cartographics/text()][normalize-space(text())]">
-      <!--don't bother with empty space-->
-      <field>
-        <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, 'cartographic_topic', $suffix)"/>
         </xsl:attribute>
         <xsl:value-of select="text()"/>
       </field>
@@ -498,7 +517,7 @@
       </xsl:if>
     </xsl:for-each>
 
-    <!-- Date Captured -->
+    <!-- Date Created -->
     <xsl:for-each select="mods:originInfo/mods:dateCreated[normalize-space(text())]">
       <field>
         <xsl:attribute name="name">
@@ -510,6 +529,24 @@
         <field>
           <xsl:attribute name="name">
             <xsl:value-of select="concat($prefix, local-name(), '_s')"/>
+          </xsl:attribute>
+          <xsl:value-of select="text()"/>
+        </field>
+      </xsl:if>
+    </xsl:for-each>
+
+    <!-- Other Date -->
+    <xsl:for-each select="mods:originInfo/mods:dateOther[@type][normalize-space(text())]">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, local-name(), '_', translate(@type, ' ABCDEFGHIJKLMNOPQRSTUVWXYZ', '_abcdefghijklmnopqrstuvwxyz'), $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="text()"/>
+      </field>
+      <xsl:if test="position() = 1"><!-- use the first for a sortable field -->
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($prefix, local-name(), '_', translate(@type, ' ', '_'), '_s')"/>
           </xsl:attribute>
           <xsl:value-of select="text()"/>
         </field>
