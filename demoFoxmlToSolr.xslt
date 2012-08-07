@@ -55,17 +55,17 @@
      disable the ones you do not want to perform;
      the paths may need to be updated if the standard install was not followed
      TODO: look into a way to make these paths relative -->
-  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/XML_to_one_solr_field.xslt"/>
-  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/XML_text_nodes_to_solr.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/DC_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/RELS-EXT_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/RELS-INT_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/FOXML_properties_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/datastream_id_to_solr.xslt"/>
-
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/MODS_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/EACCPF_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/TEI_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/text_to_solr.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/XML_to_one_solr_field.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/XML_text_nodes_to_solr.xslt"/>
 
   <!-- Decide which objects to modify the index of -->
   <xsl:template match="/">
@@ -107,9 +107,9 @@
         handles inline and managed datastreams
         The datastream level element is used for matching,
         making it imperative to use the $content parameter for xpaths in templates
-        if they are to support managed datstreams-->
+        if they are to support managed datstreams -->
 
-      <!-- TODO: would like to get rid of the need for the content param-->
+      <!-- TODO: would like to get rid of the need for the content param -->
       <xsl:for-each select="foxml:datastream">
         <xsl:choose>
           <xsl:when test="@CONTROL_GROUP='X'">
@@ -117,15 +117,25 @@
               <xsl:with-param name="content" select="foxml:datastreamVersion[last()]/foxml:xmlContent"/>
             </xsl:apply-templates>
           </xsl:when>
+          <xsl:when test="@CONTROL_GROUP='M' and (@MIMETYPE='text/xml' or @MIMETYPE='application/xml' or @MIMETYPE='application/rdf+xml' or @MIMETYPE='text/html')">
+            <!-- TODO: should do something about mime type filtering
+              text/plain should use the getDatastreamText extension because document will only work for xml docs
+              xml files should use the document function
+              other mimetypes should not be being sent
+              will this let us not use the content variable? -->
+            <xsl:apply-templates select="foxml:datastreamVersion[last()]">
+              <xsl:with-param name="content" select="document(concat($PROT, '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', @ID, '/content'))"/>
+            </xsl:apply-templates>
+          </xsl:when>
+          <!-- non-xml managed datastreams -->
           <xsl:when test="@CONTROL_GROUP='M'">
             <!-- TODO: should do something about mime type filtering
               text/plain should use the getDatastreamText extension because document will only work for xml docs
               xml files should use the document function
               other mimetypes should not be being sent
-              will this let us not use the content variable?-->
-            <xsl:apply-templates select="foxml:datastreamVersion[last()] and (@MIMETYPE='text/xml' or @MIMETYPE='application/xml' or @MIMETYPE='application/rdf+xml' or @MIMETYPE='text/plain' or @MIMETYPE='text/html')">
-              <xsl:with-param name="content" select="document(concat($PROT, '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', @ID, '/content'))"/>
-              <!-- <xsl:with-param name="content" select="normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS))"/> -->
+              will this let us not use the content variable? -->
+            <xsl:apply-templates select="foxml:datastreamVersion[last()]">
+              <xsl:with-param name="content" select="normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS))"/>
             </xsl:apply-templates>
           </xsl:when>
         </xsl:choose>
