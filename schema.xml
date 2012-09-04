@@ -198,23 +198,25 @@
       </analyzer>
     </fieldType>
     
+    <!-- Only for auto-complete. -->
     <fieldType name="edgedText" class="solr.TextField">
         <analyzer type="index">
             <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
             <tokenizer class="solr.WhitespaceTokenizerFactory"/>
             <filter class="solr.LowerCaseFilterFactory"/>
-            <filter class="solr.SnowballPorterFilterFactory" language="Spanish"/>
+            <filter class="solr.EnglishPorterFilterFactory" protected="protwords.txt"/>
             <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
-            <!-- Max could be either shorter or longer? -->
+            <!-- Max could be either shorter or longer? Tokens longer than maxGramSize may not be queriable on fields of this type.-->
             <filter class="solr.EdgeNGramFilterFactory" minGramSize="1" maxGramSize="16"/>
         </analyzer>
         <analyzer type="query">
             <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
             <tokenizer class="solr.WhitespaceTokenizerFactory"/>
             <filter class="solr.LowerCaseFilterFactory"/>
-            <filter class="solr.SnowballPorterFilterFactory" language="Spanish"/>
+            <filter class="solr.EnglishPorterFilterFactory" protected="protwords.txt"/>
         </analyzer>
     </fieldType>
+    
     <!-- This is an example of using the KeywordTokenizer along
          With various TokenFilterFactories to produce a sortable field
          that does not include some properties of the source text
@@ -336,8 +338,9 @@
 <copyField source="*_s" dest="*_mlt"/>
 <copyField source="*_s" dest="*_t"/>
 <copyField source="*_ms" dest="*_mt"/>
+
 <!-- The following line is a bit of a performance hog, I would look to remove it if the indexing takes a long time. -->
-<copyField source="*" dest="catch_all_fields_et"/>
+<copyField source="*" dest="catch_all_fields_mt"/>
 
  <!-- Similarity is the scoring routine for each document vs. a query.
       A custom similarity may be specified here, but the default is fine

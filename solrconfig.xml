@@ -351,7 +351,7 @@
        <str name="echoParams">explicit</str>
         <str name="fl">*</str>
               <str name="q.alt">*:*</str>
-                    <str name="qf">PID^0.5 catch_all_fields_et^0.1
+                    <str name="qf">PID^0.5 catch_all_fields_mt^0.1
                                   </str>
      </lst>
   </requestHandler>
