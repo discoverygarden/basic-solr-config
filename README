@@ -1,2 +1,3 @@
-This repo will hold a basic solr config, schema and xslt to use as a starting point for future projects.
-This is not ready for use.
+This repo will holds a basic solr config, schema and xslt to use as a starting point for future projects.
+It requires the joda library deployed to gsearch's lib directory
+http://sourceforge.net/projects/joda-time/files/joda-time/
