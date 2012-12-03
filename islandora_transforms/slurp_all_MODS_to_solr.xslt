@@ -11,7 +11,7 @@
   
   <xsl:template match="foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]" name="index_MODS">
     <xsl:param name="content"/>
-    <xsl:param name="prefix">mods_</xsl:param>
+    <xsl:param name="prefix">mods</xsl:param>
     <xsl:param name="suffix">_ms</xsl:param>
 
     <xsl:apply-templates select="$content/mods:mods">
@@ -21,13 +21,20 @@
   </xsl:template>
 
   <xsl:template match="mods:mods">
-    <xsl:param name="prefix">mods_</xsl:param>
+    <xsl:param name="prefix">mods</xsl:param>
     <xsl:param name="suffix">_ms</xsl:param>
     
     <xsl:for-each select=".//mods:*[not(@type='date')][not(contains(translate(local-name(), 'D', 'd'), 'date'))][normalize-space(text())]">
+    
+      <xsl:variable name="fieldName">
+        <xsl:call-template name="get_all_parents">
+          <xsl:with-param name="node" select="."/>
+        </xsl:call-template>
+      </xsl:variable>
+      
       <field>
         <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, local-name(), $suffix)"/>
+          <xsl:value-of select="concat($prefix, $fieldName, $suffix)"/>
         </xsl:attribute>
         <xsl:value-of select="text()"/>
       </field>
@@ -42,14 +49,35 @@
         </xsl:call-template>
       </xsl:variable>
       
+      <xsl:variable name="fieldName">
+        <xsl:call-template name="get_all_parents">
+          <xsl:with-param name="node" select="."/>
+        </xsl:call-template>
+      </xsl:variable>
+      
       <field>
         <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, local-name(), '_dt')"/>
+          <xsl:value-of select="concat($prefix, $fieldName, '_dt')"/>
         </xsl:attribute>
         <xsl:value-of select="$textValue"/>
       </field>
     </xsl:for-each>
     
   </xsl:template>
-
+  
+  <!-- This is a recursive template that will concatenate
+    all the local names of parents of the supplied node.
+    This is to provide context to the Solr field.-->
+  <xsl:template name="get_all_parents">
+    <xsl:param name="node"/>
+    
+    <xsl:if test="not(local-name($node)='mods')">
+      <xsl:call-template name="get_all_parents">
+        <xsl:with-param name="node" select="$node/.."/>
+      </xsl:call-template>
+      <xsl:value-of select="concat('_', local-name($node))"/>
+    </xsl:if>
+      
+  </xsl:template>
+  
 </xsl:stylesheet>
