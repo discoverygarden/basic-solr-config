@@ -55,12 +55,14 @@
         </xsl:call-template>
       </xsl:variable>
       
-      <field>
-        <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, $fieldName, '_dt')"/>
-        </xsl:attribute>
-        <xsl:value-of select="$textValue"/>
-      </field>
+      <xsl:if test="normalize-space($textValue)">
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($prefix, $fieldName, '_dt')"/>
+          </xsl:attribute>
+          <xsl:value-of select="$textValue"/>
+        </field>
+      </xsl:if>
     </xsl:for-each>
     
   </xsl:template>
