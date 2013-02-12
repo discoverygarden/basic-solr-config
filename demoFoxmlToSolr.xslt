@@ -72,7 +72,7 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/XML_to_one_solr_field.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/XML_text_nodes_to_solr.xslt"/>
     -->
-  
+
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/gsearch_solr/islandora_transforms/DC_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/gsearch_solr/islandora_transforms/RELS-EXT_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/gsearch_solr/islandora_transforms/RELS-INT_to_solr.xslt"/>
@@ -187,5 +187,7 @@
 
   <!-- This prevents text from just being printed to the doc without field elements JUST TRY COMMENTING IT OUT -->
   <xsl:template match="text()"/>
-
+  <xsl:template match="text()" mode="indexFedoraObject"/>
+  <xsl:template match="text()" mode="unindexFedoraObject"/>
+  <xsl:template match="text()" mode="index_object_datastreams"/>
 </xsl:stylesheet>
