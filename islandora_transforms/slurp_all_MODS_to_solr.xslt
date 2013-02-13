@@ -8,78 +8,71 @@
      exclude-result-prefixes="mods">
   <!-- <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/library/xslt-date-template.xslt"/>-->
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/gsearch_solr/islandora_transforms/library/xslt-date-template.xslt"/>
-  
+
   <xsl:template match="foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]" name="index_MODS">
     <xsl:param name="content"/>
-    <xsl:param name="prefix">mods</xsl:param>
-    <xsl:param name="suffix">_ms</xsl:param>
+    <xsl:param name="prefix"></xsl:param>
+    <xsl:param name="suffix">ms</xsl:param>
 
-    <xsl:apply-templates select="$content/mods:mods">
+    <xsl:apply-templates mode="slurping_MODS" select="$content/mods:mods">
       <xsl:with-param name="prefix" select="$prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="mods:mods">
-    <xsl:param name="prefix">mods</xsl:param>
-    <xsl:param name="suffix">_ms</xsl:param>
-    
-    <xsl:for-each select=".//mods:*[not(@type='date')][not(contains(translate(local-name(), 'D', 'd'), 'date'))][normalize-space(text())]">
-    
-      <xsl:variable name="fieldName">
-        <xsl:call-template name="get_all_parents">
-          <xsl:with-param name="node" select="."/>
-        </xsl:call-template>
-      </xsl:variable>
-      
+  <!-- Handle dates. -->
+  <xsl:template match="mods:*[(@type='date') or (contains(translate(local-name(), 'D', 'd'), 'date'))][normalize-space(text())]" mode="slurping_MODS">
+    <xsl:param name="prefix"/>
+    <xsl:param name="suffix"/>
+
+    <xsl:variable name="textValue">
+      <xsl:call-template name="get_ISO8601_date">
+        <xsl:with-param name="date" select="normalize-space(text())"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:if test="$textValue">
       <field>
         <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, $fieldName, $suffix)"/>
+          <xsl:value-of select="concat($prefix, local-name(), '_dt')"/>
         </xsl:attribute>
-        <xsl:value-of select="text()"/>
+        <xsl:value-of select="$textValue"/>
       </field>
-    </xsl:for-each>
-    
-    <!-- Handle dates. -->
-    <xsl:for-each select=".//mods:*[(@type='date') or (contains(translate(local-name(), 'D', 'd'), 'date'))][normalize-space(text())]">
-      
-      <xsl:variable name="textValue">
-        <xsl:call-template name="get_ISO8601_date">
-          <xsl:with-param name="date" select="normalize-space(text())"/>
-        </xsl:call-template>
-      </xsl:variable>
-      
-      <xsl:variable name="fieldName">
-        <xsl:call-template name="get_all_parents">
-          <xsl:with-param name="node" select="."/>
-        </xsl:call-template>
-      </xsl:variable>
-      
-      <xsl:if test="normalize-space($textValue)">
-        <field>
-          <xsl:attribute name="name">
-            <xsl:value-of select="concat($prefix, $fieldName, '_dt')"/>
-          </xsl:attribute>
-          <xsl:value-of select="$textValue"/>
-        </field>
-      </xsl:if>
-    </xsl:for-each>
-    
-  </xsl:template>
-  
-  <!-- This is a recursive template that will concatenate
-    all the local names of parents of the supplied node.
-    This is to provide context to the Solr field.-->
-  <xsl:template name="get_all_parents">
-    <xsl:param name="node"/>
-    
-    <xsl:if test="not(local-name($node)='mods')">
-      <xsl:call-template name="get_all_parents">
-        <xsl:with-param name="node" select="$node/.."/>
-      </xsl:call-template>
-      <xsl:value-of select="concat('_', local-name($node))"/>
     </xsl:if>
-      
   </xsl:template>
-  
+
+  <!-- Avoid using text alone. -->
+  <xsl:template match="text()" mode="slurping_MODS"/>
+
+  <!-- Build up the list prefix with the element context. -->
+  <xsl:template match="*" mode="slurping_MODS">
+    <xsl:param name="prefix"/>
+    <xsl:param name="suffix"/>
+
+    <xsl:variable name="this_prefix">
+      <xsl:value-of select="concat($prefix, local-name(), '_')"/>
+      <xsl:if test="@type">
+        <xsl:value-of select="@type"/>
+        <xsl:text>_</xsl:text>
+      </xsl:if>
+    </xsl:variable>
+
+    <xsl:variable name="textValue">
+      <xsl:value-of select="normalize-space(text())"/>
+    </xsl:variable>
+
+    <xsl:if test="$textValue">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($this_prefix, $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="$textValue"/>
+      </field>
+    </xsl:if>
+
+    <xsl:apply-templates mode="slurping_MODS">
+      <xsl:with-param name="prefix" select="$this_prefix"/>
+      <xsl:with-param name="suffix" select="$suffix"/>
+    </xsl:apply-templates>
+  </xsl:template>
 </xsl:stylesheet>
