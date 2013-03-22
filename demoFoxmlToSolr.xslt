@@ -146,8 +146,13 @@
               <xsl:with-param name="content" select="document(concat($PROT, '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', @ID, '/content'))"/>
             </xsl:apply-templates>
           </xsl:when>
-          <!-- non-xml managed datastreams -->
-          <xsl:when test="@CONTROL_GROUP='M'">
+          <!-- non-xml managed datastreams...
+
+               Really, should probably only
+               handle the mimetypes supported by the "getDatastreamText" call:
+               https://github.com/fcrepo/gsearch/blob/master/FedoraGenericSearch/src/java/dk/defxws/fedoragsearch/server/TransformerToText.java#L185-L200
+          -->
+          <xsl:when test="@CONTROL_GROUP='M' and foxml:datastreamVersion[last() and not(starts-with(@MIMETYPE, 'image'))]">
             <!-- TODO: should do something about mime type filtering
               text/plain should use the getDatastreamText extension because document will only work for xml docs
               xml files should use the document function
