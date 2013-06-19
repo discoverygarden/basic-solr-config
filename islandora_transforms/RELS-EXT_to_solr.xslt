@@ -11,7 +11,7 @@
 	    <xsl:param name="prefix">RELS_EXT_</xsl:param>
 	    <xsl:param name="suffix">_ms</xsl:param>
 	    
-	    <xsl:for-each select="$content//rdf:Description/*[@rdf:resource]">
+    	<xsl:for-each select="$content//rdf:Description/*[@rdf:resource] | $content//rdf:description/*[@rdf:resource]">
 			<field>
 			     <xsl:attribute name="name">
 			         <xsl:value-of select="concat($prefix, local-name(), '_uri', $suffix)"/>
@@ -19,7 +19,7 @@
 			     <xsl:value-of select="@rdf:resource"/>
             </field>
 	    </xsl:for-each>
-	    <xsl:for-each select="$content//rdf:Description/*[not(@rdf:resource)][normalize-space(text())]">
+    	<xsl:for-each select="$content//rdf:Description/*[not(@rdf:resource)][normalize-space(text())] | $content//rdf:description/*[not(@rdf:resource)][normalize-space(text())]">
 			<field>
 		        <xsl:attribute name="name">
 			        <xsl:value-of select="concat($prefix, local-name(), '_literal', $suffix)"/>
