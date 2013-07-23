@@ -2,7 +2,6 @@
 <!-- Basic MODS -->
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:foxml="info:fedora/fedora-system:def/foxml#"
   xmlns:mods="http://www.loc.gov/mods/v3"
      exclude-result-prefixes="mods">
@@ -17,6 +16,8 @@
     <xsl:apply-templates mode="slurping_MODS" select="$content/mods:mods">
       <xsl:with-param name="prefix" select="$prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
+      <xsl:with-param name="pid" select="../../@PID"/>
+      <xsl:with-param name="datastream" select="../@ID"/>
     </xsl:apply-templates>
   </xsl:template>
 
@@ -24,14 +25,18 @@
   <xsl:template match="mods:*[(@type='date') or (contains(translate(local-name(), 'D', 'd'), 'date'))][normalize-space(text())]" mode="slurping_MODS">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
+    <xsl:param name="pid">not provided</xsl:param>
+    <xsl:param name="datastream">not provided</xsl:param>
 
     <xsl:variable name="textValue">
       <xsl:call-template name="get_ISO8601_date">
         <xsl:with-param name="date" select="normalize-space(text())"/>
+        <xsl:with-param name="pid" select="$pid"/>
+        <xsl:with-param name="datastream" select="$datastream"/>
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:if test="$textValue">
+    <xsl:if test="not(normalize-space($textValue)='')">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), '_dt')"/>
@@ -48,6 +53,8 @@
   <xsl:template match="*" mode="slurping_MODS">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
+    <xsl:param name="pid">not provided</xsl:param>
+    <xsl:param name="datastream">not provided</xsl:param>
 
     <xsl:variable name="this_prefix">
       <xsl:value-of select="concat($prefix, local-name(), '_')"/>
@@ -73,6 +80,8 @@
     <xsl:apply-templates mode="slurping_MODS">
       <xsl:with-param name="prefix" select="$this_prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
+      <xsl:with-param name="pid" select="$pid"/>
+      <xsl:with-param name="datastream" select="$datastream"/>
     </xsl:apply-templates>
   </xsl:template>
 </xsl:stylesheet>
