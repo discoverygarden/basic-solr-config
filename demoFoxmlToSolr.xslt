@@ -23,6 +23,9 @@
   xmlns:islandora-exts="xalan://ca.upei.roblib.DataStreamForXSLT"
             exclude-result-prefixes="exts"
   xmlns:encoder="xalan://java.net.URLEncoder">
+  <!--  Used for indexing other objects.
+  xmlns:sparql="http://www.w3.org/2001/sw/DataAccess/rf1/result"
+  xmlns:xalan="http://xml.apache.org/xalan"> -->
 
   <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
 
@@ -39,6 +42,9 @@
   <xsl:variable name="HOST">localhost</xsl:variable>
   <xsl:variable name="PORT">8080</xsl:variable>
   <xsl:variable name="PID" select="/foxml:digitalObject/@PID"/>
+  <!--  Used for indexing other objects.
+  <xsl:variable name="FEDORA" xmlns:java_string="xalan://java.lang.String" select="substring($FEDORASOAP, 1, java_string:lastIndexOf(java_string:new(string($FEDORASOAP)), '/'))"/>
+  -->
 
 
   <!--
@@ -71,6 +77,7 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/text_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/XML_to_one_solr_field.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/XML_text_nodes_to_solr.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/islandora_transforms/library/traverse-graph.xslt"/>
     -->
 
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/gsearch_solr/islandora_transforms/DC_to_solr.xslt"/>
@@ -85,6 +92,9 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/gsearch_solr/islandora_transforms/text_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/gsearch_solr/islandora_transforms/XML_to_one_solr_field.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/gsearch_solr/islandora_transforms/XML_text_nodes_to_solr.xslt"/>
+  <!--  Used for indexing other objects.
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/gsearch_solr/islandora_transforms/library/traverse-graph.xslt"/>
+  -->
 
   <!-- Decide which objects to modify the index of -->
   <xsl:template match="/">
@@ -98,6 +108,53 @@
                 <xsl:with-param name="PID" select="$PID"/>
               </xsl:apply-templates>
             </add>
+            <!-- Newspaper graph example.
+            <xsl:variable name="graph">
+              <xsl:call-template name="_traverse_graph">
+                <xsl:with-param name="risearch" select="concat($FEDORA, '/risearch')"/>
+                <xsl:with-param name="to_traverse_in">
+                  <sparql:result>
+                    <sparql:obj>
+                      <xsl:attribute name="uri">info:fedora/<xsl:value-of select="$PID"/></xsl:attribute>
+                    </sparql:obj>
+                  </sparql:result>
+                </xsl:with-param>
+                <xsl:with-param name="query">
+                  PREFIX fre: &lt;info:fedora/fedora-system:def/relations-external#&gt;
+                  PREFIX fm: &lt;info:fedora/fedora-system:def/model#&gt;
+                  PREFIX islandora: &lt;http://islandora.ca/ontology/relsext#&gt;
+                  SELECT ?obj
+                  FROM &lt;#ri&gt;
+                  WHERE {
+                    {
+                      ?sub fm:hasModel &lt;info:fedora/islandora:newspaperCModel&gt; {
+                        ?issue fre:isMemberOf ?sub .
+                        ?obj islandora:isPageOf ?issue
+                      }
+                      UNION {
+                        ?obj fre:isMemberOf ?sub
+                      }
+                    }
+                    UNION {
+                      ?sub fm:hasModel &lt;info:fedora/islandora:newspaperIssueCModel&gt; .
+                      ?obj islandora:isPageOf ?sub
+                    }
+                    ?obj fm:state fm:Active
+                    FILTER(sameTerm(?sub, &lt;%PID_URI%&gt;))
+                  }
+                </xsl:with-param>
+              </xsl:call-template>
+            </xsl:variable>
+            <add commitWithin="5000">
+              <xsl:for-each select="xalan:nodeset($graph)//sparql:obj">
+                 <xsl:variable name="xml_url" select="concat(substring-before($FEDORA, '://'), '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', substring-after($FEDORA, '://') , '/objects/', substring-after(@uri, '/'), '/objectXML')"/>
+                <xsl:variable name="object" select="document($xml_url)"/>
+                <xsl:if test="$object">
+                    <xsl:apply-templates select="$object/foxml:digitalObject" mode="indexFedoraObject"/>
+                </xsl:if>
+              </xsl:for-each>
+            </add>
+           -->
           </xsl:when>
           <xsl:otherwise>
             <xsl:apply-templates select="/foxml:digitalObject" mode="unindexFedoraObject"/>
