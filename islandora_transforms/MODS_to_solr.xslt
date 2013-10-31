@@ -576,7 +576,7 @@
     </xsl:for-each>
 
     <!-- Languague Term -->
-    <xsl:for-each select="mods:language/mods:languageTerm[@authority='iso639-2b' and type='code'][normalize-space(text())]">
+    <xsl:for-each select="mods:language/mods:languageTerm[@authority='iso639-2b' and @type='code'][normalize-space(text())]">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), $suffix)"/>
