@@ -3,7 +3,7 @@
 <xsl:stylesheet version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:foxml="info:fedora/fedora-system:def/foxml#">
-    <xsl:template  match="foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]" name="index_WORKFLOW">
+    <xsl:template  match="foxml:datastream[@ID='WORKFLOW']/foxml:datastreamVersion[last()]" name="index_WORKFLOW">
         <xsl:param name="prefix">workflow_</xsl:param>
         <xsl:param name="suffix">_ms</xsl:param>
         <xsl:for-each select="//cwrc/workflow//*">
