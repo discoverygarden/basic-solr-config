@@ -77,60 +77,59 @@
                     <xsl:value-of select="$FAMILY"/>
                 </field>
             </xsl:if>
-
-            <xsl:for-each
-                select="$content//mads:authority/mads:name[@type = 'corporate']/mads:namePart">
-                <field>
-                    <xsl:attribute name="name">
-                        <xsl:value-of select="concat($prefix, 'department', $suffix)"/>
-                    </xsl:attribute>
-                    <xsl:value-of select="normalize-space(text())"/>
-                </field>
-            </xsl:for-each>
-
-            <xsl:for-each
-                select="$content//mads:related[@type = 'parentOrg']/mads:name[@type = 'corporate']/mads:namePart">
-                <field>
-                    <xsl:attribute name="name">
-                        <xsl:value-of select="concat($prefix, 'parent_institution', $suffix)"/>
-                    </xsl:attribute>
-                    <xsl:value-of select="normalize-space(text())"/>
-                </field>
-            </xsl:for-each>
-
-            <xsl:for-each
-                select="$content//mads:related[@type = 'earlier']/mads:name[@type = 'corporate']">
-                <xsl:variable name="DATE" select="./mads:namePart[@type = 'date']"/>
-                <xsl:variable name="PREV_NAME" select="./mads:namePart"/>
-                <field>
-                    <xsl:attribute name="name">
-                        <xsl:value-of select="concat($prefix, 'previous_name', $suffix)"/>
-                    </xsl:attribute>
-                    <xsl:value-of select="concat($PREV_NAME, ', ', $DATE)"/>
-                </field>
-            </xsl:for-each>
-
-            <xsl:for-each select="$content//*">
-                <xsl:if test="text() [normalize-space(.) ] and name(.) != 'namePart'">
-                    <field>
-                        <xsl:choose>
-                            <xsl:when test="@*">
-                                <xsl:attribute name="name">
-                                    <xsl:value-of select="concat($prefix, ./@*, $suffix)"/>
-                                </xsl:attribute>
-                                <xsl:value-of select="normalize-space(text())"/>
-                            </xsl:when>
-
-                            <xsl:otherwise>
-                                <xsl:attribute name="name">
-                                    <xsl:value-of select="concat($prefix, name(.), $suffix)"/>
-                                </xsl:attribute>
-                                <xsl:value-of select="normalize-space(text())"/>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </field>
-                </xsl:if>
-            </xsl:for-each>
         </xsl:for-each>
+        <xsl:for-each select="$content//mads:authority/mads:name[@type = 'corporate']/mads:namePart">
+            <field>
+                <xsl:attribute name="name">
+                    <xsl:value-of select="concat($prefix, 'department', $suffix)"/>
+                </xsl:attribute>
+                <xsl:value-of select="normalize-space(text())"/>
+            </field>
+        </xsl:for-each>
+
+        <xsl:for-each
+            select="$content//mads:related[@type = 'parentOrg']/mads:name[@type = 'corporate']/mads:namePart">
+            <field>
+                <xsl:attribute name="name">
+                    <xsl:value-of select="concat($prefix, 'parent_institution', $suffix)"/>
+                </xsl:attribute>
+                <xsl:value-of select="normalize-space(text())"/>
+            </field>
+        </xsl:for-each>
+
+        <xsl:for-each
+            select="$content//mads:related[@type = 'earlier']/mads:name[@type = 'corporate']">
+            <xsl:variable name="DATE" select="./mads:namePart[@type = 'date']"/>
+            <xsl:variable name="PREV_NAME" select="./mads:namePart"/>
+            <field>
+                <xsl:attribute name="name">
+                    <xsl:value-of select="concat($prefix, 'previous_name', $suffix)"/>
+                </xsl:attribute>
+                <xsl:value-of select="concat($PREV_NAME, ', ', $DATE)"/>
+            </field>
+        </xsl:for-each>
+
+        <xsl:for-each select="$content//*">
+            <xsl:if test="text() [normalize-space(.) ] and name(.) != 'namePart'">
+                <field>
+                    <xsl:choose>
+                        <xsl:when test="@*">
+                            <xsl:attribute name="name">
+                                <xsl:value-of select="concat($prefix, ./@*, $suffix)"/>
+                            </xsl:attribute>
+                            <xsl:value-of select="normalize-space(text())"/>
+                        </xsl:when>
+
+                        <xsl:otherwise>
+                            <xsl:attribute name="name">
+                                <xsl:value-of select="concat($prefix, name(.), $suffix)"/>
+                            </xsl:attribute>
+                            <xsl:value-of select="normalize-space(text())"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </field>
+            </xsl:if>
+        </xsl:for-each>
+
     </xsl:template>
 </xsl:stylesheet>
