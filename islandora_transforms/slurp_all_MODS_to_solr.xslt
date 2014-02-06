@@ -47,10 +47,17 @@
           <xsl:text>_</xsl:text>
         </xsl:for-each>
       </xsl:variable>
-    
+
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($this_prefix, local-name(), '_dt')"/>
+        </xsl:attribute>
+        <xsl:value-of select="$textValue"/>
+      </field>
+
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, local-name(), '_mdt')"/>
         </xsl:attribute>
         <xsl:value-of select="$textValue"/>
       </field>
