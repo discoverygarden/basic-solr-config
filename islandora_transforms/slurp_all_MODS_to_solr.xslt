@@ -13,7 +13,7 @@
     <xsl:param name="prefix"></xsl:param>
     <xsl:param name="suffix">ms</xsl:param>
 
-    <xsl:apply-templates mode="slurping_MODS" select="$content/mods:mods">
+    <xsl:apply-templates mode="slurping_MODS" select="$content//mods:mods[1]">
       <xsl:with-param name="prefix" select="$prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
       <xsl:with-param name="pid" select="../../@PID"/>
