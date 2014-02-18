@@ -13,7 +13,7 @@
     <xsl:param name="prefix">mods_</xsl:param>
     <xsl:param name="suffix">_ms</xsl:param>
 
-    <xsl:apply-templates select="$content/mods:mods">
+    <xsl:apply-templates select="$content//mods:mods[1]">
       <xsl:with-param name="prefix" select="$prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
     </xsl:apply-templates>

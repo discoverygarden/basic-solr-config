@@ -13,7 +13,7 @@
     <xsl:param name="prefix"></xsl:param>
     <xsl:param name="suffix">ms</xsl:param>
 
-    <xsl:apply-templates mode="slurping_MODS" select="$content/mods:mods">
+    <xsl:apply-templates mode="slurping_MODS" select="$content//mods:mods[1]">
       <xsl:with-param name="prefix" select="$prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
       <xsl:with-param name="pid" select="../../@PID"/>
@@ -47,10 +47,17 @@
           <xsl:text>_</xsl:text>
         </xsl:for-each>
       </xsl:variable>
-    
+
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($this_prefix, local-name(), '_dt')"/>
+        </xsl:attribute>
+        <xsl:value-of select="$textValue"/>
+      </field>
+
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, local-name(), '_mdt')"/>
         </xsl:attribute>
         <xsl:value-of select="$textValue"/>
       </field>
