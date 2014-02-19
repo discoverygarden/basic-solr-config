@@ -79,12 +79,14 @@
             </xsl:if>
         </xsl:for-each>
         <xsl:for-each select="$content//mads:authority/mads:name[@type = 'corporate']/mads:namePart">
+            <xsl:if test="not(./@type)">
             <field>
                 <xsl:attribute name="name">
                     <xsl:value-of select="concat($prefix, 'department', $suffix)"/>
                 </xsl:attribute>
                 <xsl:value-of select="normalize-space(text())"/>
             </field>
+            </xsl:if>
         </xsl:for-each>
 
         <xsl:for-each
