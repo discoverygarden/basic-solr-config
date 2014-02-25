@@ -16,7 +16,7 @@
       <xsl:variable name="DATE" select="./mads:namePart[@type = 'date']"/>
       <xsl:variable name="ID" select="$content//mads:identifier[@type = 'u1']"/>
       <xsl:variable name="FULLNAME" select="concat($GIVEN, ' ', $FAMILY)"/>
-      <xsl:variable name="IDENTIFIER" select="concat($FULLNAME, ' - ', $ID)"/>
+      <xsl:variable name="IDENTIFIER" select="concat($FULLNAME, ' (', $ID, ')')"/>
       <xsl:if test="$FULLNAME != ' '">
         <field>
           <xsl:attribute name="name">
@@ -26,12 +26,12 @@
         </field>
       </xsl:if>
 
-      <xsl:if test="IDENTIFIER != '  - '">
+      <xsl:if test="$ID != ''">
         <field>
           <xsl:attribute name="name">
             <xsl:value-of select="concat($prefix, 'disambiguated_fullname', $suffix)"/>
           </xsl:attribute>
-          <xsl:value-of select="IDENTIFIER"/>
+          <xsl:value-of select="$IDENTIFIER"/>
         </field>
       </xsl:if>
 
