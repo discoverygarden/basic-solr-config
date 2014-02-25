@@ -4,7 +4,7 @@
                 xmlns:foxml="info:fedora/fedora-system:def/foxml#" xmlns:mads="http://www.loc.gov/mads/v2">
 
   <xsl:template match="foxml:datastream[@ID='MADS']/foxml:datastreamVersion[last()]"
-                  name="index_MADS">
+                name="index_MADS">
     <xsl:param name="content"/>
     <xsl:param name="prefix">MADS_</xsl:param>
     <xsl:param name="suffix">_ms</xsl:param>
@@ -14,7 +14,9 @@
       <xsl:variable name="GIVEN" select="./mads:namePart[@type = 'given']"/>
       <xsl:variable name="FAMILY" select="./mads:namePart[@type = 'family']"/>
       <xsl:variable name="DATE" select="./mads:namePart[@type = 'date']"/>
+      <xsl:variable name="ID" select="$content//mads:identifier[@type = 'u1']"/>
       <xsl:variable name="FULLNAME" select="concat($GIVEN, ' ', $FAMILY)"/>
+      <xsl:variable name="IDENTIFIER" select="concat($FULLNAME, ' (', $ID, ')')"/>
       <xsl:if test="$FULLNAME != ' '">
         <field>
           <xsl:attribute name="name">
@@ -23,6 +25,16 @@
           <xsl:value-of select="$FULLNAME"/>
         </field>
       </xsl:if>
+
+      <xsl:if test="$ID != ''">
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($prefix, 'disambiguated_fullname', $suffix)"/>
+          </xsl:attribute>
+          <xsl:value-of select="$IDENTIFIER"/>
+        </field>
+      </xsl:if>
+
       <xsl:if test="$GIVEN != ''">
         <field>
           <xsl:attribute name="name">
