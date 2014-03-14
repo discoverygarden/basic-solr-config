@@ -48,12 +48,19 @@
         </xsl:for-each>
       </xsl:variable>
 
-      <field>
-        <xsl:attribute name="name">
-          <xsl:value-of select="concat($this_prefix, local-name(), '_dt')"/>
-        </xsl:attribute>
-        <xsl:value-of select="$textValue"/>
-      </field>
+      <!--
+        We always assume multivalued dates only for related items as we may
+        have several related items of the same time.
+        @see http://www.loc.gov/standards/mods/userguide/relateditem.html
+      -->
+      <xsl:if test="count(ancestor::*[local-name() = 'relatedItem']) = 0">
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($this_prefix, local-name(), '_dt')"/>
+          </xsl:attribute>
+          <xsl:value-of select="$textValue"/>
+        </field>
+      </xsl:if>
 
       <field>
         <xsl:attribute name="name">
