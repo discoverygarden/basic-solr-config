@@ -53,7 +53,7 @@
         have several related items of the same time.
         @see http://www.loc.gov/standards/mods/userguide/relateditem.html
       -->
-      <xsl:if test="count(ancestor::*[local-name() = 'relatedItem']) = 0">
+      <xsl:if test="not(ancestor::mods:relatedItem)">
         <field>
           <xsl:attribute name="name">
             <xsl:value-of select="concat($this_prefix, local-name(), '_dt')"/>
