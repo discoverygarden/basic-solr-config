@@ -43,7 +43,7 @@
       <xsl:variable name="this_prefix">
         <xsl:value-of select="$prefix"/>
         <xsl:for-each select="@*">
-          <xsl:sort select="local-name()"/>
+          <xsl:sort select="concat(local-name(), namespace-uri(self::node()))"/>
           <xsl:value-of select="local-name()"/>
           <xsl:text>_</xsl:text>
           <xsl:value-of select="."/>
