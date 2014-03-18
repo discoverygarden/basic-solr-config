@@ -89,9 +89,6 @@
       <xsl:if test="@type">
         <xsl:value-of select="concat(@type, '_')"/>
       </xsl:if>
-      <xsl:if test="@authority">
-        <xsl:value-of select="concat('authority_', translate(@authority, $uppercase, $lowercase), '_')"/>
-      </xsl:if>
     </xsl:variable>
 
     <xsl:variable name="textValue">
@@ -105,6 +102,14 @@
         </xsl:attribute>
         <xsl:value-of select="$textValue"/>
       </field>
+      <xsl:if test="@authority">
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($this_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_', $suffix)"/>
+          </xsl:attribute>
+          <xsl:value-of select="$textValue"/>
+        </field>
+      </xsl:if>
     </xsl:if>
 
     <xsl:apply-templates mode="slurping_MODS">
