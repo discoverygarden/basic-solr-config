@@ -5,6 +5,8 @@
   xmlns:foxml="info:fedora/fedora-system:def/foxml#"
   xmlns:mods="http://www.loc.gov/mods/v3"
      exclude-result-prefixes="mods">
+  <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz_'" />
+  <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ '" />
   <!-- <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/FgsIndex/islandora_transforms/library/xslt-date-template.xslt"/>-->
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/library/xslt-date-template.xslt"/>
 
@@ -41,6 +43,7 @@
       <xsl:variable name="this_prefix">
         <xsl:value-of select="$prefix"/>
         <xsl:for-each select="@*">
+          <xsl:sort select="concat(local-name(), namespace-uri(self::node()))"/>
           <xsl:value-of select="local-name()"/>
           <xsl:text>_</xsl:text>
           <xsl:value-of select="."/>
@@ -84,8 +87,7 @@
     <xsl:variable name="this_prefix">
       <xsl:value-of select="concat($prefix, local-name(), '_')"/>
       <xsl:if test="@type">
-        <xsl:value-of select="@type"/>
-        <xsl:text>_</xsl:text>
+        <xsl:value-of select="concat(@type, '_')"/>
       </xsl:if>
     </xsl:variable>
 
@@ -100,6 +102,14 @@
         </xsl:attribute>
         <xsl:value-of select="$textValue"/>
       </field>
+      <xsl:if test="@authority">
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($this_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_', $suffix)"/>
+          </xsl:attribute>
+          <xsl:value-of select="$textValue"/>
+        </field>
+      </xsl:if>
     </xsl:if>
 
     <xsl:apply-templates mode="slurping_MODS">
