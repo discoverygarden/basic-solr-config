@@ -30,9 +30,11 @@
     <xsl:param name="pid">not provided</xsl:param>
     <xsl:param name="datastream">not provided</xsl:param>
 
+    <xsl:variable name="rawTextValue" select="normalize-space(text())"/>
+
     <xsl:variable name="textValue">
       <xsl:call-template name="get_ISO8601_date">
-        <xsl:with-param name="date" select="normalize-space(text())"/>
+        <xsl:with-param name="date" select="$rawTextValue"/>
         <xsl:with-param name="pid" select="$pid"/>
         <xsl:with-param name="datastream" select="$datastream"/>
       </xsl:call-template>
@@ -63,6 +65,12 @@
           </xsl:attribute>
           <xsl:value-of select="$textValue"/>
         </field>
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($this_prefix, local-name(), '_s')"/>
+          </xsl:attribute>
+          <xsl:value-of select="$rawTextValue"/>
+        </field>
       </xsl:if>
 
       <field>
@@ -70,6 +78,12 @@
           <xsl:value-of select="concat($prefix, local-name(), '_mdt')"/>
         </xsl:attribute>
         <xsl:value-of select="$textValue"/>
+      </field>
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, local-name(), '_ms')"/>
+        </xsl:attribute>
+        <xsl:value-of select="$rawTextValue"/>
       </field>
     </xsl:if>
   </xsl:template>
