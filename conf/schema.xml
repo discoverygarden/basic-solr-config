@@ -341,7 +341,6 @@
 <copyField source="*_s" dest="*_ms"/>
 <copyField source="*_s" dest="*_mt"/>
 <copyField source="*_ms" dest="*_mt"/>
-<copyField source="*_dt" dest="*_t"/>
 <copyField source="*_dt" dest="*_mt"/>
 <copyField source="*_dt" dest="*_mdt"/>
 <copyField source="*_mdt" dest="*_mt"/>
