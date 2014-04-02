@@ -40,31 +40,33 @@
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:if test="not(normalize-space($textValue)='')">
     <!-- Use attributes in field name. -->
-      <xsl:variable name="this_prefix">
-        <xsl:value-of select="$prefix"/>
-        <xsl:for-each select="@*">
-          <xsl:sort select="concat(local-name(), namespace-uri(self::node()))"/>
-          <xsl:value-of select="local-name()"/>
-          <xsl:text>_</xsl:text>
-          <xsl:value-of select="."/>
-          <xsl:text>_</xsl:text>
-        </xsl:for-each>
-      </xsl:variable>
+    <xsl:variable name="this_prefix">
+      <xsl:value-of select="$prefix"/>
+      <xsl:for-each select="@*">
+        <xsl:sort select="concat(local-name(), namespace-uri(self::node()))"/>
+        <xsl:value-of select="local-name()"/>
+        <xsl:text>_</xsl:text>
+        <xsl:value-of select="."/>
+        <xsl:text>_</xsl:text>
+      </xsl:for-each>
+    </xsl:variable>
 
-      <!--
-        We always assume multivalued dates only for related items as we may
-        have several related items of the same time.
-        @see http://www.loc.gov/standards/mods/userguide/relateditem.html
-      -->
-      <xsl:if test="not(ancestor::mods:relatedItem)">
+    <!--
+      We always assume multivalued dates only for related items as we may
+      have several related items of the same time.
+      @see http://www.loc.gov/standards/mods/userguide/relateditem.html
+    -->
+    <xsl:if test="not(ancestor::mods:relatedItem)">
+      <xsl:if test="not(normalize-space($textValue)='')">
         <field>
           <xsl:attribute name="name">
             <xsl:value-of select="concat($this_prefix, local-name(), '_dt')"/>
           </xsl:attribute>
           <xsl:value-of select="$textValue"/>
         </field>
+      </xsl:if>
+      <xsl:if test="not(normalize-space($rawTextValue)='')">
         <field>
           <xsl:attribute name="name">
             <xsl:value-of select="concat($this_prefix, local-name(), '_s')"/>
@@ -72,13 +74,17 @@
           <xsl:value-of select="$rawTextValue"/>
         </field>
       </xsl:if>
+    </xsl:if>
 
+    <xsl:if test="not(normalize-space($textValue)='')">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), '_mdt')"/>
         </xsl:attribute>
         <xsl:value-of select="$textValue"/>
       </field>
+    </xsl:if>
+    <xsl:if test="not(normalize-space($rawTextValue)='')">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), '_ms')"/>
