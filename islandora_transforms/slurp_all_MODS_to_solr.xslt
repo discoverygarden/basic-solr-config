@@ -60,44 +60,24 @@
     <xsl:variable name="field_name" select="normalize-space(concat($this_prefix, local-name()))"/>
     <!-- The method java.util.HashSet.add will return false when the value is
          already in the set. -->
-    <xsl:choose>
-      <xsl:when test="java:add($single_valued_hashset, $field_name)">
-        <xsl:if test="not(normalize-space($textValue)='')">
-          <field>
-            <xsl:attribute name="name">
-              <xsl:value-of select="concat($field_name, '_dt')"/>
-            </xsl:attribute>
-            <xsl:value-of select="$textValue"/>
-          </field>
-        </xsl:if>
-        <xsl:if test="not(normalize-space($rawTextValue)='')">
-          <field>
-            <xsl:attribute name="name">
-              <xsl:value-of select="concat($field_name, '_s')"/>
-            </xsl:attribute>
-            <xsl:value-of select="$rawTextValue"/>
-          </field>
-        </xsl:if>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:if test="not(normalize-space($textValue)='')">
-          <field>
-            <xsl:attribute name="name">
-              <xsl:value-of select="concat($field_name, '_mdt')"/>
-            </xsl:attribute>
-            <xsl:value-of select="$textValue"/>
-          </field>
-        </xsl:if>
-        <xsl:if test="not(normalize-space($rawTextValue)='')">
-          <field>
-            <xsl:attribute name="name">
-              <xsl:value-of select="concat($field_name, '_ms')"/>
-            </xsl:attribute>
-            <xsl:value-of select="$rawTextValue"/>
-          </field>
-        </xsl:if>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:if test="java:add($single_valued_hashset, $field_name)">
+      <xsl:if test="not(normalize-space($textValue)='')">
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($field_name, '_dt')"/>
+          </xsl:attribute>
+          <xsl:value-of select="$textValue"/>
+        </field>
+      </xsl:if>
+      <xsl:if test="not(normalize-space($rawTextValue)='')">
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($field_name, '_s')"/>
+          </xsl:attribute>
+          <xsl:value-of select="$rawTextValue"/>
+        </field>
+      </xsl:if>
+    </xsl:if>
 
     <xsl:if test="not(normalize-space($textValue)='')">
       <field>
