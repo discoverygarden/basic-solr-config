@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Basic MODS -->
 <xsl:stylesheet version="1.0"
+  xmlns:java="http://xml.apache.org/xalan/java"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:foxml="info:fedora/fedora-system:def/foxml#"
   xmlns:mods="http://www.loc.gov/mods/v3"
-     exclude-result-prefixes="mods">
+     exclude-result-prefixes="mods java">
   <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz_'" />
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ '" />
   <!-- <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/FgsIndex/islandora_transforms/library/xslt-date-template.xslt"/>-->
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/library/xslt-date-template.xslt"/>
+  <!-- HashSet to track single-valued fields. -->
+  <xsl:variable name="single_valued_hashset" select="java:java.util.HashSet.new()"/>
 
   <xsl:template match="foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]" name="index_MODS">
     <xsl:param name="content"/>
@@ -52,16 +55,16 @@
       </xsl:for-each>
     </xsl:variable>
 
-    <!--
-      We always assume multivalued dates only for related items as we may
-      have several related items of the same time.
-      @see http://www.loc.gov/standards/mods/userguide/relateditem.html
-    -->
-    <xsl:if test="not(ancestor::mods:relatedItem)">
+    <!-- Prevent multiple generating multiple instances of single-valued fields
+         by tracking things in a HashSet -->
+    <xsl:variable name="field_name" select="normalize-space(concat($this_prefix, local-name()))"/>
+    <!-- The method java.util.HashSet.add will return false when the value is
+         already in the set. -->
+    <xsl:if test="java:add($single_valued_hashset, $field_name)">
       <xsl:if test="not(normalize-space($textValue)='')">
         <field>
           <xsl:attribute name="name">
-            <xsl:value-of select="concat($this_prefix, local-name(), '_dt')"/>
+            <xsl:value-of select="concat($field_name, '_dt')"/>
           </xsl:attribute>
           <xsl:value-of select="$textValue"/>
         </field>
@@ -69,7 +72,7 @@
       <xsl:if test="not(normalize-space($rawTextValue)='')">
         <field>
           <xsl:attribute name="name">
-            <xsl:value-of select="concat($this_prefix, local-name(), '_s')"/>
+            <xsl:value-of select="concat($field_name, '_s')"/>
           </xsl:attribute>
           <xsl:value-of select="$rawTextValue"/>
         </field>
