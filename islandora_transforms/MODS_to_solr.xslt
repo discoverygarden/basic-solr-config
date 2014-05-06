@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Basic MODS 
-  @todo
-   look into deprecating this in favor of the slurp all MODS-->
+  This has been deprecated in favor of the slurp all MODS-->
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -14,7 +13,7 @@
     <xsl:param name="prefix">mods_</xsl:param>
     <xsl:param name="suffix">_ms</xsl:param>
 
-    <xsl:apply-templates select="$content/mods:mods">
+    <xsl:apply-templates select="$content//mods:mods[1]">
       <xsl:with-param name="prefix" select="$prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
     </xsl:apply-templates>
@@ -576,7 +575,7 @@
     </xsl:for-each>
 
     <!-- Languague Term -->
-    <xsl:for-each select="mods:language/mods:languageTerm[@authority='iso639-2b' and type='code'][normalize-space(text())]">
+    <xsl:for-each select="mods:language/mods:languageTerm[@authority='iso639-2b' and @type='code'][normalize-space(text())]">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, local-name(), $suffix)"/>
