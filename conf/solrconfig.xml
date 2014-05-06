@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
-  <!-- Set this to 'false' if you want solr to continue working after it has 
-       encountered an severe configuration error.  In a production environment, 
+  <!-- Set this to 'false' if you want solr to continue working after it has
+       encountered an severe configuration error.  In a production environment,
        you may want solr to keep working even if one handler is mis-configured.
 
        You may also set this to false using by setting the system property:
@@ -66,7 +66,7 @@
 
     <!--
       This option specifies which Lucene LockFactory implementation to use.
-      
+
       single = SingleInstanceLockFactory - suggested for a read-only index
                or when there is no possibility of another process trying
                to modify the index.
@@ -89,7 +89,7 @@
     <maxMergeDocs>2147483647</maxMergeDocs>
     <maxFieldLength>2147483647</maxFieldLength>
 
-    <!-- If true, unlock any held write or commit locks on startup. 
+    <!-- If true, unlock any held write or commit locks on startup.
          This defeats the locking mechanism that allows multiple
          processes to safely access a lucene index, and should be
          used with care.
@@ -97,17 +97,17 @@
      -->
     <unlockOnStartup>false</unlockOnStartup>
   </mainIndex>
-  
-  <!--	Enables JMX if and only if an existing MBeanServer is found, use 
+
+  <!--	Enables JMX if and only if an existing MBeanServer is found, use
   		this if you want to configure JMX through JVM parameters. Remove
   		this to disable exposing Solr configuration and statistics to JMX.
-  		
+
 		If you want to connect to a particular server, specify the agentId
 		e.g. <jmx agentId="myAgent" />
-		
+
 		If you want to start a new MBeanServer, specify the serviceUrl
 		e.g <jmx serviceurl="service:jmx:rmi:///jndi/rmi://localhost:9999/solr" />
-		
+
 		For more details see http://wiki.apache.org/solr/SolrJmx
   -->
   <jmx />
@@ -123,15 +123,15 @@
     <!-- Perform a <commit/> automatically under certain conditions:
          maxDocs - number of updates since last commit is greater than this
          maxTime - oldest uncommited update (in ms) is this long ago
-    <autoCommit> 
+    <autoCommit>
       <maxDocs>10000</maxDocs>
-      <maxTime>1000</maxTime> 
+      <maxTime>1000</maxTime>
     </autoCommit>
     -->
 
-    <autoCommit> 
-      <maxDocs>1000</maxDocs>
-      <maxTime>60</maxTime>
+    <autoCommit>
+      <maxDocs>200</maxDocs>
+      <maxTime>15</maxTime>
     </autoCommit>
 
     <!-- The RunExecutableListener executes an external command.
@@ -151,7 +151,7 @@
     </listener>
     -->
     <!-- A postOptimize event is fired only after every optimize command, useful
-         in conjunction with index distribution to only distribute optimized indicies 
+         in conjunction with index distribution to only distribute optimized indicies
     <listener event="postOptimize" class="solr.RunExecutableListener">
       <str name="exe">snapshooter</str>
       <str name="dir">solr/bin</str>
@@ -168,7 +168,7 @@
         queries.  An exception is thrown if exceeded.  -->
     <maxBooleanClauses>1024</maxBooleanClauses>
 
-    
+
     <!-- Cache used by SolrIndexSearcher for filters (DocSets),
          unordered sets of *all* documents that match a query.
          When a new searcher is opened, its caches may be prepopulated
@@ -244,7 +244,7 @@
          then documents 0 through 49 will be collected and cached.  Any further
          requests in that range can be satisfied via the cache.  -->
     <queryResultWindowSize>50</queryResultWindowSize>
-    
+
     <!-- Maximum number of documents to cache for any entry in the
          queryResultCache. -->
     <queryResultMaxDocsCached>200</queryResultMaxDocsCached>
@@ -290,7 +290,7 @@
 
   </query>
 
-  <!-- 
+  <!--
     Let the dispatch filter handler /select?qt=XXX
     handleSelect=true will use consistent error handling for /select and /update
     handleSelect=false will use solr1.1 style error formatting
@@ -298,9 +298,9 @@
   <requestDispatcher handleSelect="true" >
     <!--Make sure your system has some authentication before enabling remote streaming!  -->
     <requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048" />
-        
+
     <!-- Set HTTP caching related parameters (for proxy caches and clients).
-          
+
          To get the behaviour of Solr 1.2 (ie: no caching related headers)
          use the never304="true" option and do not specify a value for
          <cacheControl>
@@ -314,7 +314,7 @@
             You can change it to lastModFrom="dirLastMod" if you want the
             value to exactly corrispond to when the physical index was last
             modified.
-               
+
             etagSeed="..." is an option you can change to force the ETag
             header (and validation against If-None-Match requests) to be
             differnet even if the index has not changed (ie: when making
@@ -326,7 +326,7 @@
        <!-- If you include a <cacheControl> directive, it will be used to
             generate a Cache-Control header, as well as an Expires header
             if the value contains "max-age="
-               
+
             By default, no Cache-Control header is generated.
 
             You can use the <cacheControl> option even if you have set
@@ -335,11 +335,11 @@
        <!-- <cacheControl>max-age=30, public</cacheControl> -->
     </httpCaching>
   </requestDispatcher>
-  
-      
+
+
   <!-- requestHandler plugins... incoming queries will be dispatched to the
      correct handler based on the path or the qt (query type) param.
-     Names starting with a '/' are accessed with the a path equal to the 
+     Names starting with a '/' are accessed with the a path equal to the
      registered name.  Names without a leading '/' are accessed with:
       http://host/app/select?qt=name
      If no qt is defined, the requestHandler that declares default="true"
@@ -360,7 +360,7 @@
   <!-- DisMaxRequestHandler allows easy searching across multiple fields
        for simple user-entered phrases.  It's implementation is now
        just the standard SearchHandler with a default query type
-       of "dismax". 
+       of "dismax".
        see http://wiki.apache.org/solr/DisMaxRequestHandler
    -->
   <requestHandler name="dismax" class="solr.SearchHandler" >
@@ -385,7 +385,7 @@
      </str>
      <int name="ps">100</int>
      <str name="q.alt">*:*</str>
-     <!-- example highlighter config, enable per-query with hl=true -->     
+     <!-- example highlighter config, enable per-query with hl=true -->
      <str name="hl.fl">text features name</str>
      <!-- for this field, we want no fragmenting, just highlighting -->
      <str name="f.name.hl.fragsize">0</str>
@@ -449,13 +449,13 @@
       <str name="facet.query">price:[500 TO *]</str>
     </lst>
   </requestHandler>
-  
+
 
   <!--
    Search components are registered to SolrCore and used by Search Handlers
-   
+
    By default, the following components are avaliable:
-    
+
    <searchComponent name="query"     class="org.apache.solr.handler.component.QueryComponent" />
    <searchComponent name="facet"     class="org.apache.solr.handler.component.FacetComponent" />
    <searchComponent name="mlt"       class="org.apache.solr.handler.component.MoreLikeThisComponent" />
@@ -473,11 +473,11 @@
 
     If you register a searchComponent to one of the standard names, that will be used instead.
     To insert handlers before or after the 'standard' components, use:
-    
+
     <arr name="first-components">
       <str>myFirstComponentName</str>
     </arr>
-    
+
     <arr name="last-components">
       <str>myLastComponentName</str>
     </arr>
@@ -527,7 +527,7 @@
       <str>spellcheck</str>
     </arr>
   </requestHandler>
- 
+
   <!-- a search component that enables you to configure the top results for
        a given query regardless of the normal lucene scoring.-->
   <searchComponent name="elevator" class="solr.QueryElevationComponent" >
@@ -535,7 +535,7 @@
     <str name="queryFieldType">string</str>
     <str name="config-file">elevate.xml</str>
   </searchComponent>
- 
+
   <!-- a request handler utilizing the elevator component -->
   <requestHandler name="/elevate" class="solr.SearchHandler" startup="lazy">
     <lst name="defaults">
@@ -545,14 +545,14 @@
       <str>elevator</str>
     </arr>
   </requestHandler>
-  
 
-  <!-- Update request handler.  
-  
-       Note: Since solr1.1 requestHandlers requires a valid content type header if posted in 
+
+  <!-- Update request handler.
+
+       Note: Since solr1.1 requestHandlers requires a valid content type header if posted in
        the body. For example, curl now requires: -H 'Content-type:text/xml; charset=utf-8'
        The response format differs from solr1.1 formatting and returns a standard error code.
-       
+
        To enable solr1.1 behavior, remove the /update handler or change its path
     -->
   <requestHandler name="/update" class="solr.XmlUpdateRequestHandler" />
@@ -562,33 +562,33 @@
    for debugging and as a token server for other types of applications
    -->
   <requestHandler name="/analysis" class="solr.AnalysisRequestHandler" />
-  
+
 
   <!-- CSV update handler, loaded on demand -->
   <requestHandler name="/update/csv" class="solr.CSVRequestHandler" startup="lazy" />
 
 
-  <!-- 
-   Admin Handlers - This will register all the standard admin RequestHandlers.  Adding 
+  <!--
+   Admin Handlers - This will register all the standard admin RequestHandlers.  Adding
    this single handler is equivolent to registering:
-   
+
   <requestHandler name="/admin/luke"       class="org.apache.solr.handler.admin.LukeRequestHandler" />
   <requestHandler name="/admin/system"     class="org.apache.solr.handler.admin.SystemInfoHandler" />
   <requestHandler name="/admin/plugins"    class="org.apache.solr.handler.admin.PluginInfoHandler" />
   <requestHandler name="/admin/threads"    class="org.apache.solr.handler.admin.ThreadDumpHandler" />
   <requestHandler name="/admin/properties" class="org.apache.solr.handler.admin.PropertiesRequestHandler" />
   <requestHandler name="/admin/file"       class="org.apache.solr.handler.admin.ShowFileRequestHandler" >
-  
+
   If you wish to hide files under ${solr.home}/conf, explicitly register the ShowFileRequestHandler using:
   <requestHandler name="/admin/file" class="org.apache.solr.handler.admin.ShowFileRequestHandler" >
     <lst name="invariants">
-     <str name="hidden">synonyms.txt</str> 
-     <str name="hidden">anotherfile.txt</str> 
+     <str name="hidden">synonyms.txt</str>
+     <str name="hidden">anotherfile.txt</str>
     </lst>
   </requestHandler>
   -->
   <requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
-  
+
   <!-- ping/healthcheck -->
   <requestHandler name="/admin/ping" class="PingRequestHandler">
     <lst name="defaults">
@@ -597,7 +597,7 @@
       <str name="echoParams">all</str>
     </lst>
   </requestHandler>
-    
+
   <!-- Echo the request contents back to the client -->
   <requestHandler name="/debug/dump" class="solr.DumpRequestHandler" >
     <lst name="defaults">
@@ -605,7 +605,7 @@
      <str name="echoHandler">true</str>
     </lst>
   </requestHandler>
-  
+
   <highlighting>
    <!-- Configure the standard fragmenter -->
    <!-- This could most likely be commented out in the "default" case -->
@@ -621,12 +621,12 @@
       <!-- slightly smaller fragsizes work better because of slop -->
       <int name="hl.fragsize">70</int>
       <!-- allow 50% slop on fragment sizes -->
-      <float name="hl.regex.slop">0.5</float> 
+      <float name="hl.regex.slop">0.5</float>
       <!-- a basic sentence pattern -->
       <str name="hl.regex.pattern">[-\w ,/\n\"']{20,200}</str>
     </lst>
    </fragmenter>
-   
+
    <!-- Configure the standard formatter -->
    <formatter name="html" class="org.apache.solr.highlight.HtmlFormatter" default="true">
     <lst name="defaults">
@@ -635,12 +635,12 @@
     </lst>
    </formatter>
   </highlighting>
-  
-  
+
+
   <!-- queryResponseWriter plugins... query responses will be written using the
     writer specified by the 'wt' request parameter matching the name of a registered
     writer.
-    The "default" writer is the default and will be used if 'wt' is not specified 
+    The "default" writer is the default and will be used if 'wt' is not specified
     in the request. XMLResponseWriter will be used if nothing is specified here.
     The json, python, and ruby writers are also available by default.
 
@@ -656,25 +656,25 @@
 
   <!-- XSLT response writer transforms the XML output by any xslt file found
        in Solr's conf/xslt directory.  Changes to xslt files are checked for
-       every xsltCacheLifetimeSeconds.  
+       every xsltCacheLifetimeSeconds.
    -->
   <queryResponseWriter name="xslt" class="org.apache.solr.request.XSLTResponseWriter">
     <int name="xsltCacheLifetimeSeconds">5</int>
-  </queryResponseWriter> 
+  </queryResponseWriter>
 
 
   <!-- example of registering a query parser
   <queryParser name="lucene" class="org.apache.solr.search.LuceneQParserPlugin"/>
   -->
 
-  <!-- example of registering a custom function parser 
+  <!-- example of registering a custom function parser
   <valueSourceParser name="myfunc" class="com.mycompany.MyValueSourceParser" />
   -->
-    
-  <!-- config for the admin interface --> 
+
+  <!-- config for the admin interface -->
   <admin>
     <defaultQuery>solr</defaultQuery>
-    
+
     <!-- configure a healthcheck file for servers behind a loadbalancer
     <healthcheck type="file">server-enabled</healthcheck>
     -->
