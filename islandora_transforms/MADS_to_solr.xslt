@@ -134,7 +134,7 @@
     </xsl:for-each>
 
     <xsl:for-each select="$content//*">
-      <xsl:if test="text() [normalize-space(.) ] and name(.) != 'namePart'">
+      <xsl:if test="text() [normalize-space(.) ] and local-name(.) != 'namePart'">
         <field>
           <xsl:choose>
             <xsl:when test="@*">
@@ -146,7 +146,7 @@
 
             <xsl:otherwise>
               <xsl:attribute name="name">
-                <xsl:value-of select="concat($prefix, name(.), $suffix)"/>
+                <xsl:value-of select="concat($prefix, local-name(.), $suffix)"/>
               </xsl:attribute>
               <xsl:value-of select="normalize-space(text())"/>
             </xsl:otherwise>
