@@ -17,20 +17,32 @@
             by tracking things in a HashSet -->
             <!-- The method java.util.HashSet.add will return false when the value is
             already in the set. -->
-            <xsl:if test="java:add($single_valued_hashset_for_rels_int, concat($prefix, local-name(), '_uri_s'))">
+            <xsl:choose>
+            <xsl:when test="java:add($single_valued_hashset_for_rels_int, concat($prefix, local-name(), '_uri_s'))">
                 <field>
                     <xsl:attribute name="name">
                         <xsl:value-of select="concat($prefix, local-name(), '_uri_s')"/>
                     </xsl:attribute>
                     <xsl:value-of select="@rdf:resource"/>
                 </field>
-            </xsl:if>
+                <xsl:if test="@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#int'">
+                    <field>
+                        <xsl:attribute name="name">
+                            <xsl:value-of select="concat($prefix, local-name(), '_uri_l')"/>
+                        </xsl:attribute>
+                        <xsl:value-of select="@rdf:resource"/>
+                    </field>
+                </xsl:if>
+            </xsl:when>
+            <xsl:otherwise>
             <field>
                 <xsl:attribute name="name">
                     <xsl:value-of select="concat($prefix, local-name(), '_uri', $suffix)"/>
                 </xsl:attribute>
                 <xsl:value-of select="@rdf:resource"/>
             </field>
+            </xsl:otherwise>
+            </xsl:choose>    
         </xsl:for-each>
         <xsl:for-each
             select="$content//rdf:Description/*[not(@rdf:resource)][normalize-space(text())]">
@@ -38,7 +50,8 @@
             by tracking things in a HashSet -->
             <!-- The method java.util.HashSet.add will return false when the value is
             already in the set. -->
-            <xsl:if
+            <xsl:choose>
+            <xsl:when
                 test="java:add($single_valued_hashset_for_rels_int, concat($prefix, local-name(), '_literal_s'))">
                 <field>
                     <xsl:attribute name="name">
@@ -46,13 +59,24 @@
                     </xsl:attribute>
                     <xsl:value-of select="text()"/>
                 </field>
-            </xsl:if>
+            </xsl:when>
+            <xsl:otherwise>
             <field>
                 <xsl:attribute name="name">
                     <xsl:value-of select="concat($prefix, local-name(), '_literal', $suffix)"/>
                 </xsl:attribute>
                 <xsl:value-of select="text()"/>
             </field>
+            <xsl:if test="@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#int'">
+            <field>
+                <xsl:attribute name="name">
+                    <xsl:value-of select="concat($prefix, local-name(), '_literal_l')"/>
+                </xsl:attribute>
+                <xsl:value-of select="text()"/>
+            </field>
+            </xsl:if>
+            </xsl:otherwise>
+            </xsl:choose>
         </xsl:for-each>
     </xsl:template>
 
