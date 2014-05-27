@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- RELS-EXT -->
-<xsl:stylesheet version="1.0" xmlns:java="http://xml.apache.org/xalan/java"
+<xsl:stylesheet version="1.0"
+    xmlns:java="http://xml.apache.org/xalan/java"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:foxml="info:fedora/fedora-system:def/foxml#"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="rdf java">
@@ -84,4 +85,3 @@
     </xsl:template>
 
 </xsl:stylesheet>
-

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- RELS-INT 
 @todo make the subject of a relationship included in the name of the field-->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:java="http://xml.apache.org/xalan/java"
     xmlns:foxml="info:fedora/fedora-system:def/foxml#"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="rdf java">
@@ -81,4 +82,3 @@
     </xsl:template>
 
 </xsl:stylesheet>
-
