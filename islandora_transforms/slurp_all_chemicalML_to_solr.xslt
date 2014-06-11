@@ -21,10 +21,13 @@
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
 
+    <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz_'" />
+    <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ '" />
+
     <xsl:variable name="this_prefix">
       <xsl:value-of select="concat($prefix, local-name(), '_')"/>
-      <xsl:if test="@metadataType">
-        <xsl:value-of select="concat(@metadataType, '_')"/>
+      <xsl:if test="@type">
+        <xsl:value-of select="concat(@type, '_')"/>
       </xsl:if>
     </xsl:variable>
 
@@ -39,12 +42,27 @@
         </xsl:attribute>
         <xsl:value-of select="$textValue"/>
       </field>
+      <!-- Fields are duplicated for authority because searches across authorities are common. -->
+      <xsl:if test="@authority">
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($this_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_', $suffix)"/>
+          </xsl:attribute>
+          <xsl:value-of select="$textValue"/>
+        </field>
+      </xsl:if>
     </xsl:if>
 
     <xsl:apply-templates mode="slurping_CML">
       <xsl:with-param name="prefix" select="$this_prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
     </xsl:apply-templates>
+    <xsl:if test="@authority">
+      <xsl:apply-templates mode="slurping_MODS">
+        <xsl:with-param name="prefix" select="concat($this_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_')"/>
+        <xsl:with-param name="suffix" select="$suffix"/>
+      </xsl:apply-templates>
+    </xsl:if>
   </xsl:template>
 
   <!-- Avoid using text alone. -->
