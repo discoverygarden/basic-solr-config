@@ -606,6 +606,18 @@
     </lst>
   </requestHandler>
 
+  <!--
+    Need to slap in the dataimporthandler JARs from the main Solr distribution,
+    and the MySQL connector JAR for this data import handler implementation.
+  -->
+  <!--
+  <requestHandler name="/dataimport" class="org.apache.solr.handler.dataimport.DataImportHandler">
+    <lst name="defaults">
+      <str name="config">data-config.xml</str>
+    </lst>
+  </requestHandler>
+  -->
+
   <highlighting>
    <!-- Configure the standard fragmenter -->
    <!-- This could most likely be commented out in the "default" case -->
