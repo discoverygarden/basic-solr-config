@@ -37,6 +37,7 @@ function dropTrash(row) {
   ]]></script>
 
   <document name="drupal_content">
+    <!-- Index Drupal node content -->
     <entity name="node" pk="nid" transformer="TemplateTransformer"
 query="
 SELECT node.nid, node.type, FROM_UNIXTIME(node.changed, '%Y-%m-%dT%TZ') AS changed, FROM_UNIXTIME(node.created, '%Y-%m-%dT%TZ') AS created, node.uid, users.name
@@ -71,6 +72,7 @@ WHERE node.nid=${dih.delta.nid}"
       <field column="type" name="drupal_node_content_type_s"/>
       <field column="uid" name="drupal_node_creator_uid_i"/>
       <field column="name" name="drupal_node_creator_s"/>
+      <!-- Determine what fields are available for the given node -->
       <entity name="field" transformer="TemplateTransformer" query="
 SELECT field.field_name, field.entity_type
 FROM field_config_instance AS field
@@ -79,6 +81,7 @@ WHERE field.bundle = '${dataimporter.functions.escapeSql(node.type)}' AND field.
         <!-- XXX: Ideally, we could suppress these fields entirely... Anyway. -->
         <field  column="field_name" name="drupal_field_info_field_name_ms"/>
         <field  column="entity_type" name="drupal_field_info_entity_type_ms"/>
+        <!-- Get the content for the fields on the node -->
         <entity name="field_data" transformer="script:rewriteFieldNames" query="
 SELECT field_data.*, CONCAT('drupal_field_data_', '${dataimporter.functions.escapeSql(field.field_name)}', '_') AS data_import_handler_prefix
 FROM field_data_${dataimporter.functions.escapeSql(field.field_name)} AS field_data
@@ -86,11 +89,12 @@ WHERE field_data.entity_type = '${dataimporter.functions.escapeSql(field.entity_
 "/>
       </entity>
     </entity>
+    <!-- Index Drupal users. -->
     <entity name="user" pk="uid" transformer="TemplateTransformer" query="
 SELECT users.uid, users.name
 FROM users
 WHERE '${dataimporter.request.clean}' != 'false'
-  OR users.created >= UNIX_TIMESTAMP(DATE('${dataimporter.last_index_time}'))"
+  OR users.created >= UNIX_TIMESTAMP('${dataimporter.last_index_time}')"
   preImportDeleteQuery="PID:drupal-user\:*">
       <field column="PID" template="drupal-user:${user.uid}"/>
       <field column="RELS_EXT_hasModel_uri_ms" template="info:fedora/drupal:userCModel"/>
