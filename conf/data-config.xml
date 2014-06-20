@@ -91,7 +91,7 @@ WHERE field_data.entity_type = '${dataimporter.functions.escapeSql(field.entity_
     </entity>
     <!-- Index Drupal users. -->
     <entity name="user" pk="uid" transformer="TemplateTransformer" query="
-SELECT users.uid, users.name
+SELECT users.uid, users.name, users.mail, users.signature, users.signature_format, FROM_UNIXTIME(users.access, '%Y-%m-%dT%TZ') AS access, FROM_UNIXTIME(users.created, '%Y-%m-%dT%TZ') AS created
 FROM users
 WHERE '${dataimporter.request.clean}' != 'false'
   OR users.created >= UNIX_TIMESTAMP('${dataimporter.last_index_time}')"
@@ -100,6 +100,11 @@ WHERE '${dataimporter.request.clean}' != 'false'
       <field column="RELS_EXT_hasModel_uri_ms" template="info:fedora/drupal:userCModel"/>
       <field column="uid" name="drupal_uid_i"/>
       <field column="name" name="drupal_title_s"/>
+      <field column="mail" name="drupal_user_mail_s"/>
+      <field column="signature" name="drupal_user_signature_s"/>
+      <field column="signature_format" name="drupal_user_signature_format_s"/>
+      <field column="created" name="drupal_user_created_dt"/>
+      <field column="access" name="drupal_user_access_dt"/>
     </entity>
   </document>
 </dataConfig>
