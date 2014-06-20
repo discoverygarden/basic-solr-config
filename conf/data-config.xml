@@ -46,7 +46,7 @@ FROM
 INNER JOIN
   users ON node.uid = users.uid
 WHERE '${dataimporter.request.clean}' != 'false'
-  OR node.changed >= UNIX_TIMESTAMP('${dataimport.node.last_index_time}')"
+  OR node.changed >= UNIX_TIMESTAMP('${dataimporter.last_index_time}')"
 deltaQuery="
 SELECT node.nid
 FROM node
