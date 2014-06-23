@@ -609,14 +609,14 @@
   <!--
     Need to slap in the dataimporthandler JARs from the main Solr distribution,
     and the MySQL connector JAR for this data import handler implementation.
+
+    We assume that something like the "data-import-config.xml.erb" has been
+    used to generate the "data-import-config.xml" file.
   -->
-  <!--
-  <requestHandler name="/dataimport" class="org.apache.solr.handler.dataimport.DataImportHandler">
-    <lst name="defaults">
-      <str name="config">data-config.xml</str>
-    </lst>
-  </requestHandler>
-  -->
+  <xi:include href="data-import-config.xml" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <!-- If it doesn't exist, do nothing. -->
+    <xi:fallback/>
+  </xi:include>
 
   <highlighting>
    <!-- Configure the standard fragmenter -->

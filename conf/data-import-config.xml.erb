@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<requestHandler name="/dataimport" class="org.apache.solr.handler.dataimport.DataImportHandler">
+  <lst name="defaults">
+    <str name="config">data-config.xml</str>
+    <lst name="datasource">
+       <str name="driver">com.mysql.jdbc.Driver</str>
+       <str name="url">jdbc:mysql://localhost/<%= @drupal_dbname %></str>
+       <str name="user"><%= @drupal_db_username %></str>
+       <str name="password"><%= @drupal_db_password %></str>
+    </lst>
+  </lst>
+</requestHandler>
