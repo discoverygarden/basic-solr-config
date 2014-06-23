@@ -1,12 +1,4 @@
 <dataConfig>
-  <dataSource
-    type="JdbcDataSource"
-    driver="com.mysql.jdbc.Driver"
-    url="jdbc:mysql://localhost/drupal"
-    user="root"
-    password="islandora"
-  />
-
   <script><![CDATA[
 function rewriteFieldNames(row) {
   var to_remove = new java.util.Vector();
