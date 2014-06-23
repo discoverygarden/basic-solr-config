@@ -4,9 +4,9 @@
     <str name="config">data-config.xml</str>
     <lst name="datasource">
        <str name="driver">com.mysql.jdbc.Driver</str>
-       <str name="url">jdbc:mysql://localhost/<%= @drupal_dbname %></str>
-       <str name="user"><%= @drupal_db_username %></str>
-       <str name="password"><%= @drupal_db_password %></str>
+       <str name="url">jdbc:mysql://localhost/<%= drupaldb %></str>
+       <str name="user"><%= drupaldbuser %></str>
+       <str name="password"><%= drupaldbpassword %></str>
     </lst>
   </lst>
 </requestHandler>
