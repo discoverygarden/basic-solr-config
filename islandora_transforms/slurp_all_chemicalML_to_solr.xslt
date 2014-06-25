@@ -58,7 +58,7 @@
       <xsl:with-param name="suffix" select="$suffix"/>
     </xsl:apply-templates>
     <xsl:if test="@authority">
-      <xsl:apply-templates mode="slurping_MODS">
+      <xsl:apply-templates mode="slurping_CML">
         <xsl:with-param name="prefix" select="concat($this_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_')"/>
         <xsl:with-param name="suffix" select="$suffix"/>
       </xsl:apply-templates>
