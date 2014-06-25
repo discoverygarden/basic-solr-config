@@ -5,7 +5,7 @@
   xmlns:foxml="info:fedora/fedora-system:def/foxml#">
   <xsl:template match="foxml:datastream[@ID='EAD']/foxml:datastreamVersion[last()]" name="index_EAD">
     <xsl:param name="content"/>
-    <xsl:param name="prefix">ead_</xsl:param>
+    <xsl:param name="prefix"></xsl:param>
     <xsl:param name="suffix">ms</xsl:param>
 
     <xsl:apply-templates mode="slurping_EAD" select="$content//*[local-name() = 'ead'][1]">
