@@ -8,7 +8,11 @@
     <xsl:param name="prefix"></xsl:param>
     <xsl:param name="suffix">ms</xsl:param>
 
-    <xsl:apply-templates mode="slurping_EAD" select="$content//*[local-name() = 'ead'][1]">
+    <!--
+      XXX: EAD doesn't seem to be reliably namespaced? Let's just match the root
+      "ead" element.
+    -->
+    <xsl:apply-templates mode="slurping_EAD" select="$content/*[local-name() = 'ead']">
       <xsl:with-param name="prefix" select="$prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
     </xsl:apply-templates>
