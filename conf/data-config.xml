@@ -32,7 +32,7 @@ function dropTrash(row) {
     <!-- Index Drupal node content -->
     <entity name="node" pk="nid" transformer="TemplateTransformer"
 query="
-SELECT node.nid, node.type, FROM_UNIXTIME(node.changed, '%Y-%m-%dT%TZ') AS changed, FROM_UNIXTIME(node.created, '%Y-%m-%dT%TZ') AS created, node.uid, users.name
+SELECT node.nid, node.title, node.type, FROM_UNIXTIME(node.changed, '%Y-%m-%dT%TZ') AS changed, FROM_UNIXTIME(node.created, '%Y-%m-%dT%TZ') AS created, node.uid, users.name
 FROM
   node
 INNER JOIN
@@ -59,6 +59,7 @@ WHERE node.nid=${dih.delta.nid}"
       <field column="PID" template="drupal-node-content:${node.nid}"/>
       <field column="RELS_EXT_hasModel_uri_ms" template="info:fedora/drupal:nodeCModel"/>
       <field column="nid" name="drupal_nid_i"/>
+      <field column="title" name="drupal_title_s"/>
       <field column="created" name="drupal_node_created_dt"/>
       <field column="changed" name="drupal_node_changed_dt"/>
       <field column="type" name="drupal_node_content_type_s"/>
