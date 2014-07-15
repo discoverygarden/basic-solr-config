@@ -141,20 +141,19 @@
                   FROM &lt;#ri&gt;
                   WHERE {
                     {
-                      ?sub fm:hasModel &lt;info:fedora/islandora:newspaperCModel&gt; {
-                        ?issue fre:isMemberOf ?sub .
+                      &lt;%PID_URI%&gt; fm:hasModel &lt;info:fedora/islandora:newspaperCModel&gt; {
+                        ?issue fre:isMemberOf &lt;%PID_URI%&gt; .
                         ?obj islandora:isPageOf ?issue
                       }
                       UNION {
-                        ?obj fre:isMemberOf ?sub
+                        ?obj fre:isMemberOf &lt;%PID_URI%&gt;
                       }
                     }
                     UNION {
-                      ?sub fm:hasModel &lt;info:fedora/islandora:newspaperIssueCModel&gt; .
-                      ?obj islandora:isPageOf ?sub
+                      &lt;%PID_URI%&gt; fm:hasModel &lt;info:fedora/islandora:newspaperIssueCModel&gt; .
+                      ?obj islandora:isPageOf &lt;%PID_URI%&gt;
                     }
                     ?obj fm:state fm:Active
-                    FILTER(sameTerm(?sub, &lt;%PID_URI%&gt;))
                   }
                 </xsl:with-param>
               </xsl:call-template>

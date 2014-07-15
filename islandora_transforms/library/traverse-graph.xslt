@@ -60,16 +60,19 @@
         <xsl:if test="$debug">
     <xsl:message>diff: <xsl:value-of select="@uri"/></xsl:message>
         </xsl:if>
+        <xsl:variable name="new_query">
+          <xsl:call-template name="_recursive_string_replace">
+            <xsl:with-param name="string" select="$query"/>
+            <xsl:with-param name="find" select="'%PID_URI%'" />
+            <xsl:with-param name="replace" select="@uri" />
+          </xsl:call-template>
+        </xsl:variable>
         <xsl:variable name="query_results">
-    <xsl:call-template name="perform_traversal_query">
-                  <xsl:with-param name="risearch" select="$risearch"/>
-      <xsl:with-param name="query">
-        <xsl:value-of select="substring-before($query, '%PID_URI%')"/>
-        <xsl:value-of select="@uri"/>
-        <xsl:value-of select="substring-after($query, '%PID_URI%')"/>
-      </xsl:with-param>
-      <xsl:with-param name="lang">sparql</xsl:with-param>
-    </xsl:call-template>
+          <xsl:call-template name="perform_traversal_query">
+            <xsl:with-param name="risearch" select="$risearch"/>
+            <xsl:with-param name="query" select="$new_query"/>
+            <xsl:with-param name="lang">sparql</xsl:with-param>
+          </xsl:call-template>
         </xsl:variable>
         <xsl:copy-of select="xalan:nodeset($query_results)/res:sparql/res:results/res:result/res:obj"/>
       </xsl:for-each>
@@ -95,10 +98,31 @@
       <xsl:param name="query"/>
       <xsl:param name="lang">itql</xsl:param>
       <xsl:param name="additional_params"/>
-      
+
       <xsl:variable name="encoded_query" select="encoder:encode(normalize-space($query))"/>
-      
+
       <xsl:variable name="query_url" select="concat($risearch, '?query=', $encoded_query, '&amp;lang=', $lang, $additional_params)"/>
       <xsl:copy-of select="document($query_url)"/>
   </xsl:template>
+
+  <xsl:template name="_recursive_string_replace">
+    <xsl:param name="string" />
+    <xsl:param name="find" />
+    <xsl:param name="replace" />
+
+    <xsl:choose>
+      <xsl:when test="contains($string, $find)">
+        <xsl:variable name="new_string" select="concat(substring-before($string, $find), $replace, substring-after($string, $find))" />
+        <xsl:call-template name="_recursive_string_replace">
+          <xsl:with-param name="string" select="$new_string" />
+          <xsl:with-param name="find" select="$find" />
+          <xsl:with-param name="replace" select="$replace" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$string" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
 </xsl:stylesheet>
