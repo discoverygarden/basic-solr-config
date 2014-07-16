@@ -4,6 +4,7 @@
     xmlns:mods="http://www.loc.gov/mods/v3"
     xmlns:ead="urn:isbn:1-931666-22-9"
     xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:encoder="xalan://java.net.URLEncoder"
     exclude-result-prefixes="ead">
 
     <xsl:template match="mods:relatedItem[@type='host' and @xlink:href and @xlink:role='islandora-manuscript-finding-aid']" mode="slurping_MODS">
