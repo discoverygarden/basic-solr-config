@@ -8,10 +8,26 @@
     exclude-result-prefixes="ead">
 
     <xsl:template match="mods:relatedItem[@type='host' and @xlink:href and @xlink:role='islandora-manuscript-finding-aid']" mode="slurping_MODS">
+      <xsl:param name="prefix"/>
+      <xsl:param name="suffix"/>
+      <xsl:param name="pid">not provided</xsl:param>
+      <xsl:param name="datastream">not provided</xsl:param>
+
       <xsl:variable name="xlink" select='@xlink:href'/>
-      <xsl:variable name="pid" select='substring-before(substring-after($xlink, "/"), "/")'/>
+      <xsl:variable name="finding_aid_pid" select='substring-before(substring-after($xlink, "/"), "/")'/>
       <xsl:variable name="ref" select='substring-after($xlink, "#")'/>
-      <xsl:apply-templates select="document(concat($PROT, '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', $HOST, ':', $PORT, '/fedora/objects/', $pid, '/datastreams/EAD/content'))//ead:*[@id=$ref]" mode="dereffed_component"/>
+      <xsl:apply-templates select="document(concat($PROT, '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', $HOST, ':', $PORT, '/fedora/objects/', $finding_aid_pid, '/datastreams/EAD/content'))//ead:*[@id=$ref]" mode="dereffed_component"/>
+      <xsl:apply-templates mode="slurping_MODS">
+        <xsl:with-param name="prefix">
+          <xsl:value-of select="concat($prefix, local-name(), '_')"/>
+          <xsl:if test="@type">
+            <xsl:value-of select="concat(@type, '_')"/>
+          </xsl:if>
+        </xsl:with-param>
+        <xsl:with-param name="suffix" select="$suffix"/>
+        <xsl:with-param name="pid" select="$pid"/>
+        <xsl:with-param name="datastream" select="$datastream"/>
+      </xsl:apply-templates>
     </xsl:template>
 
     <xsl:template match="ead:archdesc" mode="dereffed_component">
