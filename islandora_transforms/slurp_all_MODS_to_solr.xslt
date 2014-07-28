@@ -197,7 +197,8 @@
     </xsl:if>
   </xsl:template>
 
-  <!-- Handle the actual indexing of the majority of MODS elements. -->
+  <!-- Handle the actual indexing of the majority of MODS elements, including
+    the recursive step of kicking off the indexing of subelements. -->
   <xsl:template name="general_mods_field">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
