@@ -210,7 +210,7 @@
         <xsl:value-of select="$value"/>
       </field>
     </xsl:if>
-    <xsl:if test="$node/@authorityURI">
+    <xsl:if test="normalize-space($node/@authorityURI)">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, 'authorityURI_', $suffix)"/>
