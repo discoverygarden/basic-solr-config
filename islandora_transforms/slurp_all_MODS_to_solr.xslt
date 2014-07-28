@@ -136,6 +136,9 @@
     </xsl:if>
   </xsl:template>
 
+  <!-- Intercept names with role terms, so we can create copies of the fields
+    including the role term in the name of generated fields. (Hurray, additional
+    specificity!) -->
   <xsl:template match="mods:name[mods:role/mods:roleTerm]" mode="slurping_MODS">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
@@ -194,6 +197,7 @@
     </xsl:if>
   </xsl:template>
 
+  <!-- Handle the actual indexing of the majority of MODS elements. -->
   <xsl:template name="general_mods_field">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
