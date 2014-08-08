@@ -1,0 +1,103 @@
+<dataConfig>
+  <script><![CDATA[
+function rewriteFieldNames(row) {
+  var to_remove = new java.util.Vector();
+  var dihp = 'data_import_handler_prefix';
+  to_remove.add(dihp);
+  var prefix = row.get(dihp);
+  var suffix = '_ms';
+  var keys = new java.util.Vector();
+  keys.addAll(row.keySet());
+  var key_count = keys.size();
+  for (var i = 0; i < key_count; i++) {
+    var prop = keys.get(i);
+    if (prop == dihp) {
+      continue;
+    }
+    row.put(prefix + prop + suffix, row.get(prop));
+    to_remove.add(prop);
+  }
+  row.keySet().removeAll(to_remove);
+  return row;
+}
+
+function dropTrash(row) {
+  row.remove('entity_type');
+  row.remove('field_name');
+  return row;
+}
+  ]]></script>
+
+  <document name="drupal_content">
+    <!-- Index Drupal node content -->
+    <entity name="node" pk="nid" transformer="TemplateTransformer"
+query="
+SELECT node.nid, node.title, node.type, FROM_UNIXTIME(node.changed, '%Y-%m-%dT%TZ') AS changed, FROM_UNIXTIME(node.created, '%Y-%m-%dT%TZ') AS created, node.uid, users.name
+FROM
+  node
+INNER JOIN
+  users ON node.uid = users.uid
+WHERE '${dataimporter.request.clean}' != 'false'
+  OR node.changed >= UNIX_TIMESTAMP('${dataimporter.last_index_time}')"
+deltaQuery="
+SELECT node.nid
+FROM node
+WHERE node.status=1 AND node.changed >= UNIX_TIMESTAMP('${dataimporter.last_index_time}')"
+deletedPkQuery="
+SELECT node.nid
+FROM node
+WHERE node.status=0 AND node.changed >= UNIX_TIMESTAMP('${dataimporter.last_index_time}')"
+deltaImportQuery="
+SELECT node.nid, node.type, FROM_UNIXTIME(node.changed, '%Y-%m-%dT%TZ') AS changed, FROM_UNIXTIME(node.created, '%Y-%m-%dT%TZ') AS created, node.uid, users.name
+FROM
+  node
+INNER JOIN
+  users ON node.uid = users.uid
+WHERE node.nid=${dih.delta.nid}"
+
+  preImportDeleteQuery="PID:drupal-node-content\:*">
+      <field column="PID" template="drupal-node-content:${node.nid}"/>
+      <field column="RELS_EXT_hasModel_uri_ms" template="info:fedora/drupal:nodeCModel"/>
+      <field column="nid" name="drupal_nid_i"/>
+      <field column="title" name="drupal_title_s"/>
+      <field column="created" name="drupal_node_created_dt"/>
+      <field column="changed" name="drupal_node_changed_dt"/>
+      <field column="type" name="drupal_node_content_type_s"/>
+      <field column="uid" name="drupal_node_creator_uid_i"/>
+      <field column="name" name="drupal_node_creator_s"/>
+      <!-- Determine what fields are available for the given node -->
+      <entity name="field" transformer="TemplateTransformer" query="
+SELECT field.field_name, field.entity_type
+FROM field_config_instance AS field
+WHERE field.bundle = '${dataimporter.functions.escapeSql(node.type)}' AND field.deleted = 0
+">
+        <!-- XXX: Ideally, we could suppress these fields entirely... Anyway. -->
+        <field  column="field_name" name="drupal_field_info_field_name_ms"/>
+        <field  column="entity_type" name="drupal_field_info_entity_type_ms"/>
+        <!-- Get the content for the fields on the node -->
+        <entity name="field_data" transformer="script:rewriteFieldNames" query="
+SELECT field_data.*, CONCAT('drupal_field_data_', '${dataimporter.functions.escapeSql(field.field_name)}', '_') AS data_import_handler_prefix
+FROM field_data_${dataimporter.functions.escapeSql(field.field_name)} AS field_data
+WHERE field_data.entity_type = '${dataimporter.functions.escapeSql(field.entity_type)}' AND field_data.bundle = '${dataimporter.functions.escapeSql(node.type)}' AND field_data.entity_id = '${dataimporter.functions.escapeSql(node.nid)}'
+"/>
+      </entity>
+    </entity>
+    <!-- Index Drupal users. -->
+    <entity name="user" pk="uid" transformer="TemplateTransformer" query="
+SELECT users.uid, users.name, users.mail, users.signature, users.signature_format, FROM_UNIXTIME(users.access, '%Y-%m-%dT%TZ') AS access, FROM_UNIXTIME(users.created, '%Y-%m-%dT%TZ') AS created
+FROM users
+WHERE users.uid > 0 AND ('${dataimporter.request.clean}' != 'false'
+  OR users.created >= UNIX_TIMESTAMP('${dataimporter.last_index_time}'))"
+  preImportDeleteQuery="PID:drupal-user\:*">
+      <field column="PID" template="drupal-user:${user.uid}"/>
+      <field column="RELS_EXT_hasModel_uri_ms" template="info:fedora/drupal:userCModel"/>
+      <field column="uid" name="drupal_uid_i"/>
+      <field column="name" name="drupal_title_s"/>
+      <field column="mail" name="drupal_user_mail_s"/>
+      <field column="signature" name="drupal_user_signature_s"/>
+      <field column="signature_format" name="drupal_user_signature_format_s"/>
+      <field column="created" name="drupal_user_created_dt"/>
+      <field column="access" name="drupal_user_access_dt"/>
+    </entity>
+  </document>
+</dataConfig>
