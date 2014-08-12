@@ -116,24 +116,13 @@
       </xsl:if>
     </xsl:variable>
 
-    <xsl:call-template name="general_mods_field">
+    <xsl:call-template name="mods_authority_fork">
       <xsl:with-param name="prefix" select="$this_prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
       <xsl:with-param name="value" select="normalize-space(text())"/>
       <xsl:with-param name="pid" select="$pid"/>
       <xsl:with-param name="datastream" select="$datastream"/>
     </xsl:call-template>
-
-    <!-- Fields are duplicated for authority because searches across authorities are common. -->
-    <xsl:if test="@authority">
-      <xsl:call-template name="general_mods_field">
-        <xsl:with-param name="prefix" select="concat($this_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_')"/>
-        <xsl:with-param name="suffix" select="$suffix"/>
-        <xsl:with-param name="value" select="normalize-space(text())"/>
-        <xsl:with-param name="pid" select="$pid"/>
-        <xsl:with-param name="datastream" select="$datastream"/>
-      </xsl:call-template>
-    </xsl:if>
   </xsl:template>
 
   <!-- Intercept names with role terms, so we can create copies of the fields
@@ -156,7 +145,7 @@
     <xsl:for-each select="mods:role/mods:roleTerm">
       <xsl:variable name="this_prefix" select="concat($base_prefix, translate(., $uppercase, $lowercase), '_')"/>
 
-      <xsl:call-template name="general_mods_field">
+      <xsl:call-template name="mods_authority_fork">
         <xsl:with-param name="prefix" select="$this_prefix"/>
         <xsl:with-param name="suffix" select="$suffix"/>
         <xsl:with-param name="value" select="normalize-space(text())"/>
@@ -164,23 +153,31 @@
         <xsl:with-param name="datastream" select="$datastream"/>
         <xsl:with-param name="node" select="../.."/>
       </xsl:call-template>
-
-      <!-- Fields are duplicated for authority because searches across authorities are common. -->
-      <xsl:if test="@authority">
-        <xsl:call-template name="general_mods_field">
-          <xsl:with-param name="prefix" select="concat($this_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_')"/>
-          <xsl:with-param name="suffix" select="$suffix"/>
-          <xsl:with-param name="value" select="normalize-space(text())"/>
-          <xsl:with-param name="pid" select="$pid"/>
-          <xsl:with-param name="datastream" select="$datastream"/>
-          <xsl:with-param name="node" select="../.."/>
-        </xsl:call-template>
-      </xsl:if>
     </xsl:for-each>
-    <xsl:call-template name="general_mods_field">
+
+    <xsl:call-template name="mods_authority_fork">
       <xsl:with-param name="prefix" select="$base_prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
       <xsl:with-param name="value" select="normalize-space(text())"/>
+      <xsl:with-param name="pid" select="$pid"/>
+      <xsl:with-param name="datastream" select="$datastream"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <!-- Fields are duplicated for authority because searches across authorities are common. -->
+  <xsl:template name="mods_authority_fork">
+    <xsl:param name="prefix"/>
+    <xsl:param name="suffix"/>
+    <xsl:param name="value"/>
+    <xsl:param name="pid">not provided</xsl:param>
+    <xsl:param name="datastream">not provided</xsl:param>
+    <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz_'" />
+    <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ '" />
+
+    <xsl:call-template name="general_mods_field">
+      <xsl:with-param name="prefix" select="$prefix"/>
+      <xsl:with-param name="suffix" select="$suffix"/>
+      <xsl:with-param name="value" select="$value"/>
       <xsl:with-param name="pid" select="$pid"/>
       <xsl:with-param name="datastream" select="$datastream"/>
     </xsl:call-template>
@@ -188,9 +185,9 @@
     <!-- Fields are duplicated for authority because searches across authorities are common. -->
     <xsl:if test="@authority">
       <xsl:call-template name="general_mods_field">
-        <xsl:with-param name="prefix" select="concat($base_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_')"/>
+        <xsl:with-param name="prefix" select="concat($prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_')"/>
         <xsl:with-param name="suffix" select="$suffix"/>
-        <xsl:with-param name="value" select="normalize-space(text())"/>
+        <xsl:with-param name="value" select="$value"/>
         <xsl:with-param name="pid" select="$pid"/>
         <xsl:with-param name="datastream" select="$datastream"/>
       </xsl:call-template>
@@ -210,7 +207,18 @@
     <xsl:if test="$value">
       <field>
         <xsl:attribute name="name">
-          <xsl:value-of select="concat($prefix, $suffix)"/>
+          <xsl:choose>
+            <!-- Try to create a single-valued version of each field (if one
+              does not already exist, that is). -->
+            <!-- XXX: We make some assumptions about the schema here...
+              Primarily, _s getting copied to the same places as _ms. -->
+            <xsl:when test="$suffix='ms' and java:add($single_valued_hashset, string($prefix))">
+              <xsl:value-of select="concat($prefix, 's')"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat($prefix, $suffix)"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:attribute>
         <xsl:value-of select="$value"/>
       </field>
