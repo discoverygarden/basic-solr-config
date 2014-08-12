@@ -131,7 +131,7 @@
 
     <autoCommit>
       <maxDocs>200</maxDocs>
-      <maxTime>15</maxTime>
+      <maxTime>2000</maxTime>
     </autoCommit>
 
     <!-- The RunExecutableListener executes an external command.
