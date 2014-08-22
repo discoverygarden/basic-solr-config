@@ -143,7 +143,7 @@
       </xsl:if>
     </xsl:variable>
     <xsl:for-each select="mods:role/mods:roleTerm">
-      <xsl:variable name="this_prefix" select="concat($base_prefix, translate(., $uppercase, $lowercase), '_')"/>
+      <xsl:variable name="this_prefix" select="concat($base_prefix, translate(normalize-space(.), $uppercase, $lowercase), '_')"/>
 
       <xsl:call-template name="mods_authority_fork">
         <xsl:with-param name="prefix" select="$this_prefix"/>
