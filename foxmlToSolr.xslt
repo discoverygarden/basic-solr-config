@@ -253,7 +253,15 @@
       -->
 
       <!-- Index ancestors, as used in the islandora_collection_search module.
-        Requires the "hierarchy.xslt" to be included (uncomment near the top of the file?).-->
+        Requires the "hierarchy.xslt" to be included (uncomment near the top of
+        the file?).
+        Also, note: When migrating objects between collections, it would be
+        necessary to update all descendents to ensure their list of ancestors
+        reflect the current state... We do this in the
+        islandora_collection_search module when migrating, instead of
+        reindexing all the descendents whenever indexing an object
+        (updating a collection label would be fairly expensive if we blindly
+        reindexed). -->
       <!--
       <xsl:variable name="ancestors">
         <xsl:call-template name="get-ancestors">
