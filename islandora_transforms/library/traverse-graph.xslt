@@ -4,6 +4,7 @@
   xmlns:res="http://www.w3.org/2001/sw/DataAccess/rf1/result"
   xmlns:xalan="http://xml.apache.org/xalan"
   xmlns:set="http://exslt.org/sets"
+  xmlns:string="xalan://java.lang.String"
   xmlns:encoder="xalan://java.net.URLEncoder">
   <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
   <xsl:param name="debug" select="true"/>
@@ -62,12 +63,11 @@
         </xsl:if>
         <xsl:variable name="query_results">
     <xsl:call-template name="perform_traversal_query">
-                  <xsl:with-param name="risearch" select="$risearch"/>
-      <xsl:with-param name="query">
-        <xsl:value-of select="substring-before($query, '%PID_URI%')"/>
-        <xsl:value-of select="@uri"/>
-        <xsl:value-of select="substring-after($query, '%PID_URI%')"/>
-      </xsl:with-param>
+      <xsl:with-param name="risearch" select="$risearch"/>
+      <!-- XXX: Using "replaceAll", because "replace" seems to match on the
+        wrong implementation. (Gets InvalidArgumentExceptions and the like, presumably
+        trying to cast to single characters...) -->
+      <xsl:with-param name="query" select="string:replaceAll($query, '%PID_URI%', @uri)"/>
       <xsl:with-param name="lang">sparql</xsl:with-param>
     </xsl:call-template>
         </xsl:variable>
