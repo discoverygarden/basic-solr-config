@@ -204,6 +204,9 @@
         <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="[-/\\–—]" replacement=" "/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="\s+" replacement=" "/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="[\.,;:()\[\]&lt;&gt;{}'&quot;!?]" replacement=""/>
       </analyzer>
     </fieldType>
 
