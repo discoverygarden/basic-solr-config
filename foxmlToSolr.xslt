@@ -22,7 +22,8 @@
   xmlns:exts="xalan://dk.defxws.fedoragsearch.server.GenericOperationsImpl"
   xmlns:islandora-exts="xalan://ca.upei.roblib.DataStreamForXSLT"
             exclude-result-prefixes="exts"
-  xmlns:encoder="xalan://java.net.URLEncoder">
+  xmlns:encoder="xalan://java.net.URLEncoder"
+  xmlns:java="http://xml.apache.org/xalan/java">
   <!--  Used for indexing other objects.
   xmlns:sparql="http://www.w3.org/2001/sw/DataAccess/rf1/result"
   xmlns:xalan="http://xml.apache.org/xalan"> -->
@@ -230,7 +231,7 @@
               other mimetypes should not be being sent
               will this let us not use the content variable? -->
             <xsl:apply-templates select="foxml:datastreamVersion[last()]">
-              <xsl:with-param name="content" select="normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS))"/>
+              <xsl:with-param name="content" select="java:ca.discoverygarden.gsearch_extensions.XMLStringUtils.escapeForXML(normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)))"/>
             </xsl:apply-templates>
           </xsl:when>
         </xsl:choose>
