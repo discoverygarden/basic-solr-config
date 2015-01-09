@@ -198,6 +198,18 @@
       </analyzer>
     </fieldType>
 
+    <fieldType name="moreSortableString" class="solr.TextField">
+      <analyzer>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="^(?:(?i:a|an|the|der|die|das|le|la|les|l|il|lo|l'|gli|gl|el|los|las|den|det|de)\b\s)((\s*\S+)+)$" replacement="$1"/>
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="[-/\\–—]" replacement=" "/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="\s+" replacement=" "/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="[\.,;:()\[\]&lt;&gt;{}'&quot;!?]" replacement=""/>
+      </analyzer>
+    </fieldType>
+
     <!-- Only for auto-complete. -->
     <fieldType name="edgedText" class="solr.TextField">
         <analyzer type="index">
@@ -294,6 +306,7 @@
         both match, the first appearing in the schema will be used.  -->
    <dynamicField name="*_i"  type="sint"    indexed="true"  stored="true"/>
    <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>
+   <dynamicField name="*_ss"  type="moreSortableString"  indexed="true"  stored="true"/>
    <dynamicField name="*_ms"  type="string"  indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_l"  type="slong"   indexed="true"  stored="true"/>
    <dynamicField name="*_t"  type="text"    indexed="true"  stored="true"/>
@@ -341,6 +354,7 @@
 <copyField source="*_s" dest="*_t"/>
 <copyField source="*_s" dest="*_ms"/>
 <copyField source="*_s" dest="*_mt"/>
+<copyField source="*_s" dest="*_ss"/>
 <copyField source="*_ms" dest="*_mt"/>
 <copyField source="*_dt" dest="*_mt"/>
 <copyField source="*_dt" dest="*_mdt"/>
