@@ -166,10 +166,12 @@
             </xsl:variable>
             <add commitWithin="5000">
               <xsl:for-each select="xalan:nodeset($graph)//sparql:obj">
-                 <xsl:variable name="xml_url" select="concat(substring-before($FEDORA, '://'), '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', substring-after($FEDORA, '://') , '/objects/', substring-after(@uri, '/'), '/objectXML')"/>
+                <xsl:variable name="xml_url" select="concat(substring-before($FEDORA, '://'), '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', substring-after($FEDORA, '://') , '/objects/', substring-after(@uri, '/'), '/objectXML')"/>
                 <xsl:variable name="object" select="document($xml_url)"/>
                 <xsl:if test="$object">
-                    <xsl:apply-templates select="$object/foxml:digitalObject" mode="indexFedoraObject"/>
+                  <xsl:apply-templates select="$object/foxml:digitalObject" mode="indexFedoraObject">
+                    <xsl:with-param name="PID" select="substring-after(@uri, '/')"/>
+                  </xsl:apply-templates>
                 </xsl:if>
               </xsl:for-each>
             </add>
