@@ -18,6 +18,9 @@
     <xsl:param name="prefix"></xsl:param>
     <xsl:param name="suffix">ms</xsl:param>
 
+    <!-- Clearing hash in case the template is ran more than once. -->
+    <xsl:variable name="return_from_clear" select="java:clear($single_valued_hashset)"/>
+
     <xsl:apply-templates mode="slurping_MODS" select="$content//mods:mods[1]">
       <xsl:with-param name="prefix" select="$prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>
