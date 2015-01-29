@@ -16,10 +16,10 @@
  limitations under the License.
 -->
 
-<!--  
+<!-- 
  This is the Solr schema file. This file should be named "schema.xml" and
  should be in the conf directory under the solr home
- (i.e. ./solr/conf/schema.xml by default) 
+ (i.e. ./solr/conf/schema.xml by default)
  or located where the classloader for the Solr webapp can find it.
 
  This example schema is the recommended starting point for users.
@@ -46,7 +46,7 @@
        org.apache.solr.analysis package.
     -->
 
-    <!-- The StrField type is not analyzed, but indexed/stored verbatim.  
+    <!-- The StrField type is not analyzed, but indexed/stored verbatim.
        - StrField and TextField support an optional compressThreshold which
        limits compression (if enabled in the derived fields) to values which
        exceed a certain size (in characters).
@@ -67,7 +67,7 @@
        - If sortMissingLast="false" and sortMissingFirst="false" (the default),
          then default lucene sorting will be used which places docs without the
          field first in an ascending sort and last in a descending sort.
-    -->    
+    --> 
 
 
     <!-- numeric field types that store and index the text
@@ -91,7 +91,7 @@
 
     <!-- The format for this date field is of the form 1995-12-31T23:59:59Z, and
          is a more restricted form of the canonical representation of dateTime
-         http://www.w3.org/TR/xmlschema-2/#dateTime    
+         http://www.w3.org/TR/xmlschema-2/#dateTime 
          The trailing "Z" designates UTC time and is mandatory.
          Optional fractional seconds are allowed: 1995-12-31T23:59:59.999Z
          All other components are mandatory.
@@ -106,7 +106,7 @@
                NOW/DAY+6MONTHS+3DAYS
                   ... 6 months and 3 days in the future from the start of
                       the current day
-                      
+ 
          Consult the DateField javadocs for more information.
       -->
     <fieldType name="date" class="solr.DateField" sortMissingLast="true" omitNorms="true"/>
@@ -194,7 +194,7 @@
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
       </analyzer>
     </fieldType>
-    
+ 
     <fieldType name="mappedLowerText" class="solr.TextField">
       <analyzer>
         <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
@@ -202,7 +202,7 @@
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
     </fieldType>
-    
+ 
     <!-- Only for auto-complete. -->
     <fieldType name="edgedText" class="solr.TextField">
         <analyzer type="index">
@@ -221,7 +221,7 @@
             <filter class="solr.SnowballPorterFilterFactory" language="English" protected="protwords.txt"/>
         </analyzer>
     </fieldType>
-    
+ 
     <!-- This is an example of using the KeywordTokenizer along
          With various TokenFilterFactories to produce a sortable field
          that does not include some properties of the source text
@@ -240,13 +240,13 @@
         <filter class="solr.TrimFilterFactory" />
         <!-- The PatternReplaceFilter gives you the flexibility to use
              Java Regular expression to replace any sequence of characters
-             matching a pattern with an arbitrary replacement string, 
+             matching a pattern with an arbitrary replacement string.
              which may include back refrences to portions of the orriginal
              string matched by the pattern.
-             
+
              See the Java Regular Expression documentation for more
              infomation on pattern and replacement string syntax.
-             
+           
              http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/package-summary.html
           -->
         <filter class="solr.PatternReplaceFilterFactory"
@@ -282,8 +282,8 @@
        fields or fields that need an index-time boost need norms.
    -->
 
-   <field name="PID" type="string" indexed="true" stored="true" required="true" /> 
-   
+   <field name="PID" type="string" indexed="true" stored="true" required="true" />
+
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
    <field name="catch_all_fields_mt" type="text" indexed="true" stored="false" multiValued="true"/>
@@ -306,9 +306,9 @@
    <dynamicField name="*_l"  type="slong"   indexed="true"  stored="true"/>
    <dynamicField name="*_t"  type="text"    indexed="true"  stored="true"/>
    <dynamicField name="*_mt"  type="text"    indexed="true"  stored="true" multiValued="true"/>
-   <!-- Solr must parse through a stored, indexed field to construct highlighted snippets around search terms.  
-   The three options, termVectors, termPositions and termOffsets help Solr determine the locations in stored 
-   fields of the search parameters, so it doesn't have to scan through a complete stored field each time snippets are requested.  
+   <!-- Solr must parse through a stored, indexed field to construct highlighted snippets around search terms.
+   The three options, termVectors, termPositions and termOffsets help Solr determine the locations in stored
+   fields of the search parameters, so it doesn't have to scan through a complete stored field each time snippets are requested.
    This is of particular concern with large full-text (OCR) fields. -->
    <dynamicField name="*_hlt" type="text"    indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
    <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
@@ -317,16 +317,16 @@
    <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
    <dynamicField name="*_et" type="edgedText" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="*_mlt" type="mappedLowerText" indexed="true" stored="true" multiValued='false'/>
-   <!-- uncomment the following to ignore any fields that don't already match an existing 
-        field name or dynamic field, rather than reporting them as an error. 
-        alternately, change the type="ignored" to some other type e.g. "text" if you want 
-        unknown fields indexed and/or stored by default --> 
+   <!-- uncomment the following to ignore any fields that don't already match an existing
+        field name or dynamic field, rather than reporting them as an error.
+        alternately, change the type="ignored" to some other type e.g. "text" if you want
+        unknown fields indexed and/or stored by default -->
    <field name="dc.description" type="text_fgs"  indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*" type="text_fgs"  indexed="true"  stored="true" multiValued="true"/>
    
  </fields>
 
- <!-- Field to use to determine and enforce document uniqueness. 
+ <!-- Field to use to determine and enforce document uniqueness.
       Unless this field is marked with required="false", it will be a required field
    -->
  <uniqueKey>PID</uniqueKey>
@@ -345,7 +345,12 @@
 
 <copyField source="*_s" dest="*_mlt"/>
 <copyField source="*_s" dest="*_t"/>
+<copyField source="*_s" dest="*_ms"/>
+<copyField source="*_s" dest="*_mt"/>
 <copyField source="*_ms" dest="*_mt"/>
+<copyField source="*_dt" dest="*_mt"/>
+<copyField source="*_dt" dest="*_mdt"/>
+<copyField source="*_mdt" dest="*_mt"/>
 
 <!-- The following line is a bit of a performance hog, I would look to remove it if the indexing takes a long time. -->
 <copyField source="*" dest="catch_all_fields_mt"/>
