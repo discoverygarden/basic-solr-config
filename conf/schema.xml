@@ -16,7 +16,7 @@
  limitations under the License.
 -->
 
-<!-- 
+<!--
  This is the Solr schema file. This file should be named "schema.xml" and
  should be in the conf directory under the solr home
  (i.e. ./solr/conf/schema.xml by default)
@@ -67,7 +67,7 @@
        - If sortMissingLast="false" and sortMissingFirst="false" (the default),
          then default lucene sorting will be used which places docs without the
          field first in an ascending sort and last in a descending sort.
-    --> 
+    -->
 
 
     <!-- numeric field types that store and index the text
@@ -91,7 +91,7 @@
 
     <!-- The format for this date field is of the form 1995-12-31T23:59:59Z, and
          is a more restricted form of the canonical representation of dateTime
-         http://www.w3.org/TR/xmlschema-2/#dateTime 
+         http://www.w3.org/TR/xmlschema-2/#dateTime
          The trailing "Z" designates UTC time and is mandatory.
          Optional fractional seconds are allowed: 1995-12-31T23:59:59.999Z
          All other components are mandatory.
@@ -106,7 +106,7 @@
                NOW/DAY+6MONTHS+3DAYS
                   ... 6 months and 3 days in the future from the start of
                       the current day
- 
+
          Consult the DateField javadocs for more information.
       -->
     <fieldType name="date" class="solr.DateField" sortMissingLast="true" omitNorms="true"/>
@@ -194,7 +194,7 @@
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
       </analyzer>
     </fieldType>
- 
+
     <fieldType name="mappedLowerText" class="solr.TextField">
       <analyzer>
         <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
@@ -202,7 +202,7 @@
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
     </fieldType>
- 
+
     <!-- Only for auto-complete. -->
     <fieldType name="edgedText" class="solr.TextField">
         <analyzer type="index">
@@ -221,7 +221,7 @@
             <filter class="solr.SnowballPorterFilterFactory" language="English" protected="protwords.txt"/>
         </analyzer>
     </fieldType>
- 
+
     <!-- This is an example of using the KeywordTokenizer along
          With various TokenFilterFactories to produce a sortable field
          that does not include some properties of the source text
@@ -246,7 +246,7 @@
 
              See the Java Regular Expression documentation for more
              infomation on pattern and replacement string syntax.
-           
+
              http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/package-summary.html
           -->
         <filter class="solr.PatternReplaceFilterFactory"
@@ -315,6 +315,7 @@
    <dynamicField name="*_f"  type="sfloat"  indexed="true"  stored="true"/>
    <dynamicField name="*_d"  type="sdouble" indexed="true"  stored="true"/>
    <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
+   <dynamicField name="*_mdt" type="date"    indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_et" type="edgedText" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="*_mlt" type="mappedLowerText" indexed="true" stored="true" multiValued='false'/>
    <!-- uncomment the following to ignore any fields that don't already match an existing
@@ -323,7 +324,7 @@
         unknown fields indexed and/or stored by default -->
    <field name="dc.description" type="text_fgs"  indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*" type="text_fgs"  indexed="true"  stored="true" multiValued="true"/>
-   
+   <field name="_version_" type="long" indexed="true" stored="true"/>   
  </fields>
 
  <!-- Field to use to determine and enforce document uniqueness.
