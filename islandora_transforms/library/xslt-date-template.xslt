@@ -12,4 +12,3 @@
     <xsl:value-of select="java:ca.discoverygarden.gsearch_extensions.JodaAdapter.transformForSolr($date, $pid, $datastream)"/>
   </xsl:template>
 </xsl:stylesheet>
-
