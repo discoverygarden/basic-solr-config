@@ -7,11 +7,15 @@
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="rdf java">
 
     <xsl:variable name="single_valued_hashset_for_rels_ext" select="java:java.util.HashSet.new()"/>
+
     <xsl:template match="foxml:datastream[@ID='RELS-EXT']/foxml:datastreamVersion[last()]"
         name="index_RELS-EXT">
         <xsl:param name="content"/>
         <xsl:param name="prefix">RELS_EXT_</xsl:param>
         <xsl:param name="suffix">_ms</xsl:param>
+
+        <!-- Clearing hash in case the template is ran more than once. -->
+        <xsl:variable name="return_from_clear" select="java:clear($single_valued_hashset_for_rels_ext)"/>
 
         <xsl:apply-templates select="$content//rdf:Description/* | $content//rdf:description/*" mode="rels_ext_element">
           <xsl:with-param name="prefix" select="$prefix"/>
