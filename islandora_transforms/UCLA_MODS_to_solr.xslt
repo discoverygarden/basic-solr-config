@@ -38,14 +38,12 @@
         <xsl:when test="starts-with($PID, 'edu.ucla.library.dep.tahrir')">
           <xsl:apply-templates select="mods:*" mode="Tahrir"/>
         </xsl:when>
-        <xsl:otherwise>
-          <!-- we get the generic treatment -->
-          <xsl:apply-templates mode="slurping_MODS" select="current()">
-           <xsl:with-param name="suffix" select="'ms'"/>
-           <xsl:with-param name="pid" select="$PID"/>
-         </xsl:apply-templates>
-        </xsl:otherwise>
       </xsl:choose>
+      <!-- We always get the generic treatment -->
+      <xsl:apply-templates mode="slurping_MODS" select="current()">
+	 <xsl:with-param name="suffix" select="'ms'"/>
+      	 <xsl:with-param name="pid" select="$PID"/>
+      </xsl:apply-templates>
     </xsl:for-each>
   </xsl:template>
 
