@@ -22,12 +22,12 @@
     <!-- encode the whole mods record into a solr field -->
     <field name="mods_xml">
       <xsl:text disable-output-escaping="yes">&lt;![CDATA[</xsl:text>
-      <xsl:copy-of select="$content/mods:mods"/>
+      <xsl:copy-of select="$content"/>
       <xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>
     </field>
 
     <!-- xslt 1.0 doesn't allow use of multiple modes; we need wrapper code -->
-    <xsl:for-each select="$content/mods:mods">
+    <xsl:for-each select="$content//mods:mods">
       <xsl:choose>
         <xsl:when
           test="starts-with($PID, 'edu.ucla.library.specialCollections.losAngelesDailyNews')
