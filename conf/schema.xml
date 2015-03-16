@@ -260,8 +260,15 @@
      --> 
     <fieldtype name="ignored" stored="false" indexed="false" class="solr.StrField" /> 
 
+    <!-- UCLA customizations -->
     <fieldtype name="mods_xml" stored="true" indexed="false" class="solr.StrField" multiValued="false"/>
     <fieldtype name="dc_xml" stored="true" indexed="false" class="solr.StrField" multiValued="false"/>
+
+    <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
+    <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType"
+        spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory"
+        distErrPct="0.025" maxDistErr="0.000009" units="degrees"/>
+    <!-- -->
 
  </types>
 
@@ -325,7 +332,20 @@
    <field name="dc.description" type="text_fgs"  indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*" type="text_fgs"  indexed="true"  stored="true" multiValued="true"/>
    <field name="_version_" type="long" indexed="true" stored="true"/>   
- </fields>
+ 
+   <!-- UCLA customizations -->
+   <field name="mods_coordinates_ms" type="string" index="true" stored="true" multiValued="true"/>
+
+   <field name="mods_title_ms" type="string" index="true" stored="true" multiValued="true"/>
+   <field name="mods_title_mt" type="text" index="true" stored="false" multiValued="true"/>
+
+   <field name="mods_geographic_ms" type="string" index="true" stored="true" multiValued="true"/>
+   <field name="mods_geographic_mt" type="text" index="true" stored="false" multiValued="true"/>
+
+   <field name="loc" type="location" indexed="true" stored="true" multiValued="true"/>
+   <field name="loc_rpt" type="location_rpt" indexed="true" stored="true" multiValued="true"/>
+   <!-- -->
+</fields>
 
  <!-- Field to use to determine and enforce document uniqueness.
       Unless this field is marked with required="false", it will be a required field
@@ -352,6 +372,27 @@
 <copyField source="*_dt" dest="*_mt"/>
 <copyField source="*_dt" dest="*_mdt"/>
 <copyField source="*_mdt" dest="*_mt"/>
+
+<!-- UCLA customizations -->
+<!-- Can't turn this on until our data is a little cleaner (no spaces, etc.)
+<copyField source="*_coordinates_s" dest="loc"/>
+<copyField source="*_coordinates_s" dest="loc_rpt"/>
+-->
+<copyField source="*_coordinates_s" dest="mods_coordinates_ms"/>
+<copyField source="*_coordinates_ms" dest="mods_coordinates_ms"/>
+
+<copyField source="*_title_s" dest="mods_title_ms"/>
+<copyField source="*_title_s" dest="mods_title_mt"/>
+
+<copyField source="*_title_ms" dest="mods_title_ms"/>
+<copyField source="*_title_ms" dest="mods_title_mt"/>
+
+<copyField source="*_geographic_s" dest="mods_geographic_ms"/>
+<copyField source="*_geographic_s" dest="mods_geographic_mt"/>
+
+<copyField source="*_geographic_ms" dest="mods_geographic_ms"/>
+<copyField source="*_geographic_ms" dest="mods_geographic_mt"/>
+<!-- -->
 
 <!-- The following line is a bit of a performance hog, I would look to remove it if the indexing takes a long time. -->
 <copyField source="*" dest="catch_all_fields_mt"/>
