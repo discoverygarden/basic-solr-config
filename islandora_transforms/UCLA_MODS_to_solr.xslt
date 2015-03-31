@@ -38,6 +38,9 @@
         <xsl:when test="starts-with($PID, 'edu.ucla.library.dep.tahrir')">
           <xsl:apply-templates select="mods:*" mode="Tahrir"/>
         </xsl:when>
+        <xsl:when test="starts-with($PID, 'livingstone')">
+          <xsl:apply-templates select="mods:*" mode="Livingstone"/>
+        </xsl:when>
       </xsl:choose>
       <!-- We always get the generic treatment -->
       <xsl:apply-templates mode="slurping_MODS" select="current()">
@@ -59,6 +62,17 @@
     <!-- cla_topic_mt field is created automatically from submitted _ms one -->
     <field name="cla_topic_ms">
       <xsl:value-of select="mods:topic"/>
+    </field>
+  </xsl:template>
+  
+   <!-- Livingstone Browse By Identifier needs filter of attribute display Label -->
+  <xsl:template match="mods:identifier[@type='local' and  @displayLabel='Canonical Catalog Number']" mode="Livingstone">
+    
+    <field name="mods_identifier_local_Canonical_Catalog_Number_ms">
+      <xsl:value-of select="mods:identifier"/>
+    </field>
+    <field name="mods_identifier_local_Canonical_Catalog_Number_s">
+      <xsl:value-of select="mods:identifier"/>
     </field>
   </xsl:template>
   
