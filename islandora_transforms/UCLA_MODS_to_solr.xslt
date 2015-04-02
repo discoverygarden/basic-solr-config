@@ -68,9 +68,6 @@
    <!-- Livingstone Browse By Identifier needs filter of attribute display Label -->
   <xsl:template match="mods:identifier[@type='local' and  @displayLabel='Canonical Catalog Number']" mode="Livingstone">
     
-    <field name="mods_identifier_local_Canonical_Catalog_Number_ms">
-      <xsl:value-of select="text()"/>
-    </field>
     <field name="mods_identifier_local_Canonical_Catalog_Number_s">
       <xsl:value-of select="text()"/>
     </field>
