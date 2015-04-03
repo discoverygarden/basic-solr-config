@@ -65,14 +65,33 @@
     </field>
   </xsl:template>
   
-   <!-- Livingstone Browse By Identifier needs filter of attribute display Label -->
+   <!-- Livingstone Browse By Standard Catalogue Number needs filter of attribute display Label -->
   <xsl:template match="mods:identifier[@type='local' and  @displayLabel='Canonical Catalog Number']" mode="Livingstone">
     
     <field name="mods_identifier_local_Canonical_Catalog_Number_s">
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
-  
+   <xsl:template match="mods:identifier[@type='local' and  @displayLabel='master_id']" mode="Livingstone">    
+    <field name="mods_identifier_local_master_id_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+  <xsl:template match="mods:identifier[@type='local' and  @displayLabel='NLS copy identifier']" mode="Livingstone">    
+    <field name="mods_identifier_local_NLS_copy_identifier_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+  <xsl:template match="mods:extent[@unit='pages']" mode="Livingstone">    
+    <field name="mods_physicalDescription_extent_pages_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+<xsl:template match="mods:extent[@unit='mm']" mode="Livingstone">    
+    <field name="mods_physicalDescription_extent_mm_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>   
   <xsl:template match="mods:originInfo[mods:dateCreated[@encoding='iso8601']]" mode="CollectingLA">
     <xsl:variable name="dateStart"
       select="java:edu.ucla.library.IsoToSolrDateConverter.getStartDateFromIsoDateString(normalize-space(mods:dateCreated[@encoding='iso8601']))" />
