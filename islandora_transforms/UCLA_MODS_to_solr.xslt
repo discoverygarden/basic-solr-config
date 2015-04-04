@@ -44,7 +44,7 @@
               <xsl:for-each select="mods:name">
                   <xsl:if test="mods:role/mods:roleTerm[@type='text']/text() = 'creator'">
                       <xsl:value-of select="mods:namePart/text()"/>
-                      <xsl:text>;</xsl:text>
+                      <xsl:text>; </xsl:text>
                   </xsl:if>                  
               </xsl:for-each>
           </field>
@@ -52,7 +52,7 @@
               <xsl:for-each select="mods:name">
                   <xsl:if test="mods:role/mods:roleTerm[@type='text']/text() = 'addressee'">
                       <xsl:value-of select="mods:namePart/text()"/>
-                      <xsl:text>;</xsl:text>
+                      <xsl:text>; </xsl:text>
                   </xsl:if>                  
               </xsl:for-each>
           </field>
@@ -63,7 +63,7 @@
                       <xsl:if test="mods:location/mods:shelfLocator">
                           <xsl:text>,</xsl:text>   
                         <xsl:value-of select="mods:location/mods:shelfLocator/text()"/>  
-                         <xsl:text>.</xsl:text> 
+                         <xsl:text>. </xsl:text> 
                       </xsl:if>                                                            
                   </xsl:if> 
               </xsl:for-each>
@@ -71,13 +71,13 @@
           <field name="genre_s">
               <xsl:for-each select="mods:genre[@authority='aat']">
                   <xsl:value-of select="text()"/>
-                      <xsl:text>;</xsl:text>
+                      <xsl:text>; </xsl:text>
               </xsl:for-each>
           </field>
           <field name="otherVersions_s">
               <xsl:for-each select="mods:relatedItem[@type='otherVersion']">
                   <xsl:value-of select="mods:identifier/text()"/>
-                      <xsl:text>.</xsl:text>
+                      <xsl:text>. </xsl:text>
               </xsl:for-each>
           </field>
         </xsl:when>
