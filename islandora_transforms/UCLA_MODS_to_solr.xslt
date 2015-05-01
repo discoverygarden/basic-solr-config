@@ -41,20 +41,26 @@
         <xsl:when test="starts-with($PID, 'livingstone')">
           <xsl:apply-templates select="mods:*" mode="Livingstone"/>
           <field name="creator_s">
+            <xsl:variable name="creator_text">
               <xsl:for-each select="mods:name">
                   <xsl:if test="mods:role/mods:roleTerm[@type='text']/text() = 'creator'">
                       <xsl:value-of select="mods:namePart/text()"/>
                       <xsl:text>; </xsl:text>
                   </xsl:if>                  
               </xsl:for-each>
+            </xsl:variable>
+            <xsl:value-of select="replace($creator_text,'(^.*)\p{P}$', '$1')"/>
           </field>
           <field name="addressee_s">
+            <xsl:variable name="addressee_text">
               <xsl:for-each select="mods:name">
                   <xsl:if test="mods:role/mods:roleTerm[@type='text']/text() = 'addressee'">
                       <xsl:value-of select="mods:namePart/text()"/>
                       <xsl:text>; </xsl:text>
                   </xsl:if>                  
               </xsl:for-each>
+            </xsl:variable>
+            <xsl:value-of select="replace($addressee_text,'(^.*)\p{P}$', '$1')"/>
           </field>
           <field name="repository_s">
               <xsl:for-each select="mods:relatedItem[@type='original']">
@@ -69,10 +75,13 @@
               </xsl:for-each>
           </field>
           <field name="genre_s">
+            <xsl:variable name="genre_text">
               <xsl:for-each select="mods:genre[@authority='aat']">
                   <xsl:value-of select="text()"/>
                       <xsl:text>; </xsl:text>
               </xsl:for-each>
+            </xsl:variable>
+            <xsl:value-of select="replace($genre_text,'(^.*)\p{P}$', '$1')"/>
           </field>
           <field name="otherVersions_s">
               <xsl:for-each select="mods:relatedItem[@type='otherVersion']">
