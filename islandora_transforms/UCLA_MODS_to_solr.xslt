@@ -61,7 +61,7 @@
                   <xsl:if test="mods:name/mods:role/mods:roleTerm[@type='text']/text() = 'repository'">
                       <xsl:value-of select="mods:name/mods:namePart/text()"/>
                       <xsl:if test="mods:location/mods:shelfLocator">
-                          <xsl:text>,</xsl:text>   
+                          <xsl:text>, </xsl:text>   
                         <xsl:value-of select="mods:location/mods:shelfLocator/text()"/>  
                          <xsl:text>. </xsl:text> 
                       </xsl:if>                                                            
