@@ -49,7 +49,7 @@
                   </xsl:if>                  
               </xsl:for-each>
             </xsl:variable>
-            <xsl:value-of select="replace($creator_text,'(^.*)\p{P}$', '$1')"/>
+            <xsl:value-of select="substring($creator_text,0,string-length($genre_text)-1)"/>
           </field>
           <field name="addressee_s">
             <xsl:variable name="addressee_text">
@@ -60,7 +60,7 @@
                   </xsl:if>                  
               </xsl:for-each>
             </xsl:variable>
-            <xsl:value-of select="replace($addressee_text,'(^.*)\p{P}$', '$1')"/>
+            <xsl:value-of select="substring($addressee_text,0,string-length($genre_text)-1)"/>
           </field>
           <field name="repository_s">
               <xsl:for-each select="mods:relatedItem[@type='original']">
@@ -81,7 +81,7 @@
                       <xsl:text>; </xsl:text>
               </xsl:for-each>
             </xsl:variable>
-            <xsl:value-of select="replace($genre_text,'(^.*)\p{P}$', '$1')"/>
+            <xsl:value-of select="substring($genre_text,0,string-length($genre_text)-1)"/>
           </field>
           <field name="otherVersions_s">
               <xsl:for-each select="mods:relatedItem[@type='otherVersion']">
