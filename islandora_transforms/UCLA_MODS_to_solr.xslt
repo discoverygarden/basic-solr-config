@@ -49,7 +49,7 @@
                   </xsl:if>                  
               </xsl:for-each>
             </xsl:variable>
-            <xsl:value-of select="substring($creator_text,0,string-length($genre_text)-1)"/>
+            <xsl:value-of select="substring($creator_text,0,string-length($creator_text)-1)"/>
           </field>
           <field name="addressee_s">
             <xsl:variable name="addressee_text">
@@ -60,7 +60,7 @@
                   </xsl:if>                  
               </xsl:for-each>
             </xsl:variable>
-            <xsl:value-of select="substring($addressee_text,0,string-length($genre_text)-1)"/>
+            <xsl:value-of select="substring($addressee_text,0,string-length($addressee_text)-1)"/>
           </field>
           <field name="repository_s">
               <xsl:for-each select="mods:relatedItem[@type='original']">
