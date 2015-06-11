@@ -62,6 +62,13 @@
             </xsl:variable>
             <xsl:value-of select="substring($addressee_text,0,string-length($addressee_text)-1)"/>
           </field>
+          <xsl:for-each select="mods:name">
+              <xsl:if test="mods:role/mods:roleTerm[@type='text']/text() = 'addressee'">
+                  <field name="addressee_description_s">
+                      <xsl:value-of select="mods:namePart/text()"/> - <xsl:value-of select="mods:description/text()"/>
+                  </field> 
+              </xsl:if>
+          </xsl:for-each>
           <field name="repository_s">
               <xsl:for-each select="mods:relatedItem[@type='original']">
                   <xsl:if test="mods:name/mods:role/mods:roleTerm[@type='text']/text() = 'repository'">
