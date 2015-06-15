@@ -65,7 +65,7 @@
           <xsl:for-each select="mods:name">
               <xsl:if test="mods:role/mods:roleTerm[@type='text']/text() = 'addressee'">
                   <field name="addressee_description_s">
-                      <xsl:value-of select="mods:namePart/text()"/> - <xsl:value-of select="mods:description/text()"/>
+                      <xsl:value-of select="mods:namePart/text()"/> : <xsl:value-of select="mods:description/text()"/>
                   </field> 
               </xsl:if>
           </xsl:for-each>
@@ -147,7 +147,8 @@
     <field name="mods_physicalDescription_extent_mm_s">
       <xsl:value-of select="text()"/>
     </field>
-  </xsl:template>   
+  </xsl:template>  
+   
   <xsl:template match="mods:originInfo[mods:dateCreated[@encoding='iso8601']]" mode="CollectingLA">
     <xsl:variable name="dateStart"
       select="java:edu.ucla.library.IsoToSolrDateConverter.getStartDateFromIsoDateString(normalize-space(mods:dateCreated[@encoding='iso8601']))" />
