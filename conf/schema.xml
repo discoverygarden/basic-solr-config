@@ -305,10 +305,12 @@
         Longer patterns will be matched first.  if equal size patterns
         both match, the first appearing in the schema will be used.  -->
    <dynamicField name="*_i"  type="sint"    indexed="true"  stored="true"/>
+   <dynamicField name="*_mi"  type="sint"    indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>
    <dynamicField name="*_ss"  type="moreSortableString"  indexed="true"  stored="true"/>
    <dynamicField name="*_ms"  type="string"  indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_l"  type="slong"   indexed="true"  stored="true"/>
+   <dynamicField name="*_ml"  type="slong"   indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_t"  type="text"    indexed="true"  stored="true"/>
    <dynamicField name="*_mt"  type="text"    indexed="true"  stored="true" multiValued="true"/>
    <!-- Solr must parse through a stored, indexed field to construct highlighted snippets around search terms.
@@ -318,7 +320,9 @@
    <dynamicField name="*_hlt" type="text"    indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
    <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
    <dynamicField name="*_f"  type="sfloat"  indexed="true"  stored="true"/>
+   <dynamicField name="*_mf"  type="sfloat"  indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_d"  type="sdouble" indexed="true"  stored="true"/>
+   <dynamicField name="*_md"  type="sdouble" indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
    <dynamicField name="*_mdt" type="date"    indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_et" type="edgedText" indexed="true" stored="true" multiValued="true"/>
