@@ -252,13 +252,13 @@
 
   <xsl:template match='//cmls:module/cmls:list/cmls:array[@dictRef="x:isotopeNumber"]' mode="writing_cml">
     <xsl:apply-templates mode="writing_cml_field" select=".">
-      <xsl:with-param name="field_name">isotope_number_s</xsl:with-param>
+      <xsl:with-param name="field_name">isotope_number_ms</xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match='//cmls:module/cmls:list/cmls:array[@dictRef="x:elementType"]' mode="writing_cml">
     <xsl:apply-templates mode="writing_cml_field" select=".">
-      <xsl:with-param name="field_name">element_type_s</xsl:with-param>
+      <xsl:with-param name="field_name">element_type_ms</xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
 
