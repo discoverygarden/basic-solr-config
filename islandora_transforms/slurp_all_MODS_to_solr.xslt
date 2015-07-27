@@ -53,7 +53,7 @@
         <xsl:sort select="concat(local-name(), namespace-uri(self::node()))"/>
         <xsl:value-of select="local-name()"/>
         <xsl:text>_</xsl:text>
-        <xsl:value-of select="."/>
+        <xsl:value-of select="translate(., ' ', '_')"/>
         <xsl:text>_</xsl:text>
       </xsl:for-each>
     </xsl:variable>
@@ -115,7 +115,7 @@
     <xsl:variable name="this_prefix">
       <xsl:value-of select="concat($prefix, local-name(), '_')"/>
       <xsl:if test="@type">
-        <xsl:value-of select="concat(@type, '_')"/>
+        <xsl:value-of select="concat(translate(@type, ' ', '_'), '_')"/>
       </xsl:if>
     </xsl:variable>
 
@@ -142,7 +142,7 @@
     <xsl:variable name="base_prefix">
       <xsl:value-of select="concat($prefix, local-name(), '_')"/>
       <xsl:if test="@type">
-        <xsl:value-of select="concat(@type, '_')"/>
+        <xsl:value-of select="concat(translate(@type, ' ', '_'), '_')"/>
       </xsl:if>
     </xsl:variable>
     <xsl:for-each select="mods:role/mods:roleTerm">

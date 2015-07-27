@@ -200,7 +200,7 @@
 
     <fieldType name="moreSortableString" class="solr.TextField">
       <analyzer>
-        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="^(?:(?i:a|an|the|der|die|das|le|la|les|l|il|lo|l'|gli|gl|el|los|las|den|det|de)\b\s)((\s*\S+)+)$" replacement="$1"/>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="^(?:(?i:a|an|the)\b\s)((\s*\S+)+\s*)$" replacement="$1"/>
         <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
