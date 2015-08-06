@@ -17,6 +17,7 @@
     <!-- Clearing hash in case the template is ran more than once. -->
     <xsl:variable name="return_from_clear" select="java:clear($single_valued_hashset_for_cml)"/>
     <xsl:apply-templates mode="writing_cml" select="$content//cmls:module"/>
+    <xsl:apply-templates mode="slurping_cml" select="$content//cmls:metadataList[@convention = 'islandora:sp_chem_CM']"/>
   </xsl:template>
 
   <!-- Match on individual fields. -->
@@ -718,5 +719,55 @@
   <!-- Avoid using text alone. -->
   <xsl:template match="text()" mode="writing_cml"/>
   <xsl:template match="text()" mode="writing_cml_field"/>
+
+  <!-- SLURP MODS Metadata -->
+  <xsl:template match="*" mode="slurping_cml">
+    <xsl:param name="prefix" select="'cml_molecule_'"></xsl:param>
+    <xsl:param name="suffix" select="'ms'"/>
+    <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz_'" />
+    <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ '" />
+    <xsl:variable name="this_prefix">
+      <xsl:value-of select="concat($prefix, local-name(), '_')"/>
+      <xsl:if test="@type">
+        <xsl:value-of select="concat(@type, '_')"/>
+      </xsl:if>
+    </xsl:variable>
+
+    <xsl:variable name="textValue">
+      <xsl:value-of select="normalize-space(text())"/>
+    </xsl:variable>
+
+    <xsl:if test="$textValue">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($this_prefix, $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="$textValue"/>
+      </field>
+      <!-- Fields are duplicated for authority because searches across authorities are common. --> 
+      <xsl:if test="@authority">
+        <field>
+          <xsl:attribute name="name">
+            <xsl:value-of select="concat($this_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_', $suffix)"/>
+          </xsl:attribute>
+          <xsl:value-of select="$textValue"/>
+        </field>
+      </xsl:if>
+    </xsl:if>
+
+    <xsl:apply-templates mode="slurping_cml">
+      <xsl:with-param name="prefix" select="$this_prefix"/>
+      <xsl:with-param name="suffix" select="$suffix"/>
+    </xsl:apply-templates>
+    <xsl:if test="@authority">
+      <xsl:apply-templates mode="slurping_cml">
+        <xsl:with-param name="prefix" select="concat($this_prefix, 'authority_', translate(@authority, $uppercase, $lowercase), '_')"/>
+        <xsl:with-param name="suffix" select="$suffix"/>
+      </xsl:apply-templates>
+    </xsl:if>
+  </xsl:template>
+
+  <!-- Avoid using text alone. -->
+  <xsl:template match="text()" mode="slurping_cml"/>
 
 </xsl:stylesheet>
