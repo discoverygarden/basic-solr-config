@@ -16,7 +16,7 @@
     <xsl:param name="suffix"></xsl:param>
     <!-- Clearing hash in case the template is ran more than once. -->
     <xsl:variable name="return_from_clear" select="java:clear($single_valued_hashset_for_cml)"/>
-    <xsl:apply-templates mode="writing_cml" select="$content/cmls:module"/>
+    <xsl:apply-templates mode="writing_cml" select="$content//cmls:module"/>
     <xsl:apply-templates mode="slurping_cml" select="$content//cmls:metadataList[@convention = 'islandora:sp_chem_CM']"/>
   </xsl:template>
 
