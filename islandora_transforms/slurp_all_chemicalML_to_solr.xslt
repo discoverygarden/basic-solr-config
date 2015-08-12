@@ -433,7 +433,7 @@
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match='mods:note[@type="molecular weight"]' mode="writing_cml">
+  <xsl:template match='//mods:note[@type="molecular weight"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 'molecular_weight_f')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">molecular_weight_f</xsl:with-param>
