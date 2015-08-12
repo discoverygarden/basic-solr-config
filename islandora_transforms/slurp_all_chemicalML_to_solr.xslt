@@ -434,20 +434,22 @@
   </xsl:template>
 
   <xsl:template match='//mods:note[@type="molecular weight"]' mode="writing_cml">
-    <xsl:apply-templates mode="writing_cml_field" select=".">
-      <xsl:with-param name="field_name">molecular_weight_f</xsl:with-param>
-    </xsl:apply-templates>
+    <xsl:if test="java:add($single_valued_hashset_for_cml, 'molecular_weight_f')">
+      <xsl:apply-templates mode="writing_cml_field" select=".">
+        <xsl:with-param name="field_name">molecular_weight_f</xsl:with-param>
+      </xsl:apply-templates>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match='//mods:note[@type="formula"]' mode="writing_cml">
     <xsl:apply-templates mode="writing_cml_field" select=".">
-      <xsl:with-param name="field_name">formula_s</xsl:with-param>
+      <xsl:with-param name="field_name">formula_ms</xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match='//mods:identifier[@type="inchikey"]' mode="writing_cml">
     <xsl:apply-templates mode="writing_cml_field" select=".">
-      <xsl:with-param name="field_name">inchikey_s</xsl:with-param>
+      <xsl:with-param name="field_name">inchikey_ms</xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
 
