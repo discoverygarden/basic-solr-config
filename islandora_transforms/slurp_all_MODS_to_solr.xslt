@@ -221,7 +221,6 @@
     </xsl:if>
   </xsl:template>
 
-<<<<<<< HEAD
   <!-- Fork on eventType to preserve legacy field names. -->
   <xsl:template name="mods_eventType_fork">
     <xsl:param name="prefix"/>
