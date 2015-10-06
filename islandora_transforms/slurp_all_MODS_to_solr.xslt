@@ -323,6 +323,14 @@
         <xsl:value-of select="$node/@authorityURI"/>
       </field>
     </xsl:if>
+    <xsl:if test="normalize-space($node/@valueURI)">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, 'valueURI_', $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="$node/@valueURI"/>
+      </field>
+    </xsl:if>
 
     <xsl:apply-templates select="$node/*" mode="slurping_MODS">
       <xsl:with-param name="prefix" select="$prefix"/>
