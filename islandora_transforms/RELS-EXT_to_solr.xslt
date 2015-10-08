@@ -98,16 +98,14 @@
                <xsl:value-of select="$value"/>
               </field>
             </xsl:when>
-            <xsl:otherwise>
-              <xsl:if test="floor($value) = $value">
-                <field>
-                  <xsl:attribute name="name">
-                    <xsl:value=of select="concat($prefix, local-name(), '_', $type, '_intDerivedFromString_l')"/>
-                  </xsl:attribute>
-                  <xsl:value-of select="$value"/>
-                </field>
-              </xsl:if>
-            </xsl:otherwise>
+            <xsl:when test="floor($value) = $value">
+              <field>
+                <xsl:attribute name="name">
+                  <xsl:value=of select="concat($prefix, local-name(), '_', $type, '_intDerivedFromString_l')"/>
+                </xsl:attribute>
+                <xsl:value-of select="$value"/>
+              </field>
+            </xsl:when>
           </xsl:choose>
         </xsl:when>
         <xsl:otherwise>
