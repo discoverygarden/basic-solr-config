@@ -89,7 +89,7 @@
             </xsl:attribute>
             <xsl:value-of select="$value"/>
           </field>
-          <xsl:if test="@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#int'">
+          <xsl:if test="@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#int' or floor($value) = $value">
             <field>
               <xsl:attribute name="name">
                 <xsl:value-of select="concat($prefix, local-name(), '_', $type, '_l')"/>
