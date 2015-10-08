@@ -89,14 +89,26 @@
             </xsl:attribute>
             <xsl:value-of select="$value"/>
           </field>
-          <xsl:if test="@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#int' or floor($value) = $value">
-            <field>
-              <xsl:attribute name="name">
-                <xsl:value-of select="concat($prefix, local-name(), '_', $type, '_l')"/>
-              </xsl:attribute>
-              <xsl:value-of select="$value"/>
-            </field>
-          </xsl:if>
+          <xsl:choose>
+            <xsl:when test="@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#int'">
+              <field>
+                <xsl:attribute name="name">
+                  <xsl:value-of select="concat($prefix, local-name(), '_', $type, '_l')"/>
+                </xsl:attribute>
+               <xsl:value-of select="$value"/>
+              </field>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:if test="floor($value) = $value">
+                <field>
+                  <xsl:attribute name="name">
+                    <xsl:value=of select="concat($prefix, local-name(), '_', $type, '_intDerivedFromString_l')"/>
+                  </xsl:attribute>
+                  <xsl:value-of select="$value"/>
+                </field>
+              </xsl:if>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:when>
         <xsl:otherwise>
           <field>
