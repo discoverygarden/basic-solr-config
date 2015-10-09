@@ -101,7 +101,7 @@
             <xsl:when test="floor($value) = $value">
               <field>
                 <xsl:attribute name="name">
-                  <xsl:value=of select="concat($prefix, local-name(), '_', $type, '_intDerivedFromString_l')"/>
+                  <xsl:value-of select="concat($prefix, local-name(), '_', $type, '_intDerivedFromString_l')"/>
                 </xsl:attribute>
                 <xsl:value-of select="$value"/>
               </field>
