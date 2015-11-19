@@ -38,6 +38,9 @@
         <xsl:when test="starts-with($PID, 'edu.ucla.library.dep.tahrir')">
           <xsl:apply-templates select="mods:*" mode="Tahrir"/>
         </xsl:when>
+        <xsl:when test="starts-with($PID, 'greenmovement')">
+          <xsl:apply-templates select="mods:*" mode="GreenMovement"/>
+        </xsl:when>
         <xsl:when test="starts-with($PID, 'livingstone')">
           <xsl:apply-templates select="mods:*" mode="Livingstone"/>
           <field name="creator_s">
@@ -122,6 +125,28 @@
       <xsl:value-of select="mods:topic"/>
     </field>
   </xsl:template>
+  
+  <!-- display label addition to greenmovment -->
+  <xsl:template match="mods:note[@lang='per' and  @displayLabel='Keywords/Chants/Slogans']" mode="GreenMovement">    
+    <field name="mods_note_per_keywords_chants_slogans_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+  
+  <xsl:template match="mods:note[@transliteration='unspecified' and  @displayLabel='Names']" mode="GreenMovement">    
+    <field name="mods_note_unspecified_names_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+  
+  <xsl:template match="mods:note[@lang='per' and  @displayLabel='Names']" mode="GreenMovement">    
+    <field name="mods_note_per_names_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+  
+  
+  <!-- end -->
   
    <!-- Livingstone Browse By Standard Catalogue Number needs filter of attribute display Label -->
   <xsl:template match="mods:identifier[@type='local' and  @displayLabel='Canonical Catalog Number']" mode="Livingstone">
