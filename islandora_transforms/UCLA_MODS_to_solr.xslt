@@ -132,6 +132,11 @@
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
+  <xsl:template match="mods:note[@lang='eng' and  @displayLabel='Keywords/Chants/Slogans']" mode="GreenMovement">    
+    <field name="mods_note_eng_keywords_chants_slogans_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
   
   <xsl:template match="mods:note[@transliteration='unspecified' and  @displayLabel='Names']" mode="GreenMovement">    
     <field name="mods_note_unspecified_names_s">
