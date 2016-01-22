@@ -16,7 +16,7 @@
     <xsl:param name="suffix"></xsl:param>
     <!-- Clearing hash in case the template is ran more than once. -->
     <xsl:variable name="return_from_clear" select="java:clear($single_valued_hashset_for_cml)"/>
-    <xsl:apply-templates mode="writing_cml" select="$content//cmls:module"/>
+    <xsl:apply-templates mode="writing_cml" select="$content/cmls:module"/>
     <xsl:apply-templates mode="slurping_cml" select="$content//cmls:metadataList[@convention = 'islandora:sp_chem_CM']"/>
   </xsl:template>
 
@@ -183,7 +183,7 @@
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match='//cmls:module/cmls:scalar[@dictRef="x:S2A"]' mode="writing_cml">
+  <xsl:template match='cmls:module/cmls:scalar[@dictRef="x:S2A"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 's2a_f')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">s2a_f</xsl:with-param>
@@ -191,7 +191,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match='//cmls:module/cmls:scalar[@dictRef="x:S2-1"]' mode="writing_cml">
+  <xsl:template match='cmls:module/cmls:scalar[@dictRef="x:S2-1"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 's21_f')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">s21_f</xsl:with-param>
@@ -199,7 +199,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match='//cmls:module/cmls:scalar[@dictRef="x:S2"]' mode="writing_cml">
+  <xsl:template match='cmls:module/cmls:scalar[@dictRef="x:S2"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 's2_f')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">s2_f</xsl:with-param>
@@ -215,7 +215,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match='//cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.yz"]' mode="writing_cml">
+  <xsl:template match='cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.yz"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 'spindipol_yz_s')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">spindipole_yz_s</xsl:with-param>
@@ -223,7 +223,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match='//cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.xz"]' mode="writing_cml">
+  <xsl:template match='cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.xz"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 'spindipol_xz_s')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">spindipole_xz_s</xsl:with-param>
@@ -231,7 +231,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match='//cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.xy"]' mode="writing_cml">
+  <xsl:template match='cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.xy"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 'spindipol_xy_s')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">spindipole_xy_s</xsl:with-param>
@@ -239,7 +239,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match='//cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.zz"]' mode="writing_cml">
+  <xsl:template match='cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.zz"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 'spindipol_zz_s')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">spindipole_zz_s</xsl:with-param>
@@ -247,7 +247,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match='//cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.yy"]' mode="writing_cml">
+  <xsl:template match='cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.yy"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 'spindipol_yy_s')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">spindipole_yy_s</xsl:with-param>
@@ -255,7 +255,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match='//cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.xx"]' mode="writing_cml">
+  <xsl:template match='cmls:module/cmls:list/cmls:array[@dictRef="g:spindipole.xx"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 'spindipol_xx_s')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">spindipole_xx_s</xsl:with-param>
@@ -433,7 +433,7 @@
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match='//mods:note[@type="molecular weight"]' mode="writing_cml">
+  <xsl:template match='mods:note[@type="molecular weight"]' mode="writing_cml">
     <xsl:if test="java:add($single_valued_hashset_for_cml, 'molecular_weight_f')">
       <xsl:apply-templates mode="writing_cml_field" select=".">
         <xsl:with-param name="field_name">molecular_weight_f</xsl:with-param>
