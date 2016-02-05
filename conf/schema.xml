@@ -363,6 +363,7 @@
 <copyField source="*_dt" dest="*_mt"/>
 <copyField source="*_dt" dest="*_mdt"/>
 <copyField source="*_mdt" dest="*_mt"/>
+<copyField source="PID" dest="PID_t"/>
 
 <!-- The following line is a bit of a performance hog, I would look to remove it if the indexing takes a long time. -->
 <copyField source="*" dest="catch_all_fields_mt"/>
