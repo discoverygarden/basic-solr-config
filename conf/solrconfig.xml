@@ -1745,10 +1745,27 @@
        used in either the "defType" param for the QueryComponent (used
        by SearchHandler) or in LocalParams
     -->
-  <!-- example of registering a query parser -->
-  <!--
-     <queryParser name="myparser" class="com.mycompany.MyQParserPlugin"/>
+
+  <!-- Query parser to tokenize synonym queries on whitespace.
+
+       See https://issues.apache.org/jira/browse/SOLR-5379 for details; multi-
+       word synonym generation has been broken in Solr for quite some time, and
+       a patch has been submitted to fix the issue which is as of yet unmerged.
     -->
+  <queryParser name="sqdismax" class="org.apache.solr.search.SynonymQuotedDismaxQParserPlugin">
+    <lst name="synonymAnalyzers">
+      <lst name="default">
+        <str name="class">solr.WhitespaceTokenizerFactory</str>
+      </lst>
+      <lst name="filter">
+        <str name="class">solr.SynonymFilterFactory</str>
+        <str name="synonyms">synonyms.txt</str>
+        <str name="ignoreCase">true</str>
+        <str name="expand">true</str>
+        <str name="tokenize">false</str>
+      </lst>
+    </lst>
+  </queryParser>
 
   <!-- Function Parsers
 
