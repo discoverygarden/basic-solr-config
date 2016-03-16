@@ -267,6 +267,13 @@
      -->
     <fieldtype name="ignored" stored="false" indexed="false" class="solr.StrField" />
 
+    <!-- PID needs a new tokenized type for the PID that does no tokenizing.-->
+    <fieldType name="PID" class="solr.TextField">
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+
  </types>
 
 
@@ -286,7 +293,7 @@
        fields or fields that need an index-time boost need norms.
    -->
 
-   <field name="PID" type="string" indexed="true" stored="true" required="true" />
+   <field name="PID" type="text" indexed="true" stored="true" required="true" />
 
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
