@@ -267,6 +267,13 @@
      -->
     <fieldtype name="ignored" stored="false" indexed="false" class="solr.StrField" />
 
+     <!-- PID needs a new tokenized type for the PID that does no tokenizing.-->
+    <fieldType name="PID" class="solr.TextField">
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+
  </types>
 
 
@@ -327,6 +334,8 @@
    <dynamicField name="*_mdt" type="date"    indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_et" type="edgedText" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="*_mlt" type="mappedLowerText" indexed="true" stored="true" multiValued='false'/>
+   <dynamicField name="*_kw" type="text_keyword" indexed="true" stored="true" multiValued='false'/>
+
    <!-- uncomment the following to ignore any fields that don't already match an existing
         field name or dynamic field, rather than reporting them as an error.
         alternately, change the type="ignored" to some other type e.g. "text" if you want
@@ -363,6 +372,7 @@
 <copyField source="*_dt" dest="*_mt"/>
 <copyField source="*_dt" dest="*_mdt"/>
 <copyField source="*_mdt" dest="*_mt"/>
+<copyField source="*_kw" dest="PID_t"/>
 
 <!-- The following line is a bit of a performance hog, I would look to remove it if the indexing takes a long time. -->
 <copyField source="*" dest="catch_all_fields_mt"/>
