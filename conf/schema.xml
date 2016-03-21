@@ -267,6 +267,14 @@
      -->
     <fieldtype name="ignored" stored="false" indexed="false" class="solr.StrField" />
 
+     <!-- PID needs a new tokenized type for the PID that does no tokenizing.-->
+    <fieldType name="text_keyword" class="solr.TextField">
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
+      </analyzer>
+    </fieldType>
+
  </types>
 
 
@@ -285,8 +293,9 @@
        boosting for the field, and saves some memory).  Only full-text
        fields or fields that need an index-time boost need norms.
    -->
+   <field name="PID" type="string" indexed="true" stored="true" required="true"/>
 
-   <field name="PID" type="string" indexed="true" stored="true" required="true" />
+   <field name="PID_kw" type="text_keyword" indexed="true" stored="true" multiValued="false"/>
 
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
@@ -362,6 +371,7 @@
 <copyField source="*_dt" dest="*_mt"/>
 <copyField source="*_dt" dest="*_mdt"/>
 <copyField source="*_mdt" dest="*_mt"/>
+<copyField source="PID" dest="PID_kw"/>
 
 <!-- The following line is a bit of a performance hog, I would look to remove it if the indexing takes a long time. -->
 <copyField source="*" dest="catch_all_fields_mt"/>
