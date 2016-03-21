@@ -297,6 +297,8 @@
 
    <field name="PID_kw" type="text_keyword" indexed="true" stored="true" multiValued="false"/>
 
+   <field name="PID_kw" type="text_keyword" indexed="true" stored="true" multiValued="false"/>
+
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
    <field name="catch_all_fields_mt" type="text" indexed="true" stored="false" multiValued="true"/>
@@ -336,6 +338,7 @@
    <dynamicField name="*_mdt" type="date"    indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_et" type="edgedText" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="*_mlt" type="mappedLowerText" indexed="true" stored="true" multiValued='false'/>
+
    <!-- uncomment the following to ignore any fields that don't already match an existing
         field name or dynamic field, rather than reporting them as an error.
         alternately, change the type="ignored" to some other type e.g. "text" if you want
