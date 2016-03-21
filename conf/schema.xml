@@ -271,6 +271,7 @@
     <fieldType name="text_keyword" class="solr.TextField">
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
       </analyzer>
     </fieldType>
 
