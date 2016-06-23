@@ -38,12 +38,22 @@
         <xsl:value-of select="normalize-space(text())"/>
       </field>
     </xsl:for-each>
-    
+
     <!-- text -->
     <xsl:for-each select="$content//tei:text[text()]">
       <field>
         <xsl:attribute name="name">
           <xsl:value-of select="concat($prefix, 'text', $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="normalize-space(.)"/>
+      </field>
+    </xsl:for-each>
+
+    <!-- body -->
+    <xsl:for-each select="$content//tei:text/tei:body[text()]">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, 'body', $suffix)"/>
         </xsl:attribute>
         <xsl:value-of select="normalize-space(.)"/>
       </field>
