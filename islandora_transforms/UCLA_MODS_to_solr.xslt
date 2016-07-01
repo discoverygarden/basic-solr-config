@@ -128,12 +128,12 @@
   
   <!-- display label addition to greenmovment -->
   <xsl:template match="mods:note[@lang='per' and  @displayLabel='Keywords/Chants/Slogans']" mode="GreenMovement">    
-    <field name="mods_note_per_keywords_chants_slogans_s">
+    <field name="mods_note_per_keywords_chants_slogans_ms">
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
   <xsl:template match="mods:note[@lang='eng' and  @displayLabel='Keywords/Chants/Slogans']" mode="GreenMovement">    
-    <field name="mods_note_eng_keywords_chants_slogans_s">
+    <field name="mods_note_eng_keywords_chants_slogans_ms">
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
@@ -145,7 +145,13 @@
   </xsl:template>
   
   <xsl:template match="mods:note[@lang='per' and  @displayLabel='Names']" mode="GreenMovement">    
-    <field name="mods_note_per_names_s">
+    <field name="mods_note_per_names_ms">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+  
+  <xsl:template match="mods:note[@lang='eng' and  @displayLabel='Names']" mode="GreenMovement">    
+    <field name="mods_note_eng_names_ms">
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
