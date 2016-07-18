@@ -297,8 +297,6 @@
 
    <field name="PID_kw" type="text_keyword" indexed="true" stored="true" multiValued="false"/>
 
-   <field name="PID_kw" type="text_keyword" indexed="true" stored="true" multiValued="false"/>
-
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
    <field name="catch_all_fields_mt" type="text" indexed="true" stored="false" multiValued="true"/>
