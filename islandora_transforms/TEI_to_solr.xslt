@@ -49,5 +49,15 @@
       </field>
     </xsl:for-each>
 
+    <!-- body -->
+    <xsl:for-each select="$content//tei:text/tei:body[text()]">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, 'body', $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="normalize-space(.)"/>
+      </field>
+    </xsl:for-each>
+
   </xsl:template>
 </xsl:stylesheet>
