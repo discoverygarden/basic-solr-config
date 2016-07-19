@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!--
+     For more details about configurations options that may appear in
+     this file, see http://wiki.apache.org/solr/SolrConfigXml.
+-->
 <config>
   <!-- Set this to 'false' if you want solr to continue working after it has
        encountered an severe configuration error.  In a production environment,
@@ -22,14 +43,11 @@
     <mergeFactor>10</mergeFactor>
     <!--
      If both ramBufferSizeMB and maxBufferedDocs is set, then Lucene will flush based on whichever limit is hit first.
-
      -->
+
     <!--<maxBufferedDocs>1000</maxBufferedDocs>-->
     <!-- Tell Lucene when to flush documents to disk.
     Giving Lucene more memory for indexing means faster indexing at the cost of more RAM
-
-    If both ramBufferSizeMB and maxBufferedDocs is set, then Lucene will flush based on whichever limit is hit first.
-
     -->
     <ramBufferSizeMB>32</ramBufferSizeMB>
     <maxMergeDocs>2147483647</maxMergeDocs>
@@ -65,13 +83,16 @@
     <!--<mergeScheduler>org.apache.lucene.index.ConcurrentMergeScheduler</mergeScheduler>-->
 
     <!--
-      This option specifies which Lucene LockFactory implementation to use.
+      This option specifies which Lucene LockFactory implementation
+      to use.
 
-      single = SingleInstanceLockFactory - suggested for a read-only index
-               or when there is no possibility of another process trying
-               to modify the index.
-      native = NativeFSLockFactory
-      simple = SimpleFSLockFactory
+      single = SingleInstanceLockFactory - suggested for a
+               read-only index or when there is no possibility of
+               another process trying to modify the index.
+      native = NativeFSLockFactory - uses OS native file locking.
+               Do not use when multiple solr webapps in the same
+               JVM are attempting to share a single index.
+      simple = SimpleFSLockFactory  - uses a plain file for locking
 
       (For backwards compatibility with Solr 1.2, 'simple' is the default
        if not specified.)
@@ -101,15 +122,8 @@
   <!--	Enables JMX if and only if an existing MBeanServer is found, use
   		this if you want to configure JMX through JVM parameters. Remove
   		this to disable exposing Solr configuration and statistics to JMX.
+      -->
 
-		If you want to connect to a particular server, specify the agentId
-		e.g. <jmx agentId="myAgent" />
-
-		If you want to start a new MBeanServer, specify the serviceUrl
-		e.g <jmx serviceurl="service:jmx:rmi:///jndi/rmi://localhost:9999/solr" />
-
-		For more details see http://wiki.apache.org/solr/SolrJmx
-  -->
   <jmx />
 
   <!-- the default high-performance update handler -->
@@ -501,8 +515,6 @@
       <!-- Use a different Distance Measure -->
       <str name="distanceMeasure">org.apache.lucene.search.spell.JaroWinklerDistance</str>
       <str name="spellcheckIndexDir">./spellchecker2</str>
-
-    </lst>
 
     <lst name="spellchecker">
       <str name="classname">solr.FileBasedSpellChecker</str>
