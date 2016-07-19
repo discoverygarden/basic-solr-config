@@ -95,7 +95,7 @@
                 <xsl:attribute name="name">
                   <xsl:value-of select="concat($prefix, local-name(), '_', $type, '_l')"/>
                 </xsl:attribute>
-               <xsl:value-of select="$value"/>
+                <xsl:value-of select="$value"/>
               </field>
             </xsl:when>
             <xsl:when test="floor($value) = $value">
