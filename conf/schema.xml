@@ -109,7 +109,7 @@
 
          Consult the DateField javadocs for more information.
       -->
-    <fieldType name="date" class="solr.TrieDateField" sortMissingLast="true" omitNorms="true" precisionStep="6" positionIncrementGap="100"/>
+    <fieldType name="date" class="solr.DateField" sortMissingLast="true" omitNorms="true" precisionStep="6" positionIncrementGap="100"/>
 
     <!-- solr.TextField allows the specification of custom text analyzers
          specified as a tokenizer and a list of token filters. Different
