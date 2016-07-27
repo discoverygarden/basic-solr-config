@@ -69,76 +69,6 @@
       </xsl:call-template>
     </xsl:template>
 
-    <!-- Match elements, call underlying template. -->
-    <xsl:template match="*[@rdf:resource]" mode="rels_ext_element">
-      <xsl:param name="prefix"/>
-      <xsl:param name="suffix"/>
-
-      <xsl:call-template name="rels_ext_fields">
-        <xsl:with-param name="prefix" select="$prefix"/>
-        <xsl:with-param name="suffix" select="$suffix"/>
-        <xsl:with-param name="type">uri</xsl:with-param>
-        <xsl:with-param name="value" select="@rdf:resource"/>
-      </xsl:call-template>
-    </xsl:template>
-    <xsl:template match="*[normalize-space(.)]" mode="rels_ext_element">
-      <xsl:param name="prefix"/>
-      <xsl:param name="suffix"/>
-
-      <xsl:call-template name="rels_ext_fields">
-        <xsl:with-param name="prefix" select="$prefix"/>
-        <xsl:with-param name="suffix" select="$suffix"/>
-        <xsl:with-param name="type">literal</xsl:with-param>
-        <xsl:with-param name="value" select="text()"/>
-      </xsl:call-template>
-    </xsl:template>
-
-    <!-- Match elements, call underlying template. -->
-    <xsl:template match="*[@rdf:resource]" mode="rels_ext_element">
-      <xsl:param name="prefix"/>
-      <xsl:param name="suffix"/>
-
-      <xsl:call-template name="rels_ext_fields">
-        <xsl:with-param name="prefix" select="$prefix"/>
-        <xsl:with-param name="suffix" select="$suffix"/>
-        <xsl:with-param name="type">uri</xsl:with-param>
-        <xsl:with-param name="value" select="@rdf:resource"/>
-      </xsl:call-template>
-    </xsl:template>
-    <xsl:template match="*[normalize-space(.)]" mode="rels_ext_element">
-      <xsl:param name="prefix"/>
-      <xsl:param name="suffix"/>
-
-      <xsl:call-template name="rels_ext_fields">
-        <xsl:with-param name="prefix" select="$prefix"/>
-        <xsl:with-param name="suffix" select="$suffix"/>
-        <xsl:with-param name="type">literal</xsl:with-param>
-        <xsl:with-param name="value" select="text()"/>
-      </xsl:call-template>
-    </xsl:template>
-
-    <!-- Fork between fields without and with the namespace URI in the field
-      name. -->
-    <xsl:template name="rels_ext_fields">
-      <xsl:param name="prefix"/>
-      <xsl:param name="suffix"/>
-      <xsl:param name="type"/>
-      <xsl:param name="value"/>
-
-      <xsl:call-template name="rels_ext_field">
-        <xsl:with-param name="prefix" select="$prefix"/>
-        <xsl:with-param name="suffix" select="$suffix"/>
-        <xsl:with-param name="type" select="$type"/>
-        <xsl:with-param name="value" select="$value"/>
-      </xsl:call-template>
-      <xsl:call-template name="rels_ext_field">
-        <xsl:with-param name="prefix" select="concat($prefix, namespace-uri())"/>
-        <xsl:with-param name="suffix" select="$suffix"/>
-        <xsl:with-param name="type" select="$type"/>
-        <xsl:with-param name="value" select="$value"/>
-      </xsl:call-template>
-    </xsl:template>
-
     <!-- Actually create a field. -->
     <xsl:template name="rels_ext_field">
       <xsl:param name="prefix"/>
@@ -177,14 +107,6 @@
               </field>
             </xsl:when>
           </xsl:choose>
-          <xsl:if test="@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#int'">
-            <field>
-              <xsl:attribute name="name">
-                <xsl:value-of select="concat($prefix, local-name(), '_', $type, '_l')"/>
-              </xsl:attribute>
-              <xsl:value-of select="$value"/>
-            </field>
-          </xsl:if>
         </xsl:when>
         <xsl:otherwise>
           <field>
