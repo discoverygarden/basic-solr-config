@@ -69,8 +69,6 @@
       </xsl:call-template>
     </xsl:template>
 
-    </xsl:template>
-
     <!-- Match elements, call underlying template. -->
     <xsl:template match="*[@rdf:resource]" mode="rels_ext_element">
       <xsl:param name="prefix"/>
@@ -93,8 +91,6 @@
         <xsl:with-param name="type">literal</xsl:with-param>
         <xsl:with-param name="value" select="text()"/>
       </xsl:call-template>
-    </xsl:template>
-
     </xsl:template>
 
     <!-- Match elements, call underlying template. -->
