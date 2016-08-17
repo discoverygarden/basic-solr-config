@@ -1,0 +1,3 @@
+[submodule "islandora_transforms"]
+	path = islandora_transforms
+	url = git@github.com:discoverygarden/islandora_transforms.git
