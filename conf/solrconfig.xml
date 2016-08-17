@@ -515,6 +515,7 @@
       <!-- Use a different Distance Measure -->
       <str name="distanceMeasure">org.apache.lucene.search.spell.JaroWinklerDistance</str>
       <str name="spellcheckIndexDir">./spellchecker2</str>
+    </lst>
 
     <lst name="spellchecker">
       <str name="classname">solr.FileBasedSpellChecker</str>
