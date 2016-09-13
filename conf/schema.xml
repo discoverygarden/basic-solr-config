@@ -293,8 +293,7 @@
        boosting for the field, and saves some memory).  Only full-text
        fields or fields that need an index-time boost need norms.
    -->
-
-   <field name="PID" type="string" indexed="true" stored="true" required="true" />
+   <field name="PID" type="string" indexed="true" stored="true" required="true"/>
 
    <field name="PID_kw" type="text_keyword" indexed="true" stored="true" multiValued="false"/>
 
@@ -344,7 +343,7 @@
         unknown fields indexed and/or stored by default -->
    <field name="dc.description" type="text_fgs"  indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*" type="text_fgs"  indexed="true"  stored="true" multiValued="true"/>
-<field name="_version_" type="long" indexed="true" stored="true"/>
+   <field name="_version_" type="long" indexed="true" stored="true"/>
 
  </fields>
 
