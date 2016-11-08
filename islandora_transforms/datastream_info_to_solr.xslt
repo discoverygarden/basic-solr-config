@@ -9,6 +9,9 @@
     <field name="fedora_datastreams_ms">
       <xsl:value-of select="@ID"/>
     </field>
+    <field name="fedora_datastreams_mimetypes_ms">
+      <xsl:value-of select="foxml:datastreamVersion[last()]/@MIMETYPE"/>
+    </field>
     <xsl:call-template name="fedora_datastream_attribute_fields">
       <xsl:with-param name="id" select='@ID'/>
       <xsl:with-param name="prefix">fedora_datastream_info</xsl:with-param>
