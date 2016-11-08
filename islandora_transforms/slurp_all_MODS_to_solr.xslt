@@ -5,6 +5,7 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:foxml="info:fedora/fedora-system:def/foxml#"
   xmlns:mods="http://www.loc.gov/mods/v3"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
      exclude-result-prefixes="mods java">
   <!-- <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/FgsIndex/islandora_transforms/library/xslt-date-template.xslt"/>-->
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/library/xslt-date-template.xslt"/>
@@ -53,7 +54,7 @@
         <xsl:sort select="concat(local-name(), namespace-uri(self::node()))"/>
         <xsl:value-of select="local-name()"/>
         <xsl:text>_</xsl:text>
-        <xsl:value-of select="."/>
+        <xsl:value-of select="translate(., ' ', '_')"/>
         <xsl:text>_</xsl:text>
       </xsl:for-each>
     </xsl:variable>
@@ -115,12 +116,33 @@
     <xsl:variable name="this_prefix">
       <xsl:value-of select="concat($prefix, local-name(), '_')"/>
       <xsl:if test="@type">
-        <xsl:value-of select="concat(@type, '_')"/>
+        <xsl:value-of select="concat(translate(@type, ' ', '_'), '_')"/>
       </xsl:if>
     </xsl:variable>
 
     <xsl:call-template name="mods_language_fork">
       <xsl:with-param name="prefix" select="$this_prefix"/>
+      <xsl:with-param name="suffix" select="$suffix"/>
+      <xsl:with-param name="value" select="normalize-space(text())"/>
+      <xsl:with-param name="pid" select="$pid"/>
+      <xsl:with-param name="datastream" select="$datastream"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <!--
+    The "eventType" attribute was introduce with MODS 3.5... Let's start
+    exposing it for use.
+  -->
+  <xsl:template match="mods:originInfo" mode="slurping_MODS">
+    <xsl:param name="prefix"/>
+    <xsl:param name="suffix"/>
+    <xsl:param name="pid">not provided</xsl:param>
+    <xsl:param name="datastream">not provided</xsl:param>
+    <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz_'" />
+    <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ '" />
+
+    <xsl:call-template name="mods_eventType_fork">
+      <xsl:with-param name="prefix" select="concat($prefix, local-name(), '_')"/>
       <xsl:with-param name="suffix" select="$suffix"/>
       <xsl:with-param name="value" select="normalize-space(text())"/>
       <xsl:with-param name="pid" select="$pid"/>
@@ -142,7 +164,7 @@
     <xsl:variable name="base_prefix">
       <xsl:value-of select="concat($prefix, local-name(), '_')"/>
       <xsl:if test="@type">
-        <xsl:value-of select="concat(@type, '_')"/>
+        <xsl:value-of select="concat(translate(@type, ' ', '_'), '_')"/>
       </xsl:if>
     </xsl:variable>
     <xsl:for-each select="mods:role/mods:roleTerm">
@@ -200,7 +222,39 @@
     </xsl:if>
   </xsl:template>
 
-   <!-- Want to include language in field names. -->
+  <!-- Fork on eventType to preserve legacy field names. -->
+  <xsl:template name="mods_eventType_fork">
+    <xsl:param name="prefix"/>
+    <xsl:param name="suffix"/>
+    <xsl:param name="value"/>
+    <xsl:param name="pid">not provided</xsl:param>
+    <xsl:param name="datastream">not provided</xsl:param>
+    <xsl:param name="node" select="current()"/>
+    <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz_'" />
+    <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ '" />
+
+    <xsl:call-template name="mods_language_fork">
+      <xsl:with-param name="prefix" select="$prefix"/>
+      <xsl:with-param name="suffix" select="$suffix"/>
+      <xsl:with-param name="value" select="$value"/>
+      <xsl:with-param name="pid" select="$pid"/>
+      <xsl:with-param name="datastream" select="$datastream"/>
+      <xsl:with-param name="node" select="$node"/>
+    </xsl:call-template>
+
+    <xsl:if test="@eventType">
+      <xsl:call-template name="mods_language_fork">
+        <xsl:with-param name="prefix" select="concat($prefix, 'eventType_', translate(@eventType, $uppercase, $lowercase), '_')"/>
+        <xsl:with-param name="suffix" select="$suffix"/>
+        <xsl:with-param name="value" select="$value"/>
+        <xsl:with-param name="pid" select="$pid"/>
+        <xsl:with-param name="datastream" select="$datastream"/>
+        <xsl:with-param name="node" select="$node"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
+  <!-- Want to include language in field names. -->
   <xsl:template name="mods_language_fork">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
@@ -270,7 +324,30 @@
         <xsl:value-of select="$node/@authorityURI"/>
       </field>
     </xsl:if>
-
+    <xsl:if test="normalize-space($node/@valueURI)">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, 'valueURI_', $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="$node/@valueURI"/>
+      </field>
+    </xsl:if>
+    <xsl:if test="normalize-space($node/@xlink:href)">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, 'xlinkhref_', $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="$node/@xlink:href"/>
+      </field>
+    </xsl:if>
+    <xsl:if test="normalize-space($node/@displayLabel)">
+      <field>
+        <xsl:attribute name="name">
+          <xsl:value-of select="concat($prefix, 'displayLabel_', $suffix)"/>
+        </xsl:attribute>
+        <xsl:value-of select="$node/@displayLabel"/>
+      </field>
+    </xsl:if>
     <xsl:apply-templates select="$node/*" mode="slurping_MODS">
       <xsl:with-param name="prefix" select="$prefix"/>
       <xsl:with-param name="suffix" select="$suffix"/>

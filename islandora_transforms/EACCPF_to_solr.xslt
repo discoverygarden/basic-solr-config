@@ -12,8 +12,11 @@
 
   <xsl:template match="foxml:datastream[@ID='EAC-CPF']/foxml:datastreamVersion[last()]" name="index_EAC-CPF">
     <xsl:param name="content"/>
-	<xsl:param name="prefix">eaccpf_</xsl:param>
-	<xsl:param name="suffix">et</xsl:param> <!-- 'edged' (edge n-gram) text, for auto-completion -->
+    <xsl:param name="prefix">eaccpf_</xsl:param>
+    <xsl:param name="suffix">et</xsl:param> <!-- 'edged' (edge n-gram) text, for auto-completion -->
+
+    <!-- Clearing hash in case the template is ran more than once. -->
+    <xsl:variable name="return_from_clear" select="java:clear($eaccpf_single_valued_hashset)"/>
 
     <!--
       Add in an extra parser, as we've encountered some odd values in the wild...

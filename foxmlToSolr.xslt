@@ -22,7 +22,8 @@
   xmlns:exts="xalan://dk.defxws.fedoragsearch.server.GenericOperationsImpl"
   xmlns:islandora-exts="xalan://ca.upei.roblib.DataStreamForXSLT"
             exclude-result-prefixes="exts"
-  xmlns:encoder="xalan://java.net.URLEncoder">
+  xmlns:encoder="xalan://java.net.URLEncoder"
+  xmlns:java="http://xml.apache.org/xalan/java">
   <!--  Used for indexing other objects.
   xmlns:sparql="http://www.w3.org/2001/sw/DataAccess/rf1/result"
   xmlns:xalan="http://xml.apache.org/xalan"> -->
@@ -88,9 +89,11 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/FgsIndex/islandora_transforms/WORKFLOW_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/FgsIndex/islandora_transforms/slurp_all_chemicalML_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/FgsIndex/islandora_transforms/library/traverse-graph.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/config/index/FgsIndex/islandora_transforms/hierarchy.xslt"/>
   -->
 
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/DC_to_solr.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/QDC_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/RELS-EXT_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/RELS-INT_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/FOXML_properties_to_solr.xslt"/>
@@ -109,6 +112,10 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/slurp_all_chemicalML_to_solr.xslt"/>
   <!--  Used for indexing other objects.
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/library/traverse-graph.xslt"/>
+  -->
+  <!-- Used to index the list of collections to which an object belongs.
+    Requires the "traverse-graph.xslt" bit as well.
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/hierarchy.xslt"/>
   -->
 
   <!-- Decide which objects to modify the index of -->
@@ -142,30 +149,31 @@
                   FROM &lt;#ri&gt;
                   WHERE {
                     {
-                      ?sub fm:hasModel &lt;info:fedora/islandora:newspaperCModel&gt; {
-                        ?issue fre:isMemberOf ?sub .
+                      &lt;%PID_URI%&gt; fm:hasModel &lt;info:fedora/islandora:newspaperCModel&gt; {
+                        ?issue fre:isMemberOf &lt;%PID_URI%&gt; .
                         ?obj islandora:isPageOf ?issue
                       }
                       UNION {
-                        ?obj fre:isMemberOf ?sub
+                        ?obj fre:isMemberOf &lt;%PID_URI%&gt;
                       }
                     }
                     UNION {
-                      ?sub fm:hasModel &lt;info:fedora/islandora:newspaperIssueCModel&gt; .
-                      ?obj islandora:isPageOf ?sub
+                      &lt;%PID_URI%&gt; fm:hasModel &lt;info:fedora/islandora:newspaperIssueCModel&gt; .
+                      ?obj islandora:isPageOf &lt;%PID_URI%&gt;
                     }
                     ?obj fm:state fm:Active
-                    FILTER(sameTerm(?sub, &lt;%PID_URI%&gt;))
                   }
                 </xsl:with-param>
               </xsl:call-template>
             </xsl:variable>
             <add commitWithin="5000">
-              <xsl:for-each select="xalan:nodeset($graph)//sparql:obj">
-                 <xsl:variable name="xml_url" select="concat(substring-before($FEDORA, '://'), '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', substring-after($FEDORA, '://') , '/objects/', substring-after(@uri, '/'), '/objectXML')"/>
+              <xsl:for-each select="xalan:nodeset($graph)//sparql:obj[@uri != concat('info:fedora/', $PID)]">
+                <xsl:variable name="xml_url" select="concat(substring-before($FEDORA, '://'), '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', substring-after($FEDORA, '://') , '/objects/', substring-after(@uri, '/'), '/objectXML')"/>
                 <xsl:variable name="object" select="document($xml_url)"/>
                 <xsl:if test="$object">
-                    <xsl:apply-templates select="$object/foxml:digitalObject" mode="indexFedoraObject"/>
+                  <xsl:apply-templates select="$object/foxml:digitalObject" mode="indexFedoraObject">
+                    <xsl:with-param name="PID" select="substring-after(@uri, '/')"/>
+                  </xsl:apply-templates>
                 </xsl:if>
               </xsl:for-each>
             </add>
@@ -224,14 +232,14 @@
                handle the mimetypes supported by the "getDatastreamText" call:
                https://github.com/fcrepo/gsearch/blob/master/FedoraGenericSearch/src/java/dk/defxws/fedoragsearch/server/TransformerToText.java#L185-L200
           -->
-          <xsl:when test="@CONTROL_GROUP='M' and foxml:datastreamVersion[last() and not(starts-with(@MIMETYPE, 'image') or starts-with(@MIMETYPE, 'audio') or starts-with(@MIMETYPE, 'video'))]">
+          <xsl:when test="@CONTROL_GROUP='M' and foxml:datastreamVersion[last() and not(starts-with(@MIMETYPE, 'image') or starts-with(@MIMETYPE, 'audio') or starts-with(@MIMETYPE, 'video') or @MIMETYPE = 'application/pdf')]">
             <!-- TODO: should do something about mime type filtering
               text/plain should use the getDatastreamText extension because document will only work for xml docs
               xml files should use the document function
               other mimetypes should not be being sent
               will this let us not use the content variable? -->
             <xsl:apply-templates select="foxml:datastreamVersion[last()]">
-              <xsl:with-param name="content" select="normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS))"/>
+              <xsl:with-param name="content" select="java:ca.discoverygarden.gsearch_extensions.XMLStringUtils.escapeForXML(normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)))"/>
             </xsl:apply-templates>
           </xsl:when>
         </xsl:choose>
@@ -247,6 +255,28 @@
         <xsl:with-param name="pid" select="$PID"/>
         <xsl:with-param name="suffix">_s</xsl:with-param>
       </xsl:apply-templates>
+      -->
+
+      <!-- Index ancestors, as used in the islandora_collection_search module.
+        Requires the "hierarchy.xslt" to be included (uncomment near the top of
+        the file?).
+        Also, note: When migrating objects between collections, it would be
+        necessary to update all descendents to ensure their list of ancestors
+        reflect the current state... We do this in the
+        islandora_collection_search module when migrating, instead of
+        reindexing all the descendents whenever indexing an object
+        (updating a collection label would be fairly expensive if we blindly
+        reindexed). -->
+      <!--
+      <xsl:variable name="ancestors">
+        <xsl:call-template name="get-ancestors">
+          <xsl:with-param name="PID" select="$PID" />
+        </xsl:call-template>
+      </xsl:variable>
+
+      <xsl:for-each select="xalan:nodeset($ancestors)//sparql:obj[@uri != concat('info:fedora/', $PID)]">
+        <field name="ancestors_ms"><xsl:value-of select="substring-after(@uri, '/')"/></field>
+      </xsl:for-each>
       -->
 
     </doc>

@@ -7,11 +7,15 @@
     xmlns:foxml="info:fedora/fedora-system:def/foxml#"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="rdf java">
     <xsl:variable name="single_valued_hashset_for_rels_int" select="java:java.util.HashSet.new()"/>
+
     <xsl:template match="foxml:datastream[@ID='RELS-INT']/foxml:datastreamVersion[last()]"
         name="index_RELS-INT">
         <xsl:param name="content"/>
         <xsl:param name="prefix">RELS_INT_</xsl:param>
         <xsl:param name="suffix">_ms</xsl:param>
+
+        <!-- Clearing hash in case the template is ran more than once. -->
+        <xsl:variable name="return_from_clear" select="java:clear($single_valued_hashset_for_rels_int)"/>
 
         <xsl:for-each select="$content//rdf:Description/*[@rdf:resource]">
             <!-- Prevent multiple generating multiple instances of single-valued fields
