@@ -276,10 +276,12 @@
     <fieldtype name="mods_xml" stored="true" indexed="false" class="solr.StrField" multiValued="false"/>
     <fieldtype name="dc_xml" stored="true" indexed="false" class="solr.StrField" multiValued="false"/>
 
+    <!--
     <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
     <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType"
         spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory"
         distErrPct="0.025" maxDistErr="0.000009" units="degrees"/>
+    -->
     <!-- -->
 
      <!-- PID needs a new tokenized type for the PID that does no tokenizing.-->
@@ -369,8 +371,10 @@
    <field name="mods_geographic_ms" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="mods_geographic_mt" type="text" indexed="true" stored="false" multiValued="true"/>
 
+   <!--
    <field name="loc" type="location" indexed="true" stored="true" multiValued="true"/>
    <field name="loc_rpt" type="location_rpt" indexed="true" stored="true" multiValued="true"/>
+   -->
    <!-- -->
 </fields>
 
