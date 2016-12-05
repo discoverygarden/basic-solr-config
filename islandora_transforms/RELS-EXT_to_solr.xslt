@@ -23,7 +23,7 @@
         </xsl:apply-templates>
     </xsl:template>
 
-    <!-- Match elements, call underlying template. -->
+    <!-- Match resources, call underlying template. -->
     <xsl:template match="*[@rdf:resource]" mode="rels_ext_element">
       <xsl:param name="prefix"/>
       <xsl:param name="suffix"/>
@@ -35,7 +35,12 @@
         <xsl:with-param name="value" select="@rdf:resource"/>
       </xsl:call-template>
     </xsl:template>
-    <xsl:template match="*[normalize-space(.)]" mode="rels_ext_element">
+
+    <!-- Match relevant literals, call underlying template.
+
+    We avoid indexing our compound "quad" relationship, which contains the PID appended.
+    -->
+    <xsl:template match="*[normalize-space(.)][self::islandora:isSequenceNumberOf or not(self::islandora:* and start-with(local-name(), 'isSequenceNumberOf'))]" mode="rels_ext_element" xmlns:islandora-rels-ext="http://islandora.ca/ontology/relsext#">
       <xsl:param name="prefix"/>
       <xsl:param name="suffix"/>
 
