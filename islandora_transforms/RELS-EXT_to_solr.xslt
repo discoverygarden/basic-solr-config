@@ -4,7 +4,8 @@
     xmlns:java="http://xml.apache.org/xalan/java"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:foxml="info:fedora/fedora-system:def/foxml#"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="rdf java">
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:islandora-rels-ext="http://islandora.ca/ontology/relsext#" exclude-result-prefixes="rdf java">
 
     <xsl:variable name="single_valued_hashset_for_rels_ext" select="java:java.util.HashSet.new()"/>
 
@@ -23,7 +24,7 @@
         </xsl:apply-templates>
     </xsl:template>
 
-    <!-- Match elements, call underlying template. -->
+    <!-- Match resources, call underlying template. -->
     <xsl:template match="*[@rdf:resource]" mode="rels_ext_element">
       <xsl:param name="prefix"/>
       <xsl:param name="suffix"/>
@@ -35,7 +36,12 @@
         <xsl:with-param name="value" select="@rdf:resource"/>
       </xsl:call-template>
     </xsl:template>
-    <xsl:template match="*[normalize-space(.)]" mode="rels_ext_element">
+
+    <!-- Match relevant literals, call underlying template.
+
+    We avoid indexing our compound "quad" relationship, which contains the PID appended after "isSequenceNumberOf".
+    -->
+    <xsl:template match="*[normalize-space(.)][self::islandora-rels-ext:isSequenceNumberOf or not(self::islandora-rels-ext:* and starts-with(local-name(), 'isSequenceNumberOf'))]" mode="rels_ext_element">
       <xsl:param name="prefix"/>
       <xsl:param name="suffix"/>
 
