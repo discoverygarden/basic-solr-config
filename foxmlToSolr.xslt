@@ -109,6 +109,7 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/MADS_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/WORKFLOW_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/slurp_all_chemicalML_to_solr.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/slurp_XML_converted_JSON_to_solr.xslt"/>
   <!--  Used for indexing other objects.
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/library/traverse-graph.xslt"/>
   -->
@@ -223,6 +224,15 @@
               will this let us not use the content variable? -->
             <xsl:apply-templates select="foxml:datastreamVersion[last()]">
               <xsl:with-param name="content" select="document(concat($PROT, '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', @ID, '/content'))"/>
+            </xsl:apply-templates>
+          </xsl:when>
+          <!-- JSON to document objects -->
+          <xsl:when test="@CONTROL_GROUP='M' and foxml:datastreamVersion[last() and @MIMETYPE='application/json']">
+            <xsl:variable name="json">
+              <xsl:value-of select="java:ca.discoverygarden.gsearch_extensions.FedoraUtils.getRawDatastreamDissemination($PID, @ID, concat($PROT, '://', $HOST, ':', $PORT, '/fedora'), $FEDORAUSER, $FEDORAPASS)"/>
+            </xsl:variable>
+            <xsl:apply-templates select="foxml:datastreamVersion[last()]">
+              <xsl:with-param name="content" select="java:ca.discoverygarden.gsearch_extensions.JSONToXML.convertJSONToDocument($json)"/>
             </xsl:apply-templates>
           </xsl:when>
           <!-- non-xml managed datastreams...
