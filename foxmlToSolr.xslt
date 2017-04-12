@@ -23,7 +23,8 @@
   xmlns:islandora-exts="xalan://ca.upei.roblib.DataStreamForXSLT"
             exclude-result-prefixes="exts"
   xmlns:encoder="xalan://java.net.URLEncoder"
-  xmlns:java="http://xml.apache.org/xalan/java">
+  xmlns:java="http://xml.apache.org/xalan/java"
+  xmlns:dgi-e="xalan://ca.discoverygarden.gsearch_extensions">
   <!--  Used for indexing other objects.
   xmlns:sparql="http://www.w3.org/2001/sw/DataAccess/rf1/result"
   xmlns:xalan="http://xml.apache.org/xalan"> -->
@@ -228,11 +229,8 @@
           </xsl:when>
           <!-- JSON to document objects -->
           <xsl:when test="@CONTROL_GROUP='M' and foxml:datastreamVersion[last() and @MIMETYPE='application/json']">
-            <xsl:variable name="json">
-              <xsl:value-of select="java:ca.discoverygarden.gsearch_extensions.FedoraUtils.getRawDatastreamDissemination($PID, @ID, concat($PROT, '://', $HOST, ':', $PORT, '/fedora'), $FEDORAUSER, $FEDORAPASS)"/>
-            </xsl:variable>
             <xsl:apply-templates select="foxml:datastreamVersion[last()]">
-              <xsl:with-param name="content" select="java:ca.discoverygarden.gsearch_extensions.JSONToXML.convertJSONToDocument($json)"/>
+              <xsl:with-param name="content" select="dgi-e:JSONToXML.convertJSONToDocument(dgi-e:FedoraUtils.getRawDatastreamDissemination($PID, @ID, concat($PROT, '://', $HOST, ':', $PORT, '/fedora'), $FEDORAUSER, $FEDORAPASS))"/>
             </xsl:apply-templates>
           </xsl:when>
           <!-- non-xml managed datastreams...
@@ -248,7 +246,7 @@
               other mimetypes should not be being sent
               will this let us not use the content variable? -->
             <xsl:apply-templates select="foxml:datastreamVersion[last()]">
-              <xsl:with-param name="content" select="java:ca.discoverygarden.gsearch_extensions.XMLStringUtils.escapeForXML(normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)))"/>
+              <xsl:with-param name="content" select="dgi-e:XMLStringUtils.escapeForXML(normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)))"/>
             </xsl:apply-templates>
           </xsl:when>
         </xsl:choose>
