@@ -23,7 +23,8 @@
   xmlns:islandora-exts="xalan://ca.upei.roblib.DataStreamForXSLT"
             exclude-result-prefixes="exts"
   xmlns:encoder="xalan://java.net.URLEncoder"
-  xmlns:java="http://xml.apache.org/xalan/java">
+  xmlns:java="http://xml.apache.org/xalan/java"
+  xmlns:dgi-e="xalan://ca.discoverygarden.gsearch_extensions">
   <!--  Used for indexing other objects.
   xmlns:sparql="http://www.w3.org/2001/sw/DataAccess/rf1/result"
   xmlns:xalan="http://xml.apache.org/xalan"> -->
@@ -109,6 +110,7 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/MADS_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/WORKFLOW_to_solr.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/slurp_all_chemicalML_to_solr.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/slurp_XML_converted_JSON_to_solr.xslt"/>
   <!--  Used for indexing other objects.
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/library/traverse-graph.xslt"/>
   -->
@@ -225,6 +227,12 @@
               <xsl:with-param name="content" select="document(concat($PROT, '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', @ID, '/content'))"/>
             </xsl:apply-templates>
           </xsl:when>
+          <!-- JSON to document objects -->
+          <xsl:when test="@CONTROL_GROUP='M' and foxml:datastreamVersion[last() and @MIMETYPE='application/json']">
+            <xsl:apply-templates select="foxml:datastreamVersion[last()]">
+              <xsl:with-param name="content" select="dgi-e:JSONToXML.convertJSONToDocument(dgi-e:FedoraUtils.getRawDatastreamDissemination($PID, @ID, concat($PROT, '://', $HOST, ':', $PORT, '/fedora'), $FEDORAUSER, $FEDORAPASS))"/>
+            </xsl:apply-templates>
+          </xsl:when>
           <!-- non-xml managed datastreams...
 
                Really, should probably only
@@ -238,7 +246,7 @@
               other mimetypes should not be being sent
               will this let us not use the content variable? -->
             <xsl:apply-templates select="foxml:datastreamVersion[last()]">
-              <xsl:with-param name="content" select="java:ca.discoverygarden.gsearch_extensions.XMLStringUtils.escapeForXML(normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)))"/>
+              <xsl:with-param name="content" select="dgi-e:XMLStringUtils.escapeForXML(normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)))"/>
             </xsl:apply-templates>
           </xsl:when>
         </xsl:choose>
