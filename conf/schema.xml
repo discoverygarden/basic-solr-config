@@ -337,6 +337,9 @@
    <dynamicField name="*_et" type="edgedText" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="*_mlt" type="mappedLowerText" indexed="true" stored="true" multiValued='false'/>
 
+   <!-- islandora_solution_pack_oralhistories setup. This may collide with other dynamic fields. Use at own risk. -->
+   <!-- <dynamicField name="or_*" type="text" indexed="true" stored="true" multiValued="true"/> -->
+
    <!-- uncomment the following to ignore any fields that don't already match an existing
         field name or dynamic field, rather than reporting them as an error.
         alternately, change the type="ignored" to some other type e.g. "text" if you want
