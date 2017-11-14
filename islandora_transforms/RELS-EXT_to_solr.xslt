@@ -35,7 +35,11 @@
         <xsl:with-param name="value" select="@rdf:resource"/>
       </xsl:call-template>
     </xsl:template>
-    <xsl:template match="*[normalize-space(.)]" mode="rels_ext_element">
+    <!-- Match relevant literals, call underlying template.
+
+    We avoid indexing our compound "quad" relationship, which contains the PID appended after "isSequenceNumberOf".
+    -->
+    <xsl:template match="*[normalize-space(.)][self::islandora-rels-ext:isSequenceNumberOf or not(self::islandora-rels-ext:* and starts-with(local-name(), 'isSequenceNumberOf'))]" mode="rels_ext_element">  
       <xsl:param name="prefix"/>
       <xsl:param name="suffix"/>
 
