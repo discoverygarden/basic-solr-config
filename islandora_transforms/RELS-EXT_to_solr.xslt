@@ -4,7 +4,8 @@
     xmlns:java="http://xml.apache.org/xalan/java"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:foxml="info:fedora/fedora-system:def/foxml#"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="rdf java">
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:islandora-rels-ext="http://islandora.ca/ontology/relsext#" exclude-result-prefixes="rdf java">
 
     <xsl:variable name="single_valued_hashset_for_rels_ext" select="java:java.util.HashSet.new()"/>
 
