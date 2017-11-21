@@ -6,7 +6,7 @@ Repository of transformation XSLTs for use with GSearch for a variety of differe
 
 ## Requirements
 
-* [Apache Solr](lucene.apache.org/solr/) - tested on 3.6.2-4.10.3
+* [Apache Solr](lucene.apache.org/solr/) - tested on 3.6.2-4.10.4
 * [Fedora GSearch](https://github.com/fcrepo3/gsearch) - tested on 2.7-2.8
 * Intended to be run with the discoverygarden [Basic Solr Config](https://github.com/discoverygarden/basic-solr-config)
 
