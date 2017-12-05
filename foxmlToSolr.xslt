@@ -38,7 +38,10 @@
   <xsl:param name="TRUSTSTOREPATH" select="repositoryName"/>
   <xsl:param name="TRUSTSTOREPASS" select="repositoryName"/>
 
-  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/custom_parameters.xslt"/>
+  <!--
+    "index_ancestors": "false()" to disable "ancestors_ms" indexing, "true()" to enable it.
+  -->
+  <xsl:param name="index_ancestors" select="false()"/>
 
   <!-- These values are accessible in included xslts -->
   <xsl:variable name="PROT">http</xsl:variable>
