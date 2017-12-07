@@ -39,7 +39,7 @@
   <xsl:param name="TRUSTSTOREPASS" select="repositoryName"/>
 
   <!--
-    "index_ancestors": "false()" to disable "ancestors_ms" indexing, "true()" to enable it.
+    Parameter(s) from custom_parameters.properties.
   -->
   <xsl:param name="index_ancestors" select="false()"/>
 
