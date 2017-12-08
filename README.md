@@ -13,8 +13,8 @@ One major difference between solr 3.x and 4.x is when deploying configs they use
 
 ## Custom Parameters
 
-In [our gsearch fork](https://github.com/discoverygarden/gsearch) as of [version 2.8.2](https://github.com/discoverygarden/gsearch/releases/tag/v2.8.2), we allow for an addition `custom_parameters.properties` file to be placed beside the `foxmlToSolr.xslt` file (or whatever the "top-level" XSLT is named, when deployed).
+In [our gsearch fork](https://github.com/discoverygarden/gsearch) as of [version 2.9.0](https://github.com/discoverygarden/gsearch/releases/tag/v2.9.0), we allow for an addition `custom_parameters.properties` file to be placed beside the `foxmlToSolr.xslt` file (or whatever the "top-level" XSLT is named, when deployed).
 
 |Parameter|Default|Description|
 |---|---|---|
-|`index_ancestors`|`false`|Boolean flag: `true` to produce an `ancestors_ms` field (as used by the [islandora_collection_search](https://github.com/discoverygarden/islandora_collection_search) module); otherwise, `false` avoid generating. See [note in code](https://github.com/discoverygarden/basic-solr-config/blob/dce69e3e0a1d0ffac500f403f39433837248a063/foxmlToSolr.xslt#L271-L280) regarding maintenance of this value.|
+|`index_ancestors`|`false`|Boolean flag: `true` to produce an `ancestors_ms` field (as used by the [islandora_collection_search](https://github.com/discoverygarden/islandora_collection_search) module); otherwise, `false` avoid generating. Also, note: When migrating objects between collections, it would be necessary to update all descendents to ensure their list of ancestors reflect the current state... We do this in the islandora_collection_search module when migrating, instead of reindexing all the descendents whenever indexing an object (updating a collection label would be fairly expensive if we blindly reindexed).|
