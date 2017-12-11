@@ -24,10 +24,9 @@
             exclude-result-prefixes="exts"
   xmlns:encoder="xalan://java.net.URLEncoder"
   xmlns:java="http://xml.apache.org/xalan/java"
-  xmlns:dgi-e="xalan://ca.discoverygarden.gsearch_extensions">
-  <!--  Used for indexing other objects.
+  xmlns:dgi-e="xalan://ca.discoverygarden.gsearch_extensions"
   xmlns:sparql="http://www.w3.org/2001/sw/DataAccess/rf1/result"
-  xmlns:xalan="http://xml.apache.org/xalan"> -->
+  xmlns:xalan="http://xml.apache.org/xalan">
 
   <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
 
@@ -38,6 +37,11 @@
   <xsl:param name="FEDORAPASS" select="repositoryName"/>
   <xsl:param name="TRUSTSTOREPATH" select="repositoryName"/>
   <xsl:param name="TRUSTSTOREPASS" select="repositoryName"/>
+
+  <!--
+    Parameter(s) from custom_parameters.properties.
+  -->
+  <xsl:param name="index_ancestors" select="false()"/>
 
   <!-- These values are accessible in included xslts -->
   <xsl:variable name="PROT">http</xsl:variable>
@@ -115,13 +119,8 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/slurp_XML_converted_JSON_to_solr.xslt"/>
   <!--<xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/or_transcript_solr.xslt"/>-->
   <!--<xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/vtt_solr.xslt"/>-->
-  <!--  Used for indexing other objects.
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/library/traverse-graph.xslt"/>
-  -->
-  <!-- Used to index the list of collections to which an object belongs.
-    Requires the "traverse-graph.xslt" bit as well.
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/hierarchy.xslt"/>
-  -->
 
   <!-- Decide which objects to modify the index of -->
   <xsl:template match="/">
@@ -269,8 +268,6 @@
       -->
 
       <!-- Index ancestors, as used in the islandora_collection_search module.
-        Requires the "hierarchy.xslt" to be included (uncomment near the top of
-        the file?).
         Also, note: When migrating objects between collections, it would be
         necessary to update all descendents to ensure their list of ancestors
         reflect the current state... We do this in the
@@ -278,17 +275,19 @@
         reindexing all the descendents whenever indexing an object
         (updating a collection label would be fairly expensive if we blindly
         reindexed). -->
-      <!--
-      <xsl:variable name="ancestors">
-        <xsl:call-template name="get-ancestors">
-          <xsl:with-param name="PID" select="$PID" />
-        </xsl:call-template>
-      </xsl:variable>
+      <!-- XXX: Parameters as passed in are strings... Let's deal with it as a
+        string here, for convenience. -->
+      <xsl:if test="string($index_ancestors) = 'true'">
+        <xsl:variable name="ancestors">
+          <xsl:call-template name="get-ancestors">
+            <xsl:with-param name="PID" select="$PID" />
+          </xsl:call-template>
+        </xsl:variable>
 
-      <xsl:for-each select="xalan:nodeset($ancestors)//sparql:obj[@uri != concat('info:fedora/', $PID)]">
-        <field name="ancestors_ms"><xsl:value-of select="substring-after(@uri, '/')"/></field>
-      </xsl:for-each>
-      -->
+        <xsl:for-each select="xalan:nodeset($ancestors)//sparql:obj[@uri != concat('info:fedora/', $PID)]">
+          <field name="ancestors_ms"><xsl:value-of select="substring-after(@uri, '/')"/></field>
+        </xsl:for-each>
+      </xsl:if>
 
     </doc>
   </xsl:template>
