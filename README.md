@@ -7,6 +7,10 @@ If one wishes to index Drupal content and users, one might process the `conf/dat
 * `drupal_db_username`
 * `drupal_db_password`
 
+## File location
+
+On a standard Islandora install, the files in this repository should be copied to `/var/lib/tomcat7/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex`. 
+
 ## Custom Parameters
 
 In [our gsearch fork](https://github.com/discoverygarden/gsearch) as of [version 2.9.0](https://github.com/discoverygarden/gsearch/releases/tag/v2.9.0), we allow for an addition `custom_parameters.properties` file to be placed beside the `foxmlToSolr.xslt` file (or whatever the "top-level" XSLT is named, when deployed).
