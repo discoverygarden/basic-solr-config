@@ -15,6 +15,10 @@ You also have to copy the jars from solr/example/lib/ext/* to $CATALINA_HOME/web
 
 Requires Gsearch 2.8+
 
+## General Installation
+
+See [the wiki page](https://github.com/discoverygarden/basic-solr-config/wiki/Install-Solr-and-GSearch) for installation details.
+
 ## Custom Parameters
 
 In [our gsearch fork](https://github.com/discoverygarden/gsearch) as of [version 2.9.0](https://github.com/discoverygarden/gsearch/releases/tag/v2.9.0), we allow for an addition `custom_parameters.properties` file to be placed beside the `foxmlToSolr.xslt` file (or whatever the "top-level" XSLT is named, when deployed).
