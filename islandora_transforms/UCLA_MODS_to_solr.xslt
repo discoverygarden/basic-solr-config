@@ -139,7 +139,7 @@
   </xsl:template>
   
   <xsl:template match="mods:note[@transliteration='unspecified' and  @displayLabel='Names']" mode="GreenMovement">    
-    <field name="mods_note_unspecified_names_s">
+    <field name="mods_note_unspecified_names_ms">
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
