@@ -111,6 +111,22 @@
       -->
     <fieldType name="date" class="solr.TrieDateField" sortMissingLast="true" omitNorms="true" precisionStep="6" positionIncrementGap="100"/>
 
+    <!-- Bluespark request for University Archives ISLAND-748 -->
+    <!-- The "RandomSortField" is not used to store or search any
+         data.  You can declare fields of this type it in your schema
+         to generate pseudo-random orderings of your docs for sorting
+         or function purposes.  The ordering is generated based on the field
+         name and the version of the index. As long as the index version
+         remains unchanged, and the same field name is reused,
+         the ordering of the docs will be consistent.
+         If you want different psuedo-random orderings of documents,
+         for the same version of the index, use a dynamicField and
+         change the field name in the request.
+     -->
+    <fieldType name="random" class="solr.RandomSortField" indexed="true" />
+
+    <!-- end -->
+
     <!-- solr.TextField allows the specification of custom text analyzers
          specified as a tokenizer and a list of token filters. Different
          analyzers may be specified for indexing and querying.
@@ -379,6 +395,10 @@
    <field name="loc_rpt" type="location_rpt" indexed="true" stored="true" multiValued="true"/>
    -->
    <!-- -->
+
+  <!-- Bluespark request for University Archives ISLAND-748 -->
+   <dynamicField name="random_*" type="random" />
+   <!-- end -->
 </fields>
 
  <!-- Field to use to determine and enforce document uniqueness.
