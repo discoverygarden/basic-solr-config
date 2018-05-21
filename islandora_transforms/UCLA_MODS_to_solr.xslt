@@ -40,7 +40,11 @@
         </xsl:when>
         <xsl:when test="starts-with($PID, 'greenmovement')">
           <xsl:apply-templates select="mods:*" mode="GreenMovement"/>
+        </xsl:when>		
+		<xsl:when test="starts-with($PID, 'armeniaposters')">
+          <xsl:apply-templates select="mods:*" mode="ArmeniaPosters"/>
         </xsl:when>
+
         <xsl:when test="starts-with($PID, 'livingstone')">
           <xsl:apply-templates select="mods:*" mode="Livingstone"/>
           <field name="creator_s">
@@ -110,6 +114,55 @@
       </xsl:apply-templates>
     </xsl:for-each>
   </xsl:template>
+  
+  
+  <!-- BSP REQUEST 2018 DEP-636 -->
+  <xsl:template match="mods:title[@lang='arm' and @type='alternative']" mode="ArmeniaPosters">    
+    <field name="mods_titleInfo_title_alternative_ms">
+       <xsl:value-of select="text()"/>
+    </field>	
+  </xsl:template>
+  
+  <xsl:template match="mods:dateCreated[@encoding='iso8601' and not(@point)]" mode="ArmeniaPosters">    
+    <field name="bs_dateStart_s">
+      <xsl:value-of select="text()"/>
+    </field>	
+	<field name="bs_dateEnd_s">
+      <xsl:value-of select="text()"/>
+    </field>	
+  </xsl:template>
+  
+  <xsl:template match="mods:dateCreated[@encoding='iso8601' and @point='start')]" mode="ArmeniaPosters">    
+    <field name="bs_dateStart_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+  
+  <xsl:template match="mods:dateCreated[@encoding='iso8601' and @point='end']" mode="ArmeniaPosters">    
+    <field name="bs_dateEnd_s">
+      <xsl:value-of select="text()"/>
+    </field>	
+  </xsl:template>
+  
+   <xsl:template match="mods:identifier[@type='local' and  @displayLabel='filename']" mode="ArmeniaPosters">    
+    <field name="mods_identifier_local_filename_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+  
+  
+  <xsl:template match="mods:copyright[@copyright.status]" mode="ArmeniaPosters">  	
+    <field name="mods_accessCondition_copyrightstatus_s">
+      <xsl:value-of select="@copyright.status"/>
+    </field>	
+  </xsl:template>
+  
+  <xsl:template match="mods:copyright[@publication.status]" mode="ArmeniaPosters">  	
+    <field name="mods_accessCondition_publicationstatus_s">
+      <xsl:value-of select="@publication.status"/>
+    </field>	
+  </xsl:template>
+  
 
   <!--
    SECTION 2:
