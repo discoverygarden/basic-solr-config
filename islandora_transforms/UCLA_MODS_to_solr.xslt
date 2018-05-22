@@ -132,7 +132,7 @@
     </field>	
   </xsl:template>
   
-  <xsl:template match="mods:dateCreated[@encoding='iso8601' and @point='start')]" mode="ArmeniaPosters">    
+  <xsl:template match="mods:dateCreated[@encoding='iso8601' and @point='start']" mode="ArmeniaPosters">    
     <field name="bs_dateStart_s">
       <xsl:value-of select="text()"/>
     </field>
