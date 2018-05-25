@@ -149,18 +149,14 @@
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
-  
-  
-  <xsl:template match="mods:copyright[@copyright.status]" mode="ArmeniaPosters">  	
-    <field name="mods_accessCondition_copyrightstatus_s">
+     
+  <xsl:template match="mods:copyright[@copyright.status and @publication.status]" mode="ArmeniaPosters">  
+	<field name="mods_accessCondition_copyrightstatus_s">
       <xsl:value-of select="@copyright.status"/>
-    </field>	
-  </xsl:template>
-  
-  <xsl:template match="mods:copyright[@publication.status]" mode="ArmeniaPosters">  	
+    </field>	  
     <field name="mods_accessCondition_publicationstatus_s">
       <xsl:value-of select="@publication.status"/>
-    </field>	
+    </field>		 
   </xsl:template>
   
 
