@@ -117,11 +117,12 @@
   
   
   <!-- BSP REQUEST 2018 DEP-636 -->
+  <!-- this is causing duplicate values in Sorl documents
   <xsl:template match="mods:title[@lang='arm' and @type='alternative']" mode="ArmeniaPosters">    
     <field name="mods_titleInfo_title_alternative_ms">
        <xsl:value-of select="text()"/>
     </field>	
-  </xsl:template>
+  </xsl:template> -->
   
   <xsl:template match="mods:dateCreated[@encoding='iso8601' and not(@point)]" mode="ArmeniaPosters">    
     <field name="bs_dateStart_s">
