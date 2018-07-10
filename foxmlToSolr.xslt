@@ -42,6 +42,7 @@
     Parameter(s) from custom_parameters.properties.
   -->
   <xsl:param name="index_ancestors" select="false()"/>
+  <xsl:param name="index_parent_models" select="false()"/>
 
   <!-- These values are accessible in included xslts -->
   <xsl:variable name="PROT">http</xsl:variable>
@@ -121,6 +122,7 @@
   <!--<xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/vtt_solr.xslt"/>-->
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/library/traverse-graph.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/hierarchy.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/parent_models_to_solr_field.xslt"/>
 
   <!-- Decide which objects to modify the index of -->
   <xsl:template match="/">
@@ -289,6 +291,17 @@
         </xsl:for-each>
       </xsl:if>
 
+      <xsl:if test="string($index_parent_models) = 'true'">
+        <xsl:variable name="parent_models">
+          <xsl:call-template name="get-parent-models">
+            <xsl:with-param name="PID" select="$PID" />
+          </xsl:call-template>
+        </xsl:variable>
+
+        <xsl:for-each select="xalan:nodeset($parent_models)//sparql:model[@uri != concat('info:fedora/', $PID)]">
+          <field name="parent_models_ms"><xsl:value-of select="substring-after(@uri, '/')"/></field>
+        </xsl:for-each>
+      </xsl:if>
     </doc>
   </xsl:template>
 
