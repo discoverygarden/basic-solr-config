@@ -121,7 +121,7 @@
   
   
   <!-- BSP REQUEST 2018 DEP-636 -->
-  <!-- this is causing duplicate values in Sorl documents
+  <!-- this is causing duplicate values in Solr documents
   <xsl:template match="mods:title[@lang='arm' and @type='alternative']" mode="ArmeniaPosters">    
     <field name="mods_titleInfo_title_alternative_ms">
        <xsl:value-of select="text()"/>
