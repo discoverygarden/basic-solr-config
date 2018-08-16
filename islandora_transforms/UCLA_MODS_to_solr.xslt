@@ -41,7 +41,11 @@
         <xsl:when test="starts-with($PID, 'greenmovement')">
           <xsl:apply-templates select="mods:*" mode="GreenMovement"/>
         </xsl:when>		
-		<xsl:when test="starts-with($PID, 'armeniaposters')">
+        <xsl:when test="starts-with($PID, 'armeniaposters') 
+          or starts-with($PID, 'cubanephemera') 
+          or starts-with($PID, 'africanephemera' 
+          or starts-with($PID, 'latinamericanandcaribbeanperiodicals') 
+          or starts-with($PID, 'cartelesdecine'))">
           <xsl:apply-templates select="mods:*" mode="ArmeniaPosters"/>
         </xsl:when>
 
@@ -140,6 +144,27 @@
   </xsl:template>
   
   <xsl:template match="mods:dateCreated[@encoding='iso8601' and @point='end']" mode="ArmeniaPosters">    
+    <field name="bs_dateEnd_s">
+      <xsl:value-of select="text()"/>
+    </field>	
+  </xsl:template>
+  
+  <xsl:template match="mods:dateIssued[@encoding='iso8601' and not(@point)]" mode="ArmeniaPosters">    
+    <field name="bs_dateStart_s">
+      <xsl:value-of select="text()"/>
+    </field>	
+    <field name="bs_dateEnd_s">
+      <xsl:value-of select="text()"/>
+    </field>	
+  </xsl:template>
+  
+  <xsl:template match="mods:dateIssued[@encoding='iso8601' and @point='start']" mode="ArmeniaPosters">    
+    <field name="bs_dateStart_s">
+      <xsl:value-of select="text()"/>
+    </field>
+  </xsl:template>
+  
+  <xsl:template match="mods:dateIssued[@encoding='iso8601' and @point='end']" mode="ArmeniaPosters">    
     <field name="bs_dateEnd_s">
       <xsl:value-of select="text()"/>
     </field>	
