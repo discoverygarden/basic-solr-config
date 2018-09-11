@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:foxml="info:fedora/fedora-system:def/foxml#"
-  xmlns:mods="http://www.loc.gov/mods/v3"  xmlns:java="http://xml.apache.org/xalan/java" exclude-result-prefixes="mods">
+  xmlns:mods="http://www.loc.gov/mods/v3"  xmlns:java="http://xml.apache.org/xalan/java" 
+  xmlns:copyrightMD="http://www.cdlib.org/inside/diglib/copyrightMD"  exclude-result-prefixes="mods">
   <xsl:variable name="modsPrefix">mods_</xsl:variable>
   <xsl:variable name="modsSuffix">_ms</xsl:variable>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/slurp_all_MODS_to_solr.xslt"/>
@@ -177,13 +178,13 @@
     </field>	
   </xsl:template>
   
-   <xsl:template match="mods:identifier[@type='local' and  @displayLabel='filename']" mode="ArmeniaPosters">    
+  <xsl:template match="mods:identifier[@type='local' and  @displayLabel='File name']" mode="ArmeniaPosters">    
     <field name="mods_identifier_local_filename_s">
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
      
-  <xsl:template match="mods:copyright[@copyright.status and @publication.status]" mode="ArmeniaPosters">  
+  <xsl:template match="copyrightMD:copyright[@copyright.status and @publication.status]" mode="ArmeniaPosters">  
 	<field name="mods_accessCondition_copyrightstatus_s">
       <xsl:value-of select="@copyright.status"/>
     </field>	  
