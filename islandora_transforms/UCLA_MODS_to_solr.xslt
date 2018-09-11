@@ -43,9 +43,16 @@
         </xsl:when>		
         <xsl:when test="starts-with($PID, 'armeniaposters') 
           or starts-with($PID, 'cubanephemera') 
-          or starts-with($PID, 'africanephemera' 
+          or starts-with($PID, 'africanephemera') 
           or starts-with($PID, 'latinamericanandcaribbeanperiodicals') 
-          or starts-with($PID, 'cartelesdecine'))">
+          or starts-with($PID, 'cartelesdecine')
+          or starts-with($PID, 'zanzibarriots')
+          or starts-with($PID, 'meduartensemble')
+          or starts-with($PID, 'sharpevillemassacre')
+          or starts-with($PID, 'villagesofsulaimani')
+          or starts-with($PID, 'luxor')
+          or starts-with($PID, 'kurdsihreferendum')
+          or starts-with($PID, 'abughraib')">
           <xsl:apply-templates select="mods:*" mode="ArmeniaPosters"/>
         </xsl:when>
 
