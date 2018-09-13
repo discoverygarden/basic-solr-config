@@ -43,6 +43,7 @@
   -->
   <xsl:param name="index_ancestors" select="false()"/>
   <xsl:param name="index_ancestors_models" select="false()"/>
+  <xsl:param name="maintain_dataset_latest_version_flag" select="false()"/>
 
   <!-- These values are accessible in included xslts -->
   <xsl:variable name="PROT">http</xsl:variable>
@@ -124,6 +125,7 @@
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/hierarchy.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/ancestors_models_to_solr_field.xslt"/>
   <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/library/xslt-date-template.xslt"/>
+  <xsl:include href="/usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/classes/fgsconfigFinal/index/FgsIndex/islandora_transforms/research_data_versions.xslt"/>
 
   <!-- Decide which objects to modify the index of -->
   <xsl:template match="/">
@@ -132,11 +134,21 @@
       <xsl:if test="not(foxml:digitalObject/foxml:datastream[@ID='METHODMAP' or @ID='DS-COMPOSITE-MODEL'])">
         <xsl:choose>
           <xsl:when test="foxml:digitalObject/foxml:objectProperties/foxml:property[@NAME='info:fedora/fedora-system:def/model#state' and @VALUE='Active']">
-            <add>
+            <xsl:variable name="doc">
               <xsl:apply-templates select="/foxml:digitalObject" mode="indexFedoraObject">
                 <xsl:with-param name="PID" select="$PID"/>
               </xsl:apply-templates>
+            </xsl:variable>
+
+            <add>
+              <xsl:copy-of select="$doc"/>
             </add>
+
+            <xsl:if test="$maintain_dataset_latest_version_flag">
+              <xsl:call-template name="reindex_previous_newest_research_data_set_version_if_necessary">
+                <xsl:with-param name="current" select="xalan:nodeset($doc)"/>
+              </xsl:call-template>
+            </xsl:if>
             <!-- Newspaper graph example.
             <xsl:variable name="graph">
               <xsl:call-template name="_traverse_graph">
@@ -197,12 +209,19 @@
   <!-- Index an object -->
   <xsl:template match="/foxml:digitalObject" mode="indexFedoraObject">
     <xsl:param name="PID"/>
+    <xsl:param name="version" select="false()"/>
 
     <doc>
       <!-- put the object pid into a field -->
       <field name="PID">
         <xsl:value-of select="$PID"/>
       </field>
+
+      <xsl:if test="$version">
+        <field name="_version_">
+          <xsl:value-of select="$version"/>
+        </field>
+      </xsl:if>
 
       <!-- These templates are in the islandora_transforms -->
       <xsl:apply-templates select="foxml:objectProperties/foxml:property"/>
