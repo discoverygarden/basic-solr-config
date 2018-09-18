@@ -53,7 +53,9 @@
           or starts-with($PID, 'villagesofsulaimani')
           or starts-with($PID, 'luxor')
           or starts-with($PID, 'kurdsihreferendum')
-          or starts-with($PID, 'abughraib')">
+          or starts-with($PID, 'abughraib')
+          or starts-with($PID, 'sharpevillemassacre')
+          or starts-with($PID, 'meduartensemble')">
           <xsl:apply-templates select="mods:*" mode="ArmeniaPosters"/>
         </xsl:when>
 
