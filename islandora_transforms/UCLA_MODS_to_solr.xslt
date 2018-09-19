@@ -42,7 +42,7 @@
         <xsl:when test="starts-with($PID, 'greenmovement')">
           <xsl:apply-templates select="mods:*" mode="GreenMovement"/>
         </xsl:when>		
-        <xsl:when test="starts-with($PID, 'armeniaposters') 
+      <!--  <xsl:when test="starts-with($PID, 'armeniaposters') 
           or starts-with($PID, 'cubanephemera') 
           or starts-with($PID, 'africanephemera') 
           or starts-with($PID, 'latinamericanandcaribbeanperiodicals') 
@@ -57,7 +57,7 @@
           or starts-with($PID, 'sharpevillemassacre')
           or starts-with($PID, 'meduartensemble')">
           <xsl:apply-templates select="mods:*" mode="ArmeniaPosters"/>
-        </xsl:when>
+        </xsl:when> -->
 
         <xsl:when test="starts-with($PID, 'livingstone')">
           <xsl:apply-templates select="mods:*" mode="Livingstone"/>
@@ -122,6 +122,7 @@
         </xsl:when>
       </xsl:choose>
       <!-- We always get the generic treatment -->
+      <xsl:apply-templates mode="slurping_MODS_IDEP" select="mods:*"/>
       <xsl:apply-templates mode="slurping_MODS" select="current()">
 	 <xsl:with-param name="suffix" select="'ms'"/>
       	 <xsl:with-param name="pid" select="$PID"/>
@@ -137,8 +138,29 @@
        <xsl:value-of select="text()"/>
     </field>	
   </xsl:template> -->
-  
-  <xsl:template match="mods:dateCreated[@encoding='iso8601' and not(@point)]" mode="ArmeniaPosters">    
+  <xsl:template match="mods:part" mode="slurping_MODS_IDEP">    
+    <xsl:for-each select="mods:detail">
+      <xsl:if test="boolean(@type='volume')">
+        <field name="mods_part_detail_volume_number_s">
+          <xsl:value-of select="mods:number/text()"/>
+        </field>
+      </xsl:if>
+      
+      <xsl:if test="boolean(@type='issue')">
+        <field name="mods_part_detail_issue_number_s">
+          <xsl:value-of select="mods:number/text()"/>
+        </field>
+      </xsl:if>
+    </xsl:for-each>
+    
+    <xsl:if test="boolean(mods:date)">
+      <field name="mods_part_date_s">
+        <xsl:value-of select="mods:date/text()"/>
+      </field>
+    </xsl:if>
+    
+  </xsl:template>
+  <xsl:template match="mods:dateCreated[@encoding='iso8601' and not(@point)]" mode="slurping_MODS_IDEP">    
     <field name="bs_dateStart_s">
       <xsl:value-of select="text()"/>
     </field>	
@@ -147,19 +169,19 @@
     </field>	
   </xsl:template>
   
-  <xsl:template match="mods:dateCreated[@encoding='iso8601' and @point='start']" mode="ArmeniaPosters">    
+  <xsl:template match="mods:dateCreated[@encoding='iso8601' and @point='start']" mode="slurping_MODS_IDEP">    
     <field name="bs_dateStart_s">
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
   
-  <xsl:template match="mods:dateCreated[@encoding='iso8601' and @point='end']" mode="ArmeniaPosters">    
+  <xsl:template match="mods:dateCreated[@encoding='iso8601' and @point='end']" mode="slurping_MODS_IDEP">    
     <field name="bs_dateEnd_s">
       <xsl:value-of select="text()"/>
     </field>	
   </xsl:template>
   
-  <xsl:template match="mods:dateIssued[@encoding='iso8601' and not(@point)]" mode="ArmeniaPosters">    
+  <xsl:template match="mods:dateIssued[@encoding='iso8601' and not(@point)]" mode="slurping_MODS_IDEP">    
     <field name="bs_dateStart_s">
       <xsl:value-of select="text()"/>
     </field>	
@@ -168,25 +190,25 @@
     </field>	
   </xsl:template>
   
-  <xsl:template match="mods:dateIssued[@encoding='iso8601' and @point='start']" mode="ArmeniaPosters">    
+  <xsl:template match="mods:dateIssued[@encoding='iso8601' and @point='start']" mode="slurping_MODS_IDEP">    
     <field name="bs_dateStart_s">
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
   
-  <xsl:template match="mods:dateIssued[@encoding='iso8601' and @point='end']" mode="ArmeniaPosters">    
+  <xsl:template match="mods:dateIssued[@encoding='iso8601' and @point='end']" mode="slurping_MODS_IDEP">    
     <field name="bs_dateEnd_s">
       <xsl:value-of select="text()"/>
     </field>	
   </xsl:template>
   
-  <xsl:template match="mods:identifier[@type='local' and  @displayLabel='File name']" mode="ArmeniaPosters">    
+  <xsl:template match="mods:identifier[@type='local' and  @displayLabel='File name']" mode="slurping_MODS_IDEP">    
     <field name="mods_identifier_local_filename_s">
       <xsl:value-of select="text()"/>
     </field>
   </xsl:template>
      
-  <xsl:template match="copyrightMD:copyright[@copyright.status and @publication.status]" mode="ArmeniaPosters">  
+  <xsl:template match="copyrightMD:copyright[@copyright.status and @publication.status]" mode="slurping_MODS_IDEP">  
 	<field name="mods_accessCondition_copyrightstatus_s">
       <xsl:value-of select="@copyright.status"/>
     </field>	  
