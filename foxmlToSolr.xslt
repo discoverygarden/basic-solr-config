@@ -45,6 +45,7 @@
   <xsl:param name="index_ancestors_models" select="false()"/>
   <xsl:param name="maintain_dataset_latest_version_flag" select="false()"/>
   <xsl:param name="index_compound_sequence" select="true()"/>
+  <xsl:param name="index_checksums" select="false()"/>
 
   <!-- These values are accessible in included xslts -->
   <xsl:variable name="PROT">http</xsl:variable>
