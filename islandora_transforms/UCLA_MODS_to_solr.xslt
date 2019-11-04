@@ -42,22 +42,9 @@
         <xsl:when test="starts-with($PID, 'greenmovement')">
           <xsl:apply-templates select="mods:*" mode="GreenMovement"/>
         </xsl:when>		
-      <!--  <xsl:when test="starts-with($PID, 'armeniaposters') 
-          or starts-with($PID, 'cubanephemera') 
-          or starts-with($PID, 'africanephemera') 
-          or starts-with($PID, 'latinamericanandcaribbeanperiodicals') 
-          or starts-with($PID, 'cartelesdecine')
-          or starts-with($PID, 'zanzibarriots')
-          or starts-with($PID, 'meduartensemble')
-          or starts-with($PID, 'sharpevillemassacre')
-          or starts-with($PID, 'villagesofsulaimani')
-          or starts-with($PID, 'luxor')
-          or starts-with($PID, 'kurdsihreferendum')
-          or starts-with($PID, 'abughraib')
-          or starts-with($PID, 'sharpevillemassacre')
-          or starts-with($PID, 'meduartensemble')">
-          <xsl:apply-templates select="mods:*" mode="ArmeniaPosters"/>
-        </xsl:when> -->
+       <xsl:when test="starts-with($PID, 'palmu')">
+          <xsl:apply-templates select="mods:*" mode="palmu"/>
+        </xsl:when>	
 
         <xsl:when test="starts-with($PID, 'livingstone')">
           <xsl:apply-templates select="mods:*" mode="Livingstone"/>
@@ -232,6 +219,28 @@
       <xsl:value-of select="mods:topic"/>
     </field>
   </xsl:template>
+  
+   <!-- Add displayLabel to the solr fields  -->
+  <xsl:template match="mods:identifier[type='uri']" mode="palmu">
+    <!-- Thumbnail Image -->
+    <xsl:if test="boolean(@displayLabel='Preview Image')">
+        <field name="mods_identifier_uri_preview_image_s">
+          <xsl:value-of select="text()"/>
+        </field>
+      </xsl:if>
+      <!-- Display Image -->
+      <xsl:if test="boolean(@displayLabel='Display Image')">
+        <field name="mods_identifier_uri_display_image_s">
+          <xsl:value-of select="text()"/>
+        </field>
+      </xsl:if>
+      <!-- Location -->
+      <xsl:if test="boolean(@displayLabel='View Record')">
+        <field name="mods_identifier_uri_view_record_s">
+          <xsl:value-of select="text()"/>
+        </field>
+      </xsl:if>
+   </xsl:template>
   
   <!-- display label addition to greenmovment -->
   <xsl:template match="mods:note[@lang='per' and  @displayLabel='Keywords/Chants/Slogans']" mode="GreenMovement">    
