@@ -221,7 +221,7 @@
   </xsl:template>
   
    <!-- Add displayLabel to the solr fields  -->
-  <xsl:template match="mods:identifier[type='uri']" mode="palmu">
+  <xsl:template match="mods:identifier[@type='uri']" mode="palmu">
     <!-- Thumbnail Image -->
     <xsl:if test="boolean(@displayLabel='Preview Image')">
         <field name="mods_identifier_uri_preview_image_s">
