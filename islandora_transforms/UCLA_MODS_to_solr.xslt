@@ -128,13 +128,13 @@
   <xsl:template match="mods:part" mode="slurping_MODS_IDEP">    
     <xsl:for-each select="mods:detail">
       <xsl:if test="boolean(@type='volume')">
-        <field name="mods_part_detail_volume_number_s">
+        <field name="mods_part_detail_volume_number_ms">
           <xsl:value-of select="mods:number/text()"/>
         </field>
       </xsl:if>
       
       <xsl:if test="boolean(@type='issue')">
-        <field name="mods_part_detail_issue_number_s">
+        <field name="mods_part_detail_issue_number_ms">
           <xsl:value-of select="mods:number/text()"/>
         </field>
       </xsl:if>
